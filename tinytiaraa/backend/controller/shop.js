@@ -226,7 +226,8 @@ router.get("/logout", catchAsyncErrors(async (req, res, next) => {
         res.cookie("seller_token", null, {
             expires: new Date(Date.now()),
             httpOnly: true,
-
+            sameSite: "None",  // Ensure consistency with login cookie
+            secure: true, 
         });
         res.status(201).json({
             success: true,
@@ -238,6 +239,7 @@ router.get("/logout", catchAsyncErrors(async (req, res, next) => {
 
     }
 }))
+
 
 
 
