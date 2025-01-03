@@ -2,7 +2,10 @@ import { createReducer } from "@reduxjs/toolkit";
 // import  isAuthenticated  from "../../../../backend/middleware/auth";
 
 const initialState ={
-    isLoading:true
+    isLoading:true,
+    isSeller: false,
+    seller: null,
+    error: null,
 }
 
 

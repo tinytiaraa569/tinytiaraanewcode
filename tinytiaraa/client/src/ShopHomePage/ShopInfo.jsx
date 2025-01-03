@@ -7,16 +7,39 @@ import { CiLogout } from "react-icons/ci";
 import axios from 'axios';
 import { server } from '@/server';
 import { Link, useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
+import { useDispatch } from 'react-redux';
 
 function ShopInfo({isOwner}) {
     const { seller } = useSelector((state)=> state.seller)
     const navigate = useNavigate()
+    const dispatch = useDispatch()
 
+
+    // const logoutHnadler = async () => {
+    //     axios.get(`${server}/shop/logout`,{withCredentials:true})
+    //     window.location.reload()
+
+    // }
     const logoutHnadler = async () => {
-        axios.get(`${server}/shop/logout`,{withCredentials:true})
+        try {
+            await axios.get(`${server}/shop/logout`, { withCredentials: true });
+            toast.success("Logged out successfully!");
+            
+            // Reset authentication state in Redux (or any state management)
+                   window.location.reload()
+ 
+            
+            // Navigate to login page
+            navigate('/shop-login');
         window.location.reload()
 
-    }
+        } catch (error) {
+            console.error(error);
+            toast.error("Failed to log out. Please try again.");
+        }
+    };
+    console.log(seller,"sllelr details")
   return (
     <div className='w-full py-5'>
        

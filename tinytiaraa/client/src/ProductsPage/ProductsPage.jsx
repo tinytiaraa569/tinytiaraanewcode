@@ -1279,7 +1279,7 @@ function ProductsPage() {
               {[...Array(16)].map((_, index) => (
                 <div
                   key={index}
-                  className="animate-pulse p-2 border rounded-lg shadow-md"
+                  className="animate-pulse p-2 border rounded-[12px] shadow-md "
                 >
                   <div className="h-48 bg-gray-300 rounded-lg"></div>
                   <div className="mt-4 space-y-2">
@@ -1298,7 +1298,7 @@ function ProductsPage() {
               {[...Array(16)].map((_, index) => (
                 <div
                   key={index}
-                  className="animate-pulse p-2 border rounded-lg shadow-md"
+                  className="animate-pulse p-2 border rounded-[12px] shadow-md"
                 >
                   <div className="h-48 bg-gray-300 rounded-lg"></div>
                   <div className="mt-4 space-y-2">

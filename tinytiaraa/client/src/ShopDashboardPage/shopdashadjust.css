@@ -48,4 +48,9 @@
   .menu-item .MuiListItemText-root {
     transition: color 0.2s, font-weight 0.2s;
   }
-  
+  .filtershadowoflogin{
+    filter: drop-shadow(3px 3px 2px rgba(0, 0, 0, 0.804));
+  }
+  .shadowoglogin{
+    box-shadow: rgb(38, 57, 77) 0px 20px 30px -10px;
+  }

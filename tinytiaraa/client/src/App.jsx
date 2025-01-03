@@ -154,21 +154,6 @@ function App() {
   
 
 
-  useEffect(() => {
-   
-      // Fetch initial products
-
-      dispatch(getAllProducts(20, 0)); // Fetch the first 40 products
-
-      dispatch(getAllProducts(540, 20));
-       // Fetch the next 200 products
-       Store.dispatch(loadUser())
-       Store.dispatch(loadSeller())
-       Store.dispatch(getAllEvents());
-
-    
-   
-  }, [dispatch])
 
   // useEffect(() => {
   //   // Load the user and seller immediately for authentication purposes
@@ -221,7 +206,9 @@ function App() {
     location.pathname.startsWith('/dashboard-analytics') ||
     location.pathname.startsWith('/dashboard-popup') ||
     location.pathname.startsWith('/dashboard-stocks') ||
+    location.pathname.startsWith('/shop-login') ||
 
+    
 
 
     
@@ -238,6 +225,21 @@ function App() {
 
 
 
+    useEffect(() => {
+   
+      // Fetch initial products
+
+      dispatch(getAllProducts(20, 0)); // Fetch the first 40 products
+
+      dispatch(getAllProducts(540, 20));
+       // Fetch the next 200 products
+       Store.dispatch(loadUser())
+       Store.dispatch(loadSeller())
+       Store.dispatch(getAllEvents());
+
+    
+   
+  }, [dispatch])
   useEffect(() => {
 
     const delay = {

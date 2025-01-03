@@ -9,11 +9,18 @@ function ShopLoginPage() {
   const { isSeller,seller ,isLoading } = useSelector((state) => state.seller)
   console.log(isSeller)
 
-  useEffect(()=>{
-    if(isSeller === true){
-      navigate(`/dashboard`)
+  // useEffect(()=>{
+  //   if(isSeller === true){
+  //     navigate(`/dashboard`)
+  //   }
+  // },[isLoading,isSeller])
+
+  useEffect(() => {
+    if (!isLoading && isSeller) {
+      navigate('/dashboard'); // Ensure navigation is after loading completes
     }
-  },[isLoading,isSeller])
+  }, [isLoading, isSeller, navigate]);
+
   return (
     <div>
            <ShopLogin />

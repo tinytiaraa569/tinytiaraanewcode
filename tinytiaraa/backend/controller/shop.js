@@ -129,35 +129,67 @@ router.post("/activation", catchAsyncErrors(async (req, res, next) => {
 //login shop
 
 
-router.post("/login-shop", catchAsyncErrors(async (req, res, next) => {
-    try {
+// router.post("/login-shop", catchAsyncErrors(async (req, res, next) => {
+//     try {
+//         const { email, password } = req.body;
+
+//         if (!email || !password) {
+//             return next(new ErrorHandler("Please provide the all fields", 400));
+
+//         }
+//         const user = await Shop.findOne({ email }).select("+password")
+
+//         if (!user) {
+//             return next(new ErrorHandler("User doesn't exists", 400));
+
+//         }
+//         const isPasswordValid = await user.comparePassword(password);
+
+//         if (!isPasswordValid) {
+//             return next(
+//                 new ErrorHandler("Please provide the correct information", 400)
+//             );
+//         }
+//         sendShopToken(user, 201, res)
+
+
+//     } catch (error) {
+//         return next(new ErrorHandler(error.message, 500));
+
+//     }
+// }))
+
+router.post(
+    "/login-shop",
+    catchAsyncErrors(async (req, res, next) => {
+      try {
         const { email, password } = req.body;
-
+  
         if (!email || !password) {
-            return next(new ErrorHandler("Please provide the all fields", 400));
-
+          return next(new ErrorHandler("Please provide all fields", 400));
         }
-        const user = await Shop.findOne({ email }).select("+password")
-
+  
+        const user = await Shop.findOne({
+          $or: [{ email }, { allowedEmails: email }],
+        }).select("+password");
+  
         if (!user) {
-            return next(new ErrorHandler("User doesn't exists", 400));
-
+          return next(new ErrorHandler("User doesn't exist", 400));
         }
+  
         const isPasswordValid = await user.comparePassword(password);
-
+  
         if (!isPasswordValid) {
-            return next(
-                new ErrorHandler("Please provide the correct information", 400)
-            );
+          return next(new ErrorHandler("Incorrect email or password", 400));
         }
-        sendShopToken(user, 201, res)
-
-
-    } catch (error) {
+  
+        sendShopToken(user, 201, res);
+      } catch (error) {
         return next(new ErrorHandler(error.message, 500));
-
-    }
-}))
+      }
+    })
+  );
+  
 
 
 

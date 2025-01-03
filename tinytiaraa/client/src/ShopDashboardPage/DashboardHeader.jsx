@@ -65,13 +65,14 @@ import React from 'react';
 import { AiOutlineGift } from 'react-icons/ai';
 import { FaUserCircle } from 'react-icons/fa';
 import { AppBar, Toolbar, IconButton, Badge, Typography, Avatar, Tooltip } from '@mui/material';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import SettingsIcon from '@mui/icons-material/Settings';
 
 function DashboardHeader() {
   const { seller } = useSelector((state) => state.seller);
+  const navigate = useNavigate()
 
   return (
     <AppBar position="sticky"  sx={{ backgroundColor: '#fff', color: '#555' }} className='w-full h-[90px] border-b border-b-gray-200 bg-white !shadow-none sticky top-0 left-0 z-30 px-4'>
@@ -105,7 +106,7 @@ function DashboardHeader() {
             </IconButton>
           </Tooltip>
 
-          <Tooltip title="Settings">
+          <Tooltip title="Settings" onClick={()=>{navigate("/settings")}}>
             <IconButton>
               <SettingsIcon />
             </IconButton>

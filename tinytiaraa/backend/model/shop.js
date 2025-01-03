@@ -38,6 +38,7 @@ const shopSchema = new mongoose.Schema({
     type: String,
     default: "Seller",
   },
+  allowedEmails: { type: [String], default: [] },
 
   createdAt: {
     type: Date,
