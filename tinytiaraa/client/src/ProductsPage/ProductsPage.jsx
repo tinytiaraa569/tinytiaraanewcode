@@ -1274,19 +1274,46 @@ function ProductsPage() {
             </h1>
 
             {loading ? (
-              <p className="text-center">Loading products...</p>
+              // <p className="text-center">Loading products...</p>
+              <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 mb-12">
+              {[...Array(16)].map((_, index) => (
+                <div
+                  key={index}
+                  className="animate-pulse p-2 border rounded-lg shadow-md"
+                >
+                  <div className="h-48 bg-gray-300 rounded-lg"></div>
+                  <div className="mt-4 space-y-2">
+                    <div className="h-4 bg-gray-300 rounded"></div>
+                    <div className="h-4 bg-gray-300 rounded w-3/4"></div>
+                    <div className="h-4 bg-gray-300 rounded w-1/2"></div>
+                  </div>
+                </div>
+              ))}
+            </div>
             ) : error ? (
               <p className="text-center text-red-500">{error}</p>
             ) : filteredData.length === 0  && selectedCategory ? (
               <>
-              <p className="text-center text-[14px] text-[#030303b7]">
-                We're working on restocking our collection. Stay tuned for new arrivals soon!
-              </p>
+              <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 mb-12">
+              {[...Array(16)].map((_, index) => (
+                <div
+                  key={index}
+                  className="animate-pulse p-2 border rounded-lg shadow-md"
+                >
+                  <div className="h-48 bg-gray-300 rounded-lg"></div>
+                  <div className="mt-4 space-y-2">
+                    <div className="h-4 bg-gray-300 rounded"></div>
+                    <div className="h-4 bg-gray-300 rounded w-3/4"></div>
+                    <div className="h-4 bg-gray-300 rounded w-1/2"></div>
+                  </div>
+                </div>
+              ))}
+            </div>
  {/* Display extracat data */}
              
               
               
-              <div className="mt-6">
+              {/* <div className="mt-6">
 
               { selectedCategory?.extraimgurl && Array.isArray(selectedCategory.extraimgurl) && selectedCategory.extraimgurl.length > 0 ?
                (<>
@@ -1303,7 +1330,7 @@ function ProductsPage() {
                 ).map(([collectionName, images]) => (
                   <div key={collectionName} className="mb-12 ">
                     {/* Display the collection name */}
-                    <h2 className="comingcollectionline text-center text-lg font-semibold ">
+                    {/* <h2 className="comingcollectionline text-center text-lg font-semibold ">
                       {collectionName} 
                     </h2>
                     {selectedCategory?.extracat?.length > 0 && (
@@ -1339,9 +1366,9 @@ function ProductsPage() {
                       </div>
                     )}
                     <p className="text-center text-[12px] text-[#00000081] ">A preview of what's to come! Discover a sneak peek of our upcoming collection, with more stunning pieces arriving soon.</p>
-                    <div className="text-center text-[12px] text-[#1d1d1dc9] mb-4">(coming soon...)</div>
+                    <div className="text-center text-[12px] text-[#1d1d1dc9] mb-4">(coming soon...)</div> */}
                     {/* Render images of the collection below the collection name */}
-                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                    {/* <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                     {images
                   // Filter images by selected subcategory or show all images if no subcategory is selected
                   .filter((image) =>
@@ -1373,7 +1400,7 @@ function ProductsPage() {
               </>)}
                 {/* Group images by collection and convert the result to an array */}
                 
-              </div>
+              {/* </div> */} 
             </>
             
             
