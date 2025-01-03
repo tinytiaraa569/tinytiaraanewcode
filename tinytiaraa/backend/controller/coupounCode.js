@@ -52,13 +52,19 @@ const encryptDiscount = (discount) => {
 
 router.post("/create-coupon-code", isSeller, catchAsyncErrors(async (req, res, next) => {
   try {
-    const { name, value, percentageDiscount, minAmount, maxAmount, selectedProducts, shop } = req.body;
+    const { name, value, percentageDiscount, minAmount, maxAmount, selectedProducts, shop  , startDate, endDate } = req.body;
 
     // Check if coupon code with the same name already exists
     const isCouponCodeExists = await CoupounCode.findOne({ name });
     if (isCouponCodeExists) {
       return next(new ErrorHandler("Coupon code already exists", 400));
     }
+
+    // Ensure the startDate is before the endDate if both are provided
+    if (startDate && endDate && new Date(startDate) > new Date(endDate)) {
+      return next(new ErrorHandler("Start date cannot be after the end date", 400));
+    }
+
 
     // Create the coupon code based on the provided data
     const couponCodeData = {
@@ -68,7 +74,9 @@ router.post("/create-coupon-code", isSeller, catchAsyncErrors(async (req, res, n
       minAmount: minAmount || null,
       maxAmount: maxAmount || null,
       selectedProducts: selectedProducts || null,
-      shop
+      shop,
+      startDate: startDate ? new Date(startDate) : null, // Convert startDate to Date object
+      endDate: endDate ? new Date(endDate) : null,
     };
 
     const couponCode = await CoupounCode.create(couponCodeData);
@@ -323,6 +331,38 @@ router.post(
         });
       }
 
+
+      // startdate end date logic
+
+      const currentDate = new Date();
+      const isValidStartDate = couponCode.startDate ? new Date(couponCode.startDate) <= currentDate : true;
+      const isValidEndDate = couponCode.endDate ? new Date(couponCode.endDate) >= currentDate : true;
+
+      if (!isValidStartDate) {
+        return res.status(400).json({
+          success: false,
+          message: `Coupon code is not valid yet. It starts on ${new Date(couponCode.startDate).toLocaleDateString()}.`
+        });
+      }
+
+      if (!isValidEndDate) {
+        return res.status(400).json({
+          success: false,
+          message: `Coupon code has expired. It expired on ${new Date(couponCode.endDate).toLocaleDateString()}.`
+        });
+      }
+
+      // Filter cart items that belong to the shop the coupon applies to
+      // const isCouponValiddate = cartItems.filter((item) => item.shopId === couponCode.shop);
+
+      // if (isCouponValiddate.length === 0) {
+      //   return res.status(400).json({
+      //     success: false,
+      //     message: "Coupon code is not valid for items in your cart."
+      //   });
+      // }
+
+
       // Calculate discount
       let calculatedDiscount = 0;
       console.log(eligiblePrice,"see coupon discount price")
@@ -355,6 +395,56 @@ router.post(
   })
 );
 
+router.patch('/coupon-toggle/:id', catchAsyncErrors(async (req, res, next) => {
+  try {
+    const { id } = req.params; // Get the coupon ID from the request params
+    const { live } = req.body; // Get the 'live' status from the request body
+
+    
+    // Find the coupon by ID
+    const coupon = await CoupounCode.findById(id);
+
+    if (!coupon) {
+      return res.status(404).json({ message: "Coupon not found" });
+    }
+
+    const currentDate = new Date();
+    const couponEndDate = new Date(coupon.endDate);
+
+    // If the endDate has passed, set 'live' to false
+    if (couponEndDate < currentDate) {
+      coupon.live = false;
+    }
+
+
+    // If the coupon doesn't have a 'live' field, set it to the value from the request body
+    if (coupon.live === undefined) {
+      coupon.live = live !== undefined ? live : true; // Default to 'true' if 'live' is undefined
+    }
+
+    // Toggle the 'live' status if it's provided in the request body
+    if (live !== undefined) {
+      coupon.live = live;
+    } else {
+      coupon.live = !coupon.live; // If no 'live' value is provided, toggle the status
+    }
+
+    
+
+    // Save the coupon with the updated live status
+    await coupon.save();
+
+    // Respond with the updated coupon
+    res.status(200).json({
+      message: "Coupon live status updated",
+      coupon
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server error" });
+  }
+}));
+
 // router.get('/get-coupon-value/:code', async (req, res) => {
 //   const { code } = req.params;
 
@@ -379,5 +469,43 @@ router.post(
 //     return res.status(500).json({ success: false, message: 'Server error.' });
 //   }
 // });
+
+// edit for coupon
+
+// Route to update coupon by ID
+router.put('/edit-coupon-code/:id', async (req, res) => {
+  const { name, value, percentageDiscount, minAmount, maxAmount, startDate, endDate, selectedProducts } = req.body;
+
+  try {
+      const coupon = await CoupounCode.findById(req.params.id);
+
+      if (!coupon) {
+          return res.status(404).json({ message: 'Coupon not found' });
+      }
+
+      // Update the coupon fields with the new data
+      coupon.name = name !== undefined ? name : coupon.name;
+      coupon.value = value !== undefined ? value : coupon.value;
+      coupon.percentageDiscount = percentageDiscount !== undefined ? percentageDiscount : coupon.percentageDiscount;
+      coupon.minAmount = minAmount !== undefined ? minAmount : coupon.minAmount;
+      coupon.maxAmount = maxAmount !== undefined ? maxAmount : coupon.maxAmount;
+      coupon.startDate = startDate !== undefined ? startDate : coupon.startDate;
+      coupon.endDate = endDate !== undefined ? endDate : coupon.endDate;
+      coupon.selectedProducts = selectedProducts !== undefined ? selectedProducts : coupon.selectedProducts;
+
+      // Save the updated coupon
+      await coupon.save();
+
+      res.json({ message: 'Coupon updated successfully', coupon }); // Send the updated coupon
+  } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: 'Server error' });
+  }
+});
+
+
+
+
+
 
 module.exports = router

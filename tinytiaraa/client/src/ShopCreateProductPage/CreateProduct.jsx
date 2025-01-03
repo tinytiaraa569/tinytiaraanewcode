@@ -2167,7 +2167,7 @@ function CreateProduct() {
                                 <label variant="outline">Chain <span className='text-red-500'>(Not Mandatory)</span></label>
                             </div>
                         </PopoverTrigger>
-                        <PopoverContent className="w-[100%] h-[auto] bg-[white] relative left-[5%] top-10">
+                        <PopoverContent className="w-[100%] h-[auto] bg-[white] relative left-[25%] top-10">
                             <div className=" gap-4 bg-white">
                                 <div className="space-y-2">
                                     <h4 className="font-medium leading-none">Chain Options</h4>
@@ -2338,7 +2338,7 @@ function CreateProduct() {
                                 </label>
                             </div>
                         </PopoverTrigger>
-                        <PopoverContent className="w-[100%] bg-white relative left-[5%] top-10">
+                        <PopoverContent className="w-[100%] bg-white relative left-[25%] top-10">
                             <div className="w-[100%] grid gap-4 bg-white">
                                 <div className="space-y-2">
                                     <h4 className="font-medium leading-none">Metal Color</h4>
@@ -2684,7 +2684,7 @@ function CreateProduct() {
                                     <label variant="outline">Deep Blue  <span className='text-red-500'>(if Enamel product)</span></label>
                                 </div>
                             </PopoverTrigger>
-                            <PopoverContent className="w-[100%] h-[100%] bg-white !overflow-y-auto relative left-[5%] top-[10px]">
+                            <PopoverContent className="w-[100%] h-[100%] bg-white !overflow-y-auto relative left-[25%] top-[10px]">
                                 <div className="grid gap-4 bg-white !overflow-y-auto">
                                     <div className='h-[100%] '>
 
@@ -2897,7 +2897,7 @@ function CreateProduct() {
                                     <label variant="outline">Pink <span className='text-red-500'>(if Enamel product)</span></label>
                                 </div>
                             </PopoverTrigger>
-                            <PopoverContent className="w-[100%] h-[100%] bg-white !overflow-y-auto relative left-[5%] top-[10px]">
+                            <PopoverContent className="w-[100%] h-[100%] bg-white !overflow-y-auto relative left-[25%] top-[10px]">
                                 <div className="grid gap-4 bg-white !overflow-y-auto">
                                     <div className='h-[100%]'>
                                         <div className="space-y-2">
@@ -3098,7 +3098,7 @@ function CreateProduct() {
                                     <label variant="outline">Turquoise <span className='text-red-500'>(if Enamel product)</span></label>
                                 </div>
                             </PopoverTrigger>
-                            <PopoverContent className="w-[100%] h-[100%] bg-white !overflow-y-auto relative left-[5%] top-[50px]">
+                            <PopoverContent className="w-[100%] h-[100%] bg-white !overflow-y-auto relative left-[25%] top-[50px]">
                                 <div className="grid gap-4  bg-white !overflow-y-auto">
                                     <div className='!overflow-y-auto'>
                                         <div className="space-y-2">
@@ -3299,7 +3299,7 @@ function CreateProduct() {
                                     <label variant="outline">Red <span className='text-red-500'>(if Enamel product)</span></label>
                                 </div>
                             </PopoverTrigger>
-                            <PopoverContent className="w-[100%] h-[100%] bg-white !overflow-y-auto relative left-[5%] top-[50px]">
+                            <PopoverContent className="w-[100%] h-[100%] bg-white !overflow-y-auto relative left-[25%] top-[50px]">
                                 <div className="grid gap-4  bg-white !overflow-y-auto">
                                     <div className='!overflow-y-auto'>
                                         <div className="space-y-2">
@@ -3499,7 +3499,7 @@ function CreateProduct() {
                                     <label variant="outline">Black <span className='text-red-500'>(if Enamel product)</span></label>
                                 </div>
                             </PopoverTrigger>
-                            <PopoverContent className="w-[100%] h-[100%] bg-white !overflow-y-auto relative left-[5%] top-[50px]">
+                            <PopoverContent className="w-[100%] h-[100%] bg-white !overflow-y-auto relative left-[25%] top-[50px]">
                                 <div className="grid gap-4 bg-white !overflow-y-auto">
                                     <div className='!overflow-y-auto'>
                                         <div className="space-y-2">
@@ -3697,7 +3697,7 @@ function CreateProduct() {
                                     <label variant="outline">Deep Green <span className='text-red-500'>(if Enamel product)</span></label>
                                 </div>
                             </PopoverTrigger>
-                            <PopoverContent className="w-[100%] h-[100%] bg-white !overflow-y-auto relative left-[5%] top-[50px]">
+                            <PopoverContent className="w-[100%] h-[100%] bg-white !overflow-y-auto relative left-[25%] top-[50px]">
                                 <div className="grid gap-4  bg-white !overflow-y-auto">
                                     <div className='!overflow-y-auto'>
                                         <div className="space-y-2">
@@ -3896,7 +3896,7 @@ function CreateProduct() {
                                     <label variant="outline">Lotus Green <span className='text-red-500'>(if Enamel product)</span></label>
                                 </div>
                             </PopoverTrigger>
-                            <PopoverContent className="w-[100%] h-[100%] bg-white !overflow-y-auto relative left-[5%] top-[50px]">
+                            <PopoverContent className="w-[100%] h-[100%] bg-white !overflow-y-auto relative left-[25%] top-[50px]">
                                 <div className="grid gap-4  bg-white !overflow-y-auto">
                                     <div className='!overflow-y-auto'>
                                         <div className="space-y-2">

@@ -40,6 +40,18 @@ const coupounCodeSchema = new mongoose.Schema({
 
 
     },
+    startDate: {
+        type: Date, // Add the startDate field
+        default: null // Default can be null, or you can set it to a specific date
+    },
+    endDate: {
+        type: Date, // Add the startDate field
+        default: null // Default can be null, or you can set it to a specific date
+    },
+    live: {
+        type: Boolean,
+        default: true, // Default value for live status
+    },
 
       CreatedAt:{
         type:Date,

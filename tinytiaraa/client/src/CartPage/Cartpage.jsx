@@ -248,6 +248,16 @@ function Cartpage() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+        // Check if the coupon code exists in the available coupons and is live
+      const matchingCoupon = availableCoupons.find(
+        (coupon) => coupon.name === couponCode && coupon.live === true
+      );
+
+      if (!matchingCoupon) {
+        toast.error("Invalid or inactive coupon code.");
+        return;
+      }
+
     try {
       const res = await axios.post(`${server}/coupon/apply-coupon`, {
         name: couponCode,
@@ -520,7 +530,8 @@ const convertedFinalPrice = (finalPrice * (conversionRates[currency] || 1)).toFi
         <div 
           key={coupon._id} 
           className="bg-green-200 text-green-800 px-3 py-2 rounded-full text-[14px]  shadow-sm hover:bg-green-300 transition cursor-pointer"
-          onClick={() => handleCouponClick(coupon.name)} // Added onClick handler
+          // onClick={() => handleCouponClick(coupon.name)} // Added onClick handler
+          onClick={() => coupon.live && handleCouponClick(coupon.name)}
         >
           <strong className='!text-[12px]'>{coupon.name}</strong>
         </div>
@@ -700,6 +711,7 @@ const CartSingle = ({ data, quantityChangeHandler, removeFromCartHandler }) => {
     1: "Rose Gold",
     2: "White Gold",
   };
+  
 
   const convertedDiscountPrice = (data.discountPrice * (conversionRates[currency] || 1)).toFixed(0);
   const convertedOriginalPrice = (data.originalPrice * (conversionRates[currency] || 1)).toFixed(0);
@@ -866,8 +878,17 @@ const CartSingle = ({ data, quantityChangeHandler, removeFromCartHandler }) => {
         <span className="disprice pl-1">
           {currency} {data.chainPrice > 0 ? (parseFloat(convertedDiscountPrice) + parseFloat(convertedChainPrice)).toFixed(0) : convertedDiscountPrice}
         </span>
-        <span className="text-[#EB4F5C] ml-[5px] text-[0.9rem] pl-1">
+        {/* <span className="text-[#EB4F5C] ml-[5px] text-[0.9rem] pl-1">
           save {currency} {(data.originalPrice * conversionRates[currency] - data.discountPrice * conversionRates[currency]).toFixed(2)}
+        </span> */}
+
+        <span className="text-[#EB4F5C] ml-[5px] text-[0.9rem] pl-1">
+          save <span className='ml-1'> {currency} 
+          {(
+            ((data.originalPrice || 0) * (conversionRates[currency] || 1)) -
+            ((data.discountPrice || 0) * (conversionRates[currency] || 1))
+          ).toFixed(0)}
+          </span>
         </span>
           </div>
 

@@ -377,5 +377,31 @@ router.post('/update-aboutbanner-order', catchAsyncErrors(async (req, res, next)
     }
 }));
 
+
+router.patch('/aboutbanners/:id/live-toggle', catchAsyncErrors(async (req, res, next) => {
+
+    const { id } = req.params;
+
+    // Find the banner by ID
+    const banner = await AboutBanner.findById(id);
+
+    if (!banner) {
+        return next(new ErrorHandler('Banner not found', 404));
+    }
+
+    // Toggle the live status
+    banner.live = !banner.live;
+
+    // Save the updated banner
+    await banner.save();
+
+    res.status(200).json({
+        success: true,
+        message: `Banner is now ${banner.live ? 'live' : 'offline'}`,
+        banner,
+    });
+
+}));
+
 // Export the router
 module.exports = router;

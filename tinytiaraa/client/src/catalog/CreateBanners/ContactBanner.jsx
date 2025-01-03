@@ -47,6 +47,19 @@ function ContactBanner() {
         );
       };
     
+      const confirmAndDeleteBanner = (id) => {
+        swal({
+          title: "Are you sure?",
+          text: "You won't be able to revert this!",
+          icon: "warning",
+          buttons: true,
+          dangerMode: true,
+        }).then((willDelete) => {
+          if (willDelete) {
+            handleDeleteBanner(id);
+          }
+        });
+      };
       // Handle banner deletion
       const handleDeleteBanner = async (id) => {
         try {
@@ -124,6 +137,43 @@ function ContactBanner() {
         XLSX.utils.book_append_sheet(workbook, worksheet, "Banners");
         XLSX.writeFile(workbook, "Contactbanners.xlsx");
       };
+
+
+      const toggleBannerLiveStatus = async (id) => {
+        try {
+          // Optimistically update the UI
+          setBanners((prevBanners) =>
+            prevBanners.map((banner) =>
+              banner._id === id ? { ...banner, live: !banner.live } : banner
+            )
+          );
+      
+          // Send API request to toggle live status
+          const { data } = await axios.patch(`${server}/contactbanners/${id}/live-toggle`);
+          
+          // Optional: Sync the state with the response, in case of server-side changes
+          setBanners((prevBanners) =>
+            prevBanners.map((banner) =>
+              banner._id === id ? { ...banner, live: data.banner.live } : banner
+            )
+          );
+      
+          // console.log(data.message); // Optional: Notify the user
+        } catch (error) {
+          // console.error('Failed to toggle banner live status:', error);
+      
+          // Revert the optimistic update in case of failure
+          setBanners((prevBanners) =>
+            prevBanners.map((banner) =>
+              banner._id === id ? { ...banner, live: !banner.live } : banner
+            )
+          );
+        }
+      };
+
+
+
+
       if (loading) return <p>Loading banners...</p>;
       if (error) return <p>{error}</p>;
       console.log(banners,"banner from about ")
@@ -201,21 +251,43 @@ function ContactBanner() {
                     {/* Delete Button */}
                     <button
                       className="text-red-600 hover:underline flex items-center"
-                      onClick={() => handleDeleteBanner(banner._id)}
+                      // onClick={() => handleDeleteBanner(banner._id)}
+                      onClick={() => confirmAndDeleteBanner(banner._id)}
+
                     >
                       <MdDelete className="mr-2" /> Delete
                     </button>
                   </div>
 
                   {/* Select Checkbox */}
-                  <div className="mt-2 flex items-center">
+                  <div className="mt-4 flex justify-between items-center">
+                    <div>
+
                     <input
                       type="checkbox"
                       checked={banner.selected}
                       onChange={() => handleSelectBanner(banner._id)}
                       className="mr-2"
-                    />
+                      />
                     <label>Select</label>
+                      </div>
+
+                    <div className=" flex items-center">
+                    <label className="mr-2 font-medium">Live:</label>
+                    <div
+                      className={`relative w-12 h-6 flex items-center rounded-full p-1 cursor-pointer ${
+                        banner.live ? "bg-green-500" : "bg-gray-400"
+                      }`}
+                      onClick={() => toggleBannerLiveStatus(banner._id)}
+                    >
+                      <div
+                        className={`w-4 h-4 bg-white rounded-full shadow-md transform transition-transform ${
+                          banner.live ? "translate-x-6" : "translate-x-0"
+                        }`}
+                      />
+                    </div>
+                  </div>
+
                   </div>
 
                   {/* Reorder Buttons with icons */}

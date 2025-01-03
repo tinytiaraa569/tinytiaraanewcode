@@ -81,8 +81,12 @@ function ProductCard({ data ,selectedEnamelColorimg}) {
     ? Object.values(data.enamelColors[selectedEnamelColorimg]).flat()
     : [];
 
-    const convertedOriginalPrice = (data.originalPrice * (conversionRates[currency] || 1)).toFixed(0);
-    const convertedDiscountPrice = (data.discountPrice * (conversionRates[currency] || 1)).toFixed(0);
+    const formatPrice = (price) => {
+      return new Intl.NumberFormat('en-IN').format(price); // 'en-IN' for Indian style
+  };
+
+    const convertedOriginalPrice = formatPrice((data.originalPrice * (conversionRates[currency] || 1)).toFixed(0));
+    const convertedDiscountPrice = formatPrice((data.discountPrice * (conversionRates[currency] || 1)).toFixed(0));
 
    
   

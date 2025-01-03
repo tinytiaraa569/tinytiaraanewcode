@@ -59,6 +59,8 @@ function CreateBanner() {
     );
   };
 
+
+
   // Handle banner deletion
   const handleDeleteBanner = async (id) => {
     try {
@@ -70,6 +72,20 @@ function CreateBanner() {
       setError("Failed to delete banner.");
       swal("Oops!", "Failed to delete banner.", "error");
     }
+  };
+
+  const confirmAndDeleteBanner = (id) => {
+    swal({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      buttons: true,
+      dangerMode: true,
+    }).then((willDelete) => {
+      if (willDelete) {
+        handleDeleteBanner(id);
+      }
+    });
   };
 
   const handleMultipleDelete = async  () => {
@@ -120,6 +136,38 @@ function CreateBanner() {
     } catch (error) {
       console.error("Failed to update banner order:", error);
       swal("Oops!", "Failed to update banner order.", "error");
+    }
+  };
+
+  const toggleBannerLiveStatus = async (id) => {
+    try {
+      // Optimistically update the UI
+      setBanners((prevBanners) =>
+        prevBanners.map((banner) =>
+          banner._id === id ? { ...banner, live: !banner.live } : banner
+        )
+      );
+  
+      // Send API request to toggle live status
+      const { data } = await axios.patch(`${server}/banners/${id}/live-toggle`);
+      
+      // Optional: Sync the state with the response, in case of server-side changes
+      setBanners((prevBanners) =>
+        prevBanners.map((banner) =>
+          banner._id === id ? { ...banner, live: data.banner.live } : banner
+        )
+      );
+  
+      // console.log(data.message); // Optional: Notify the user
+    } catch (error) {
+      // console.error('Failed to toggle banner live status:', error);
+  
+      // Revert the optimistic update in case of failure
+      setBanners((prevBanners) =>
+        prevBanners.map((banner) =>
+          banner._id === id ? { ...banner, live: !banner.live } : banner
+        )
+      );
     }
   };
 
@@ -185,6 +233,8 @@ function CreateBanner() {
             </button>
           </div>
 
+          
+
           {/* Banner list */}
           <div className="mt-6">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -218,24 +268,55 @@ function CreateBanner() {
                     </Link>
 
                     {/* Delete Button */}
-                    <button
+                    {/* <button
                       className="text-red-600 hover:underline flex items-center"
                       onClick={() => handleDeleteBanner(banner._id)}
                     >
                       <MdDelete className="mr-2" /> Delete
-                    </button>
+                    </button> */}
+
+                  <button
+                    className="text-red-600 hover:underline flex items-center"
+                    onClick={() => confirmAndDeleteBanner(banner._id)}
+                  >
+                    <MdDelete className="mr-2" /> Delete
+                  </button>
                   </div>
 
                   {/* Select Checkbox */}
-                  <div className="mt-2 flex items-center">
+                  <div className="mt-4 flex justify-between items-center">
+
+                    <div>
+
                     <input
                       type="checkbox"
                       checked={banner.selected}
                       onChange={() => handleSelectBanner(banner._id)}
                       className="mr-2"
-                    />
+                      />
                     <label>Select</label>
+                      </div>
+
+                      
+                      <div className=" flex items-center">
+                    <label className="mr-2 font-medium">Live:</label>
+                    <div
+                      className={`relative w-12 h-6 flex items-center rounded-full p-1 cursor-pointer ${
+                        banner.live ? "bg-green-500" : "bg-gray-400"
+                      }`}
+                      onClick={() => toggleBannerLiveStatus(banner._id)}
+                    >
+                      <div
+                        className={`w-4 h-4 bg-white rounded-full shadow-md transform transition-transform ${
+                          banner.live ? "translate-x-6" : "translate-x-0"
+                        }`}
+                      />
+                    </div>
                   </div>
+                  </div>
+
+
+
 
                   {/* Reorder Buttons with icons */}
                   <div className="flex justify-between mt-2">
@@ -254,6 +335,9 @@ function CreateBanner() {
                     <FaArrowDown className="mr-1" /> Move Down
                     </button>
                     </div>
+
+
+                    
                           </div>
                         ))}
                       </div>
@@ -316,7 +400,7 @@ function CreateBanner() {
         <div>
 
       <h3 className={`font-poppins text-[20px]  text-gray-700 font-[600]`}>
-        Create Banners
+        Create Banners <span className="text-[14px] text-[#0e0e0e48] ml-4">Width- (1350px)</span> <span className="text-[14px] text-[#0e0e0e48]">Height- (570px)</span>
       </h3>
       <nav aria-label="Breadcrumb" className="text-sm text-gray-600 mb-4 mt-1">
             <ol className="flex space-x-2">
@@ -350,6 +434,8 @@ function CreateBanner() {
 
         
       </div>
+
+      
 
      
       {renderSelectedBanner()}

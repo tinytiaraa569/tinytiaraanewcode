@@ -21,6 +21,10 @@ const bannerSchema = new mongoose.Schema({
         },
     ],
     order: { type: Number, default: 0 }, // Order field
+    live: {
+        type: Boolean,
+        default: true, // Default value for live status
+    },
     createdAt: {
         type: Date,
         default: Date.now, // Use Date.now without parentheses

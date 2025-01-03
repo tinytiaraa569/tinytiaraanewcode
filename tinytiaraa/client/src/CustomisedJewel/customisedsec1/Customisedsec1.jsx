@@ -40,7 +40,7 @@ const Customisedsec1 = () => {
     async () => {
       const response = await axios.get(`${server}/get-allcustombanners`);
       if (response.data.success) {
-        return response.data.banners.sort((a, b) => a.order - b.order);
+        return response.data.banners.filter((banner) => banner.live).sort((a, b) => a.order - b.order);
       }
       throw new Error('Failed to fetch custom banners');
     }

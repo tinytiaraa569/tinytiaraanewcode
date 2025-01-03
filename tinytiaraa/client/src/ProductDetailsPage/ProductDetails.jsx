@@ -973,9 +973,13 @@ function ProductDetails({ data }) {
         }
         return 0;
     };
+
+    const formatPrice = (price) => {
+        return new Intl.NumberFormat('en-IN').format(price); // 'en-IN' for Indian style
+    };
     const discountPercentage = calculateDiscountPercentage(finalOriginalPrice, finalPrice);
-    const convertedFinalPrice = (finalPrice * (conversionRates[currency] || 1)).toFixed(0);
-    const convertedFinalOriginalPrice = (finalOriginalPrice * (conversionRates[currency] || 1)).toFixed(0);
+    const convertedFinalPrice = formatPrice((finalPrice * (conversionRates[currency] || 1)).toFixed(0));
+    const convertedFinalOriginalPrice = formatPrice((finalOriginalPrice * (conversionRates[currency] || 1)).toFixed(0));
   
     console.log(selectedChainSize, "chain size")
 
@@ -2316,7 +2320,7 @@ function ProductDetails({ data }) {
                                     {shouldShowCombinations && (
                                         <div className="enamelotion pt-3">
                                             <div className='enameltitle'>
-                                                <h3 className="text-[20px] font-[600] font-Poppins">Enamel Combination : </h3>
+                                                <h3 className="text-[20px] font-[600] font-Poppins">Combination : </h3>
                                             </div>
                                             <div className="enamelselect text-[16px] font-Poppins py-1">
                                                 <select
