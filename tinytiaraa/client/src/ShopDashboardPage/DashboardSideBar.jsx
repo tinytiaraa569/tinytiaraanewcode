@@ -399,7 +399,7 @@ const DashboardSideBar = ({active}) => {
           <div style={{ display: isOpen ? "block" : "none" }} className="ml-[51px]">
             <Link to="/dashboard">
               <img
-                src="https://backend.tinytiaraa.com:8000/uploads/images/logowebsite/duvdwbtbmyr8ipqrevot.png"
+                src="https://admin.tinytiaraa.com/uploads/images/logowebsite/duvdwbtbmyr8ipqrevot.png"
                 className="shadowpngadmin w-[100px] h-[75px] object-contain"
                 alt=""
               />

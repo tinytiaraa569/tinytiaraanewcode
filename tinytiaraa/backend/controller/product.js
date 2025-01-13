@@ -1749,63 +1749,63 @@ router.put("/create-new-review", isAuthenticated, catchAsyncErrors(async (req, r
 
 //update rate card with all prices 
 
-router.post('/update-rate-card', async (req, res) => {
-    const { goldRate, diamondRate, labourCharge, gstCharge, miscellaneous } = req.body;
+// router.post('/update-rate-card', async (req, res) => {
+//     const { goldRate, diamondRate, labourCharge, gstCharge, miscellaneous } = req.body;
 
-    try {
-        // Ensure all rate inputs are valid numbers
-        const parsedGoldRate = parseFloat(goldRate);
-        const parsedDiamondRate = parseFloat(diamondRate);
-        const parsedLabourCharge = parseFloat(labourCharge);
-        const parsedMiscellaneous = parseFloat(miscellaneous || 0);
+//     try {
+//         // Ensure all rate inputs are valid numbers
+//         const parsedGoldRate = parseFloat(goldRate);
+//         const parsedDiamondRate = parseFloat(diamondRate);
+//         const parsedLabourCharge = parseFloat(labourCharge);
+//         const parsedMiscellaneous = parseFloat(miscellaneous || 0);
 
-        if (isNaN(parsedGoldRate) || isNaN(parsedDiamondRate) || isNaN(parsedLabourCharge) || isNaN(parsedMiscellaneous)) {
-            throw new Error('Invalid rate card values provided.');
-        }
+//         if (isNaN(parsedGoldRate) || isNaN(parsedDiamondRate) || isNaN(parsedLabourCharge) || isNaN(parsedMiscellaneous)) {
+//             throw new Error('Invalid rate card values provided.');
+//         }
 
-        // Fetch all products
-        const products = await Product.find();
+//         // Fetch all products
+//         const products = await Product.find();
 
-        // Update each product's price based on the new rates
-        for (const product of products) {
-            const goldWeight = parseFloat(product.goldWeight.weight.replace("gm", "").trim());
-            const diamondWeight = parseFloat(product.diamondWeight.weight.replace("Ct", "").trim());
+//         // Update each product's price based on the new rates
+//         for (const product of products) {
+//             const goldWeight = parseFloat(product.goldWeight.weight.replace("gm", "").trim());
+//             const diamondWeight = parseFloat(product.diamondWeight.weight.replace("Ct", "").trim());
 
-            if (isNaN(goldWeight) || isNaN(diamondWeight)) {
-                console.warn(`Invalid weights for product ID: ${product._id}`);
-                continue; // Skip products with invalid weights
-            }
+//             if (isNaN(goldWeight) || isNaN(diamondWeight)) {
+//                 console.warn(`Invalid weights for product ID: ${product._id}`);
+//                 continue; // Skip products with invalid weights
+//             }
 
-            const goldCost = parsedGoldRate * goldWeight;
-            const diamondCost = parsedDiamondRate * diamondWeight;
-            const totalLabour = parsedLabourCharge;
-            const miscCharge = parsedMiscellaneous;
-            const gst = (goldCost + diamondCost + totalLabour + miscCharge) * (parseFloat(gstCharge) / 100 || 0.03); // Default 3% GST
+//             const goldCost = parsedGoldRate * goldWeight;
+//             const diamondCost = parsedDiamondRate * diamondWeight;
+//             const totalLabour = parsedLabourCharge;
+//             const miscCharge = parsedMiscellaneous;
+//             const gst = (goldCost + diamondCost + totalLabour + miscCharge) * (parseFloat(gstCharge) / 100 || 0.03); // Default 3% GST
 
-            // Calculate new discount price
-            const newDiscountPrice = goldCost + diamondCost + totalLabour + gst + miscCharge;
+//             // Calculate new discount price
+//             const newDiscountPrice = goldCost + diamondCost + totalLabour + gst + miscCharge;
 
-            // Ensure the discount price is a valid number
-            if (isNaN(newDiscountPrice)) {
-                console.warn(`Calculated NaN discount price for product ID: ${product._id}`);
-                continue; // Skip saving this product if calculation fails
-            }
+//             // Ensure the discount price is a valid number
+//             if (isNaN(newDiscountPrice)) {
+//                 console.warn(`Calculated NaN discount price for product ID: ${product._id}`);
+//                 continue; // Skip saving this product if calculation fails
+//             }
 
-            // Update the product's discount price
-            product.discountPrice = newDiscountPrice.toFixed(2);
-            // const hikePercentage = 11.111 / 100;
-            // const newOriginalPrice = (newDiscountPrice * (1 + hikePercentage)).toFixed(2);
+//             // Update the product's discount price
+//             product.discountPrice = newDiscountPrice.toFixed(2);
+//             // const hikePercentage = 11.111 / 100;
+//             // const newOriginalPrice = (newDiscountPrice * (1 + hikePercentage)).toFixed(2);
 
-            // product.originalPrice = newOriginalPrice;
-            await product.save();
-        }
+//             // product.originalPrice = newOriginalPrice;
+//             await product.save();
+//         }
 
-        res.json({ message: 'Rate card and product prices updated successfully!' });
-    } catch (error) {
-        console.error('Error updating rate card:', error);
-        res.status(500).json({ error: 'Failed to update rate card.' });
-    }
-});
+//         res.json({ message: 'Rate card and product prices updated successfully!' });
+//     } catch (error) {
+//         console.error('Error updating rate card:', error);
+//         res.status(500).json({ error: 'Failed to update rate card.' });
+//     }
+// });
 
 
 
@@ -3031,6 +3031,211 @@ router.put("/update-product/:id", catchAsyncErrors(async (req, res, next) => {
         return next(new ErrorHandler(error.message, 400));
     }
 }));
+
+
+
+// excel products
+
+router.put("/excelupdate-products", catchAsyncErrors(async (req, res, next) => {
+    const products = req.body; // Get the products data from the request body
+
+    // Loop through each product data and update the product in the database
+    const updatePromises = products.map(async (item) => {
+        const { _id, ...updatedData } = item; // Extract _id (product ID) and the rest of the data
+
+        // Find the product by _id
+        let product = await Product.findById(_id);
+        if (!product) {
+            return { message: `Product with ID ${_id} not found`, success: false };
+        }
+
+        // Update only the fields that are provided in updatedData
+        Object.keys(updatedData).forEach((key) => {
+            if (updatedData[key] !== null && updatedData[key] !== undefined) {
+                product[key] = updatedData[key];
+            }
+        });
+
+        // Save the updated product
+        await product.save();
+        return { message: `Product with ID ${_id} updated successfully`, success: true };
+    });
+
+    // Wait for all the update promises to finish
+    const results = await Promise.all(updatePromises);
+
+    // Check if any updates failed and return the response
+    const failedUpdates = results.filter(result => !result.success);
+    if (failedUpdates.length > 0) {
+        return res.status(500).json({ message: "Some products could not be updated", failedUpdates });
+    }
+
+    res.status(200).json({ message: "Products updated successfully", results });
+}));
+
+
+
+
+// ratecard
+
+router.post('/update-rate-card', async (req, res) => {
+    const {
+        goldRate,
+        silverRate,
+        diamondRate,
+        labourCharge,
+        // gstCharge,
+        miscellaneous,
+        shipping,
+        categoryFilter,
+        category,
+        subcategory,
+        selectedProducts
+    } = req.body;
+
+    console.log(req.body, "data from frontend");
+
+    try {
+        // Parse input values
+        const parsedGoldRate = parseFloat(goldRate);
+        const parsedSilverRate = parseFloat(silverRate);
+        const parsedDiamondRate = parseFloat(diamondRate);
+        const parsedLabourCharge = parseFloat(labourCharge);
+        const parsedMiscellaneous = parseFloat(miscellaneous || 0);
+        const parsedShipping = parseFloat(shipping || 0);
+        // const parsedGST = parseFloat(gstCharge) || 0; // Default to 3% GST
+
+        // Validate inputs
+        if (
+            isNaN(parsedGoldRate) ||
+            isNaN(parsedSilverRate) ||
+            isNaN(parsedDiamondRate) ||
+            isNaN(parsedLabourCharge) ||
+            isNaN(parsedMiscellaneous) ||
+            isNaN(parsedShipping)
+        ) {
+            throw new Error('Invalid rate card values provided.');
+        }
+
+        // Build the filter
+        const filter = {};
+
+        // if (selectedProducts && selectedProducts.length > 0) {
+        //     filter._id = { $in: selectedProducts };
+        // } else {
+        //     if (categoryFilter) {
+        //         filter.category = new RegExp(categoryFilter, 'i'); // Case-insensitive regex match
+        //     }
+        //     if (category) {
+        //         filter.category = category;
+        //     }
+            
+        //     if (subcategory) {
+        //         filter.subcategory = subcategory;
+        //     }
+        // }
+
+        if (selectedProducts && selectedProducts.length > 0) {
+            filter._id = { $in: selectedProducts };
+        } else {
+            filter.category = category; // Default to category
+
+            if (subcategory && subcategory !== "No Products") {
+                filter.subcategory = subcategory;
+            }
+        }
+
+        // Fetch matching products
+        const products = await Product.find(filter);
+
+        for (const product of products) {
+            const { goldWeight, diamondWeight } = product;
+            console.log(goldWeight,"gold weight")
+            console.log(diamondWeight,"diamond weight")
+
+            // Parse gold weight
+            // const goldWeightValue = parseFloat(goldWeight?.weight?.replace("gm", "").trim()) || 0;
+            const goldWeightValue = parseFloat(
+                goldWeight?.weight?.replace(/[^0-9.]/gi, "").trim()
+            ) || 0;
+            console.log(goldWeightValue,"goldWeightValue")
+
+            // Parse diamond weight; treat "NA" or "na" as zero
+            // const diamondWeightRaw = diamondWeight?.weight?.replace("Ct", "").trim();
+            // const diamondWeightValue = diamondWeightRaw && !isNaN(parseFloat(diamondWeightRaw)) ? parseFloat(diamondWeightRaw) : 0;
+            // console.log(diamondWeightValue,"diamondWeightValue")
+
+            const diamondWeightRaw = diamondWeight?.weight?.trim() || "NA"; // Default to "NA" if undefined
+            const diamondWeightValue = 
+                (diamondWeightRaw.toLowerCase() === "na" || isNaN(parseFloat(diamondWeightRaw))) 
+                    ? 0 
+                    : parseFloat(diamondWeightRaw);
+                    
+            console.log(diamondWeightValue, "diamondWeightValue");
+            // Validate weights
+            if (isNaN(goldWeightValue) && isNaN(diamondWeightValue)) {
+                console.warn(`Invalid weight data for product ID: ${product._id}`);
+                continue;
+            }
+
+            let basePrice = 0;
+            const isSilverCategory = categoryFilter?.toLowerCase() === "silver";
+
+            if (!isNaN(goldWeightValue)) {
+                if (isSilverCategory) {
+                    basePrice += parsedSilverRate * goldWeightValue;
+                    console.log("Silver price calculated");
+                } else {
+                    basePrice += parsedGoldRate * goldWeightValue;
+                    console.log("Gold price calculated");
+                }
+            }
+
+            // Calculate gold price
+            // if (!isNaN(goldWeightValue)) {
+            //     basePrice += parsedGoldRate * goldWeightValue;
+            // }
+
+            // Calculate diamond price
+            if (!isNaN(diamondWeightValue)) {
+                basePrice += parsedDiamondRate * diamondWeightValue;
+            }
+
+            // Add additional charges
+            const totalCharges = basePrice + parsedLabourCharge + parsedMiscellaneous + parsedShipping;
+
+            // Calculate GST (3% of total charges)
+            const gstCharge = totalCharges * 0.03;  // 3% GST
+
+
+            // Add additional charges
+            // const gst = (basePrice + parsedLabourCharge + parsedMiscellaneous + parsedShipping) * parsedGST;
+            const newDiscountPrice = totalCharges + gstCharge;
+
+            // Validate calculated price
+            if (isNaN(newDiscountPrice)) {
+                console.warn(`Calculated NaN discount price for product ID: ${product._id}`);
+                continue;
+            }
+
+            // Update discount and original prices
+            product.discountPrice = newDiscountPrice.toFixed(2);
+
+            // Apply a hike percentage for the original price
+            const hikePercentage = 11.111 / 100;
+            product.originalPrice = (newDiscountPrice * (1 + hikePercentage)).toFixed(2);
+
+            await product.save();
+        }
+
+        res.json({ message: 'Rate card and product prices updated successfully' });
+    } catch (error) {
+        console.error('Error updating rate card:', error);
+        res.status(500).json({ error: 'Failed to update rate card.' });
+    }
+});
+
+
 
 
 

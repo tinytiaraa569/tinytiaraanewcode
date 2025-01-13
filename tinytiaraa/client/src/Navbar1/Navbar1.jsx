@@ -431,7 +431,11 @@ function Navbar1() {
         const goldCategories = categoriesData.filter(category => category.type === "gold");
         const silverCategories = categoriesData.filter(category => category.type === "silver");
 
+        const [mobileShopOpen, setMobileShopOpen] = useState(false);
 
+        const togglemobileShopDropdown = () => {
+            setMobileShopOpen((prev) => !prev);
+        };
         
 
     console.log(user,"user details")
@@ -1001,7 +1005,7 @@ function Navbar1() {
 
                         <div>
                             <div className="logo  !overflow-hidden" onClick={() => navigate("/")}>
-                                <img className='shadowlogonav' loading='lazy' src="https://backend.tinytiaraa.com:8000/uploads/images/logowebsite/pgqpod1dbwdxo4kudbjl.webp" alt="" />
+                                <img className='shadowlogonav' loading='lazy' src="https://admin.tinytiaraa.com/uploads/images/logowebsite/pgqpod1dbwdxo4kudbjl.webp" alt="" />
                             </div>
                         </div>
 
@@ -1200,11 +1204,12 @@ function Navbar1() {
 
                     
                 </div>
+
             <div
                 className={`mobile-nav  ${active === true ? "shadow-sm fixed top-0 left-0 z-10" : null
                     }
-      w-full h-[70px] bg-[#fff] z-50 top-0 left-0 shadow-sm 800px:hidden `}
-            >
+                    w-full h-[70px] bg-[#fff] z-50 top-0 left-0 shadow-sm 800px:hidden `}
+            >   
                 <div className="w-full flex items-center justify-between cursor-pointer">
                     <div>
                         <BiMenuAltLeft size={40} className='ml-4' onClick={() => setOpen(true)} />
@@ -1214,7 +1219,7 @@ function Navbar1() {
                         setbars(false)
                         navigate("/")
                     }} >
-                        <img loading='lazy' className='w-[150px] h-[60px] object-contain' src="https://backend.tinytiaraa.com:8000/uploads/images/logowebsite/pgqpod1dbwdxo4kudbjl.webp" alt="" />
+                        <img loading='lazy' className='w-[150px] h-[60px] object-contain' src="https://admin.tinytiaraa.com/uploads/images/logowebsite/pgqpod1dbwdxo4kudbjl.webp" alt="" />
                     </div>
 
                     {/* <div className="logo !overflow-hidden" onClick={() => {
@@ -1312,7 +1317,7 @@ function Navbar1() {
                                 </div>
 
 
-                                <div className="mobilenavigation font-Poppins flex justify-start pl-6 ">
+                                {/* <div className="mobilenavigation font-Poppins flex justify-start pl-6 ">
                                     <ul className={`flex flex-col gap-10  ${bars ? "menuopen menu" : "menu"}`}  >
 
                                         <li><NavLink to="/" onClick={closenavbar} activeClassName="active">Home</NavLink></li>
@@ -1381,7 +1386,7 @@ function Navbar1() {
                                                                             </div>
                                                                         ))}
                                                                     </div> */}
-                                                                </div>
+                                                                {/* </div>
                                                             ))}
                                                         </div>
                                                     </div>
@@ -1392,7 +1397,106 @@ function Navbar1() {
                                         <li><NavLink to="/personalised-prosperity" onClick={closenavbar} activeClassName="active">Customization</NavLink></li>
                                         <li><Link to="/contacts" onClick={closenavbar} activeClassName="active">Contact Us</Link></li>
                                     </ul>
+                                </div> */} 
+
+
+<div className="mobilenavigation font-Poppins flex justify-start pl-6">
+            <ul className={`flex flex-col gap-10 ${bars ? "menuopen menu" : "menu"}`}>
+                <li>
+                    <NavLink to="/" onClick={closenavbar} activeClassName="active">
+                        Home
+                    </NavLink>
+                </li>
+                <li>
+                    <NavLink to="/about" onClick={closenavbar} activeClassName="active">
+                        Our Story
+                    </NavLink>
+                </li>
+                <li className="relative">
+                    <button
+                        onClick={togglemobileShopDropdown}
+                        className="flex items-center text-black hover:text-blue-500 w-full text-left"
+                    >
+                        Shop
+                        <FaAngleRight className="ml-3" />
+                    </button>
+                    {mobileShopOpen && (
+                        <div className="absolute top-[50%] left-0 w-[300px] mt-2 bg-white rounded-md shadow-lg">
+                            <div className="p-4">
+                                <div className="mb-4">
+                                    <h3 className="font-semibold text-[16px] text-center">Shop Now</h3>
+                                    <h6
+                                        className="pb-2 collectionnav1 text-[14px]"
+                                        onClick={() => {
+                                            handleMetalSelect('gold');
+                                            closenavbar();
+                                            setMobileShopOpen(false); // Close dropdown
+                                        }}
+                                    >
+                                        Gold
+                                    </h6>
+                                    <h6
+                                        className="pb-2 collectionnav1 text-[14px]"
+                                        onClick={() => {
+                                            handleMetalSelect('silver');
+                                            closenavbar();
+                                            setMobileShopOpen(false); // Close dropdown
+                                        }}
+                                    >
+                                        Silver
+                                    </h6>
                                 </div>
+                                <div className="mb-4">
+                                    <h3 className="font-semibold text-[16px] text-center">By Category</h3>
+                                    <div className="text-[13px]">
+                                        {categoriesData &&
+                                            categoriesData.map((i, index) => (
+                                                <div
+                                                    key={index}
+                                                    className="subcatmain flex items-center relative"
+                                                    onClick={() => {
+                                                        submitHandle(i);
+                                                        closenavbar();
+                                                        setMobileShopOpen(false); // Close dropdown
+                                                    }}
+                                                >
+                                                    <img
+                                                        src={`${imgdburl}${i?.image_Url?.url}`}
+                                                        alt=""
+                                                        style={{
+                                                            width: "35px",
+                                                            height: "40px",
+                                                            objectFit: "contain",
+                                                            userSelect: "none",
+                                                        }}
+                                                    />
+                                                    <h3 className="m-1 cursor-pointer select-none font-Poppins hover:text-blue-500">
+                                                        {i.title}
+                                                    </h3>
+                                                </div>
+                                            ))}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+                </li>
+                <li>
+                    <NavLink to="/personalised-prosperity" onClick={closenavbar} activeClassName="active">
+                        Customization
+                    </NavLink>
+                </li>
+                <li>
+                    <Link to="/contacts" onClick={closenavbar} activeClassName="active">
+                        Contact Us
+                    </Link>
+                </li>
+            </ul>
+        </div>
+
+                                
+
+
 
                                 <div className="flex w-full justify-center mt-6">
                                     {

@@ -1036,7 +1036,7 @@ router.post(
             1: "Rose Gold",
             2: "White Gold",
         };
-        const imgdburl = "https://backend.tinytiaraa.com:8000"
+        const imgdburl = "https://admin.tinytiaraa.com"
 
         console.log(user,"user details from backend ")
 
@@ -1230,7 +1230,7 @@ router.post(
     <div class="emailconfirm">
         <div class="headeremail">
         <div class="a2adjust" style="text-align: center;">
-                <img src="https://backend.tinytiaraa.com:8000/uploads/images/logowebsite/duvdwbtbmyr8ipqrevot.png"
+                <img src="https://admin.tinytiaraa.com/uploads/images/logowebsite/duvdwbtbmyr8ipqrevot.png"
                     alt="Logo">
             </div>
             <div class="a1adjust" style="text-align: center;">
@@ -1594,7 +1594,7 @@ router.put("/update-order-status/:id", isSeller, catchAsyncErrors(async (req, re
         1: "Rose Gold",
         2: "White Gold",
     };
-    const imgdburl = "https://backend.tinytiaraa.com:8000"
+    const imgdburl = "https://admin.tinytiaraa.com"
 
     try {
         const order = await Order.findById(req.params.id);
@@ -2243,7 +2243,7 @@ router.put("/update-order-status/:id", isSeller, catchAsyncErrors(async (req, re
                 <div class="emailconfirm" >
                 <div class="headeremail">
                 <div class="a2adjust" style="text-align: center;">
-                    <img class="a2adjustimg" src="https://backend.tinytiaraa.com:8000/uploads/images/logowebsite/duvdwbtbmyr8ipqrevot.png"
+                    <img class="a2adjustimg" src="https://admin.tinytiaraa.com/uploads/images/logowebsite/duvdwbtbmyr8ipqrevot.png"
                         alt="Logo">
                 </div>
                 <div class="a1adjust" style="text-align: center;">
@@ -2314,7 +2314,7 @@ router.put("/update-order-status/:id", isSeller, catchAsyncErrors(async (req, re
 
                 <div class="adjusttnview" style="text-align: center;">
                 <a href="https://www.tinytiaraa.com/user/order/${order._id}" class="view-order-btn">View Order Details</a>
-                <a href="https://backend.tinytiaraa.com:8000/invoices/${order._id}" class="view-order-btn downloadinvoice" style="margin-left: 10px;" download>Download Invoice</a>
+                <a href="https://admin.tinytiaraa.com/invoices/${order._id}" class="view-order-btn downloadinvoice" style="margin-left: 10px;" download>Download Invoice</a>
                 </div>
 
                 <div style="padding: 20px 0;">
@@ -3050,7 +3050,7 @@ router.put("/update-order-status/:id", isSeller, catchAsyncErrors(async (req, re
             <div class="emailconfirm">
             <div class="headeremail">
             <div class="a2adjust" style="text-align: center;">
-                <img src="https://backend.tinytiaraa.com:8000/uploads/images/logowebsite/duvdwbtbmyr8ipqrevot.png"
+                <img src="https://admin.tinytiaraa.com/uploads/images/logowebsite/duvdwbtbmyr8ipqrevot.png"
                     alt="Logo">
             </div>
             <div class="a1adjust" style="text-align: center;">

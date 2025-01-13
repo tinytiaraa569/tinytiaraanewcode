@@ -46,8 +46,8 @@ const Aboutwho = () => {
     return (
       <div className="slidersec cursor-pointer">
         <img
-          src="https://backend.tinytiaraa.com:8000/uploads/images/banners/about/136708ec7d9b2b488523.webp"
-          alt="Loading..."
+          src="https://admin.tinytiaraa.com/uploads/images/banners/about/136708ec7d9b2b488523.webp"
+          alt="about tinytiaraa"
         />
       </div>
     );

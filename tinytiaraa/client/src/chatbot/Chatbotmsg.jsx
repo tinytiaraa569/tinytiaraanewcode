@@ -39,7 +39,7 @@ const { orders, isLoading } = useSelector((state) => state.order)
     
       return (
         <div>
-          {ordersdata.length > 0 ? (
+          {ordersdata?.length > 0 ? (
             ordersdata.map((order, index) => (
               <div key={index} className='bg-blue-400 rounded-[20px]'>
                 <div>

@@ -7,13 +7,12 @@ function ShopRateCardPage() {
   return (
     <div>
       <DashboardHeader />
-      <div className="w-full flex  justify-between">
-        <div className="w-[100px] md:w-[330px] max-w-[800px] min-w-[100px]">
+      <div className="w-full flex items-start justify-between">
+        <div >
             <DashboardSideBar active={14} />
         </div>
-        <div className="w-full justify-center flex">
+        
             <RateCard />
-        </div>
 
       </div>
     </div>

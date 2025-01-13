@@ -51,6 +51,11 @@ app.use("/test", (req, res) => {
 
 })
 
+app.use("/dummy", (req, res) => {
+  res.send("hello dummy testing")
+
+})
+
 // app.use("/", express.static(path.join(__dirname, "./uploads")))
 // app.use(bodyParser.urlencoded({ extended: true, limit: "50mb" }));
 

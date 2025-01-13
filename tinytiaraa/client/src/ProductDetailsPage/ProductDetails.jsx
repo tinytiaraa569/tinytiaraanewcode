@@ -65,7 +65,7 @@ function ProductDetails({ data }) {
 
     const [count, setCount] = useState(1)
     const [click, setClick] = useState(false)
-    const [select, setSelect] = useState(0)
+    const [select, setSelect] = useState(1)
 
 
     const [selectedColorIndex, setSelectedColorIndex] = useState(null);

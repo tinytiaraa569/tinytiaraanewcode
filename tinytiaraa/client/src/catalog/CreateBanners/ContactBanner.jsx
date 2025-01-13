@@ -3,7 +3,7 @@ import axios from 'axios'
 import React, { useEffect, useState } from 'react'
 import { FaArrowDown, FaArrowUp } from 'react-icons/fa'
 import { IoMdAdd } from 'react-icons/io'
-import { MdDelete, MdDownload, MdEdit } from 'react-icons/md'
+import { MdDelete, MdDownload, MdEdit, MdUpload } from 'react-icons/md'
 import { Link } from 'react-router-dom'
 import * as XLSX from 'xlsx'; // Import XLSX
 import swal from "sweetalert"; // Import SweetAlert
@@ -20,20 +20,22 @@ function ContactBanner() {
   const [bannersToDelete, setBannersToDelete] = useState([]);
   const [showNotification, setShowNotification] = useState(false);
 
+
+      const fetchBanners = async () => {
+        try {
+          const response = await axios.get(`${server}/get-allcontactbanners`);
+          // Sort banners by their order property before setting state
+          const sortedBanners = response.data.banners.sort((a, b) => a.order - b.order);
+          setBanners(sortedBanners);
+          setLoading(false);
+        } catch (err) {
+          setError("Failed to load banners.");
+          setLoading(false);
+        }
+      };
+
        // Fetch banners from API
       useEffect(() => {
-        const fetchBanners = async () => {
-          try {
-            const response = await axios.get(`${server}/get-allcontactbanners`);
-            // Sort banners by their order property before setting state
-            const sortedBanners = response.data.banners.sort((a, b) => a.order - b.order);
-            setBanners(sortedBanners);
-            setLoading(false);
-          } catch (err) {
-            setError("Failed to load banners.");
-            setLoading(false);
-          }
-        };
       
         fetchBanners();
       }, []);
@@ -126,10 +128,11 @@ function ContactBanner() {
     
       // Function to export banners to Excel
       const exportToExcel = () => {
-        const worksheet = XLSX.utils.json_to_sheet(banners.map(({ _id, title, link, images }) => ({
+        const worksheet = XLSX.utils.json_to_sheet(banners.map(({ _id, title, link, images, live}) => ({
           ID: _id,
           Title: title,
           Link: link,
+          Live: live,
           ImageURL: images && images.length > 0 ? `${imgdburl}${images[0].url}` : '',
         })));
     
@@ -172,6 +175,50 @@ function ContactBanner() {
       };
 
 
+      const handleExcelImport = async (event) => {
+        const file = event.target.files[0];
+        if (!file) return;
+      
+        const reader = new FileReader();
+        reader.onload = async (e) => {
+          const data = e.target.result;
+          const workbook = XLSX.read(data, { type: "binary" });
+          const sheetName = workbook.SheetNames[0];
+          const worksheet = workbook.Sheets[sheetName];
+          const jsonData = XLSX.utils.sheet_to_json(worksheet);
+          console.log(jsonData,"jsondata from frontend send to backend")
+      
+          // Example data structure:
+          // jsonData = [
+          //   { ID: "123", Title: "New Title", Link: "New Link", ImageURL: "url", Live: true },
+          // ];
+      
+          try {
+            const response = await fetch(`${server}/update-excelcontactbanner`, {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify(jsonData),
+            });
+      
+            const result = await response.json();
+            if (result.success) {
+
+              fetchBanners();
+              swal("Success", "Banners updated successfully!", "success");
+            } else {
+              swal("Oops!", "Failed to update banners.", "error");
+            }
+          } catch (error) {
+            console.error("Error updating banners:", error);
+          }
+        };
+      
+        reader.readAsBinaryString(file);
+      };
+
+
 
 
       if (loading) return <p>Loading banners...</p>;
@@ -190,14 +237,31 @@ function ContactBanner() {
                 <span className="text-[16px] font-Poppins font-semibold">Add Banner</span>
               </button>
             </Link>
+
+            <div className='flex justify-center items-center gap-3'>
+              <div>
+
+              <label className="flex items-center text-black bg-[#eecd2a] px-4 py-2 rounded cursor-pointer transition duration-300 hover:bg-[#d0a43d]">
+                <input
+                  type="file"
+                  accept=".xlsx, .xls"
+                  className="hidden"
+                  onChange={handleExcelImport}
+                />
+                <MdUpload className="mr-2" /> Import Excel
+              </label>
+            </div>
+
             {/* Excel Export Button */}
             <button
               className="flex items-center bg-green-600 px-4 py-2 rounded transition duration-300 hover:bg-green-500"
               onClick={exportToExcel} // Call export function
-            >
+              >
               <MdDownload className="mr-2" /> Export to Excel
             </button>
 
+
+              </div>
 
             <button
               className="flex items-center bg-red-600 px-4 py-2 rounded transition duration-300 hover:bg-red-500"

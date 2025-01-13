@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { deleteProduct, getAllProductShop } from '../redux/actions/product';
 import { AiOutlineDelete, AiOutlineEdit, AiOutlineEye, AiOutlineWarning } from 'react-icons/ai';
@@ -7,6 +7,10 @@ import Loader from '../Loader/Loader';
 import { DataGrid } from '@mui/x-data-grid';
 import * as XLSX from 'xlsx'; // Import XLSX library
 import { FaFileExcel } from 'react-icons/fa';
+import { MdUpload } from 'react-icons/md';
+import axios from 'axios';
+import { server } from '@/server';
+import swal from 'sweetalert';
 
 
 function AllProducts() {
@@ -19,6 +23,7 @@ function AllProducts() {
 
     const dispatch = useDispatch();
     const navigate = useNavigate();
+    const [isUploading, setIsUploading] = useState(false);
 
     useEffect(() => {
         window.scrollTo(0, 0)
@@ -151,6 +156,7 @@ function AllProducts() {
         },
     ];
 
+    const fileInputRef = useRef(null);
   
 
 const handleExportToExcel = (productsdata) => {
@@ -298,6 +304,161 @@ const handleExportToExcel = (productsdata) => {
     XLSX.writeFile(workbook, "Products.xlsx");
 };
 
+const handleExcelImport = async (event) => {
+    const file = event.target.files[0];
+    if (!file) return;
+  
+    const reader = new FileReader();
+    reader.onload = async (e) => {
+      const data = e.target.result;
+      const workbook = XLSX.read(data, { type: "binary" });
+      const sheetName = workbook.SheetNames[0];
+      const worksheet = workbook.Sheets[sheetName];
+      const jsonData = XLSX.utils.sheet_to_json(worksheet);
+      console.log(jsonData, "jsondata from frontend send to backend");
+      
+  
+      const transformedData = jsonData.map((item) => {
+        const parseStockValue = (value) => {
+            // Check if the value is a number or can be converted to a number
+            const parsed = parseFloat(value);
+            return isNaN(parsed) || value === "-" ? null : parsed;
+          };
+
+        
+        return {
+            _id: item.ID || null,
+            skuid: item.SKU || null,
+            name: item.Name || null,
+            originalPrice: item.OriginalPrice || null,
+            discountPrice: item.Price || null,
+            stock: parseStockValue(item.Stock) || null,
+            sold_out: parseStockValue(item.Sold_Out) || null,
+            category: item.Category || null,
+            subcategory: item.Subcategory || null,
+            description: item.Description || null,
+
+            
+    
+          
+    
+            // Nested MetalColorStock
+            Metalcolorstock: {
+                YellowGoldclrStock: parseStockValue(item.Metalcolorstock_YellowGoldclrStock),
+                RoseGoldclrStock: parseStockValue(item.Metalcolorstock_RoseGoldclrStock),
+                WhiteGoldclrStock: parseStockValue(item.Metalcolorstock_WhiteGoldclrStock),
+              },
+    
+           
+            // Nested EnamelColorStock
+            Enamelcolorstock: {
+                deepblue: {
+                  deepblueYellowGoldclrStock: parseStockValue(item.Enamelcolorstock_deepblue_deepblueYellowGoldclrStock),
+                  deepblueRoseGoldclrStock: parseStockValue(item.Enamelcolorstock_deepblue_deepblueRoseGoldclrStock),
+                  deepblueWhiteGoldclrStock: parseStockValue(item.Enamelcolorstock_deepblue_deepblueWhiteGoldclrStock),
+                },
+                pink: {
+                  pinkYellowGoldclrStock: parseStockValue(item.Enamelcolorstock_pink_pinkYellowGoldclrStock),
+                  pinkRoseGoldclrStock: parseStockValue(item.Enamelcolorstock_pink_pinkRoseGoldclrStock),
+                  pinkWhiteGoldclrStock: parseStockValue(item.Enamelcolorstock_pink_pinkWhiteGoldclrStock),
+                },
+                turquoise: {
+                  turquoiseYellowGoldclrStock: parseStockValue(item.Enamelcolorstock_turquoise_turquoiseYellowGoldclrStock),
+                  turquoiseRoseGoldclrStock: parseStockValue(item.Enamelcolorstock_turquoise_turquoiseRoseGoldclrStock),
+                  turquoiseWhiteGoldclrStock: parseStockValue(item.Enamelcolorstock_turquoise_turquoiseWhiteGoldclrStock),
+                },
+                red: {
+                  redYellowGoldclrStock: parseStockValue(item.Enamelcolorstock_red_redYellowGoldclrStock),
+                  redRoseGoldclrStock: parseStockValue(item.Enamelcolorstock_red_redRoseGoldclrStock),
+                  redWhiteGoldclrStock: parseStockValue(item.Enamelcolorstock_red_redWhiteGoldclrStock),
+                },
+                black: {
+                  blackYellowGoldclrStock: parseStockValue(item.Enamelcolorstock_black_blackYellowGoldclrStock),
+                  blackRoseGoldclrStock: parseStockValue(item.Enamelcolorstock_black_blackRoseGoldclrStock),
+                  blackWhiteGoldclrStock: parseStockValue(item.Enamelcolorstock_black_blackWhiteGoldclrStock),
+                },
+                deepgreen: {
+                  deepgreenYellowGoldclrStock: parseStockValue(item.Enamelcolorstock_deepgreen_deepgreenYellowGoldclrStock),
+                  deepgreenRoseGoldclrStock: parseStockValue(item.Enamelcolorstock_deepgreen_deepgreenRoseGoldclrStock),
+                  deepgreenWhiteGoldclrStock: parseStockValue(item.Enamelcolorstock_deepgreen_deepgreenWhiteGoldclrStock),
+                },
+                lotusgreen: {
+                  lotusgreenYellowGoldclrStock: parseStockValue(item.Enamelcolorstock_lotusgreen_lotusgreenYellowGoldclrStock),
+                  lotusgreenRoseGoldclrStock: parseStockValue(item.Enamelcolorstock_lotusgreen_lotusgreenRoseGoldclrStock),
+                  lotusgreenWhiteGoldclrStock: parseStockValue(item.Enamelcolorstock_lotusgreen_lotusgreenWhiteGoldclrStock),
+                },
+              },
+            // Additional Data
+            ageGroup: {
+                infants: item.AgeGroup_Infants === "Yes",
+                kids: item.AgeGroup_Kids === "Yes",
+                mom: item.AgeGroup_Mom === "Yes",
+                teens: item.AgeGroup_Teens === "Yes",
+            },
+            gender: {
+                girl: item.Gender_Girl === "Yes",
+                boy: item.Gender_Boy === "Yes",
+                unisex: item.Gender_Unisex === "Yes",
+            },
+            diamondWeight: { weight: item.DiamondWeight || null, quality: item.DiamondQuality || null },
+            goldWeight: { weight: item.GoldWeight || null, purity: item.GoldPurity || null },
+            dimension: { height: item.Dimension_Height || null, width: item.Dimension_Width || null },
+            tags: item.Tags || null,
+            designno: item.Designno || null,
+    
+            
+        };
+    });
+    
+      console.log("Transformed Data:", transformedData);
+
+      fileInputRef.current.value = '';
+      // SweetAlert confirmation dialog
+    swal({
+        title: "Are you sure?",
+        text: "You won't be able to revert this!",
+        icon: "warning",
+        buttons: true,
+        dangerMode: true,
+      }).then((willDelete) => {
+        if (willDelete) {
+            setIsUploading(true); // Show the uploading screen
+
+          // If user confirms, send transformed data to backend
+          axios.put(`${server}/product/excelupdate-products`, transformedData, {
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          })
+          .then((response) => {
+            console.log('Backend response:', response.data);
+            // Success alert after update
+            swal("Updated!", "The data has been updated.", "success");
+            dispatch(getAllProductShop(seller._id));
+            setIsUploading(false); // Hide the uploading screen
+          })
+          .catch((error) => {
+            console.error('Error while uploading products:', error);
+            // Error alert if the request fails
+            swal("Error!", "There was an error updating the data.", "error");
+            setIsUploading(false); // Hide the uploading screen
+          });
+        } else {
+          // If user cancels, show cancellation message
+          swal("Cancelled", "The data was not updated.", "info");
+        }
+      });
+    };
+    
+      // Now you can send transformedData to the backend or use it elsewhere in your application
+    
+  
+    reader.readAsBinaryString(file);
+  };
+  
+
+  
+
     const location = useLocation();
 
     // Get the last segment of the URL (e.g., "dashboard" or "overview")
@@ -340,6 +501,19 @@ const handleExportToExcel = (productsdata) => {
                             />
                         </div>
                         <div>
+                        <div className='flex justify-center items-center gap-4'>
+                            <label className="flex items-center bg-[#e7cb40] px-4 py-2 rounded cursor-pointer transition duration-300 hover:bg-[#a08e34]">
+                            <input
+                                type="file"
+                                accept=".xlsx, .xls"
+                                className="hidden"
+                                onChange={handleExcelImport}
+                                ref={fileInputRef}  // Using the ref to access the file input element
+                            />
+                            <MdUpload className="mr-2" /> Import Excel
+                            </label>
+
+
                         <button
                             onClick={() => { handleExportToExcel(products) }}
                             className="flex items-center px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
@@ -347,6 +521,11 @@ const handleExportToExcel = (productsdata) => {
                             <FaFileExcel className="h-5 w-5 mr-2" />
                             Export to Excel
                         </button>
+
+                        </div>
+
+
+                        
                         </div>
                         <div className="flex items-center space-x-2 text-gray-700">
                             <h3 className="text-lg font-semibold">Total Products:</h3>
@@ -362,7 +541,19 @@ const handleExportToExcel = (productsdata) => {
                         disableSelectionOnClick
                         autoHeight
                     />
+
+                    {isUploading && (
+                    <div className="absolute top-0 left-0 w-full h-full flex justify-center items-center bg-opacity-50 bg-gray-900 z-10">
+                        <div className="bg-white p-6 rounded shadow-lg">
+                        <h3>Uploading Data...</h3>
+                        <div className="spinner-border text-primary" role="status">
+                            <span className="sr-only">Loading...</span>
+                        </div>
+                        </div>
+                    </div>
+                    )}
                 </div>
+                
             )}
         </>
     );

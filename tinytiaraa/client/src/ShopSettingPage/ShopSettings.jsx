@@ -58,13 +58,17 @@ function ShopSettings() {
 
             <div className='flex w-[50%] bg-white  justify-center  flex-col shadow-2xl  rounded-[12px] py-2'>
 
-                <div className="relative cursor-pointer flex justify-end mr-5 " onClick={()=>{navigate("/dashboard")}}> 
-                            <AiOutlineCloseCircle 
-                                size={30} 
-                                className="text-red-500 hover:scale-110 transition-all duration-300"
-                            />
-                        </div>
+            <div className="relative cursor-pointer flex justify-end mr-5 group" onClick={() => { navigate("/dashboard") }}>
+                {/* Tooltip */}
+                <div className=" absolute top-10 right-0 mb-1  bg-gray-800 text-white text-xs rounded-md p-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                    Go to Dashboard
+                </div>
 
+                <AiOutlineCloseCircle 
+                    size={30} 
+                    className="text-red-500 hover:scale-110 transition-all duration-300"
+                />
+            </div>
                 <div className="w-full flex items-center justify-center mt-3">
 
                     <FaUserCircle color='#555' size={80} className='mx-5 cursor-pointer' />

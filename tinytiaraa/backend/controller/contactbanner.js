@@ -402,5 +402,56 @@ router.patch('/contactbanners/:id/live-toggle', catchAsyncErrors(async (req, res
 
 }));
 
+
+
+router.post(
+    "/update-excelcontactbanner",
+    catchAsyncErrors(async (req, res, next) => {
+      const bannersData = req.body;
+  
+      if (!Array.isArray(bannersData)) {
+        return next(new ErrorHandler("Invalid data format", 400));
+      }
+  
+      for (const bannerData of bannersData) {
+        const { ID, Title, Link, Live } = bannerData; // Removed ImageURL from destructuring
+  
+        // Find the existing banner
+        const banner = await ContactBanner.findById(ID);
+        if (!banner) {
+          console.warn(`Banner with ID ${ID} not found`);
+          continue;
+        }
+  
+        // Update fields only if there are changes
+        if (Title && Title !== banner.title) {
+          banner.title = Title;
+        }
+  
+        if (Link && Link !== banner.link) {
+          banner.link = Link;
+        }
+  
+        if (typeof Live === "boolean" && Live !== banner.live) {
+          banner.live = Live;
+        }
+  
+        // Do not change the images field at all
+  
+        // Save only if there are changes
+        if (banner.isModified()) {
+          await banner.save();
+        }
+      }
+  
+      res.status(200).json({
+        success: true,
+        message: "Banners updated successfully",
+      });
+    })
+  );
+  
+  
+
 // Export the router
 module.exports = router;

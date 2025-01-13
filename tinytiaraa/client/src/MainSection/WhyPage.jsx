@@ -37,7 +37,7 @@ function WhyPage() {
 
         <div className='whypiconconflex'>
           {/* <img  loading='lazy' src={img2} alt="" /> */}
-                  <img  loading='lazy' src="https://backend.tinytiaraa.com:8000/uploads/images/whypageicon/vlpi0c0br3sgyb0evfzt.svg" alt="" />
+                  <img  loading='lazy' src="https://admin.tinytiaraa.com/uploads/images/whypageicon/vlpi0c0br3sgyb0evfzt.svg" alt="" />
 
           <div>
             <h6>SGL Certified Jewelry</h6>
@@ -46,7 +46,7 @@ function WhyPage() {
 
         <div className='whypiconconflex'>
           {/* <img  loading='lazy' src={img3} alt="" className='object-contain'/> */}
-                    <img  loading='lazy' src="https://backend.tinytiaraa.com:8000/uploads/images/whypageicon/w3ch9irup1m4flpyfll1.svg" alt="" className='object-contain'/>
+                    <img  loading='lazy' src="https://admin.tinytiaraa.com/uploads/images/whypageicon/w3ch9irup1m4flpyfll1.svg" alt="" className='object-contain'/>
 
           <div>
             <h6>Crafted with Love</h6>

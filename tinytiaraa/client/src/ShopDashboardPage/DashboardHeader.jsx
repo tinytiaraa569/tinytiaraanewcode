@@ -82,7 +82,7 @@ function DashboardHeader() {
         <div  className="ml-[51px] mt-2">
              <Link to="/dashboard">
                <img
-                 src="https://backend.tinytiaraa.com:8000/uploads/images/logowebsite/duvdwbtbmyr8ipqrevot.png"
+                 src="https://admin.tinytiaraa.com/uploads/images/logowebsite/duvdwbtbmyr8ipqrevot.png"
                  className="shadowpngadmin w-[100px] h-[75px] object-contain"
                  alt=""
                />

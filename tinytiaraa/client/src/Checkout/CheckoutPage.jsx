@@ -931,7 +931,7 @@ const calculateEDD = async () => {
                                                 orderData?.appliedReferral > 0 ?
                                                     `- ₹${orderData?.appliedReferral}` :
                                                     <>
-                                                        Available: ₹${orderData?.referralBalance?.toFixed(2)}
+                                                        Available: ₹{orderData?.referralBalance?.toFixed(2)}
                                                         {/* <button onClick={handleApplyReferral} className='ml-4 text-[16px] text-blue-500'>
                                                             Apply
                                                         </button> */}

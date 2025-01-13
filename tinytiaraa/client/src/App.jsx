@@ -110,6 +110,7 @@ import Shopallpopup from './ShopAllPopup/Shopallpopup';
 import axios from 'axios';
 import { server } from './server';
 import ShopAllStocks from './ShopallStocks/ShopAllStocks';
+import Chatbotmsg from './chatbot/Chatbotmsg';
 
 
 
@@ -179,6 +180,8 @@ function App() {
 
 
   const shouldHideNavbar = location.pathname === '/dashboard' ||
+  location.pathname.startsWith('/create-banners') ||
+
     location.pathname.startsWith('/admin-manage') ||
     location.pathname.startsWith('/dashboard-create-product') ||
     location.pathname.startsWith('/dashboard-products') ||
@@ -209,6 +212,16 @@ function App() {
     location.pathname.startsWith('/shop-login') ||
 
     
+    location.pathname.startsWith('/dashboard/banner/edit/:id') ||
+    location.pathname.startsWith('/dashboard/banner/create') ||
+    location.pathname.startsWith('/dashboard/aboutbanner/edit/:id') ||
+    location.pathname.startsWith('/dashboard/aboutbanner/create') ||
+    location.pathname.startsWith('/dashboard/custombanner/edit/:id') ||
+    location.pathname.startsWith('/dashboard/custombanner/create') ||
+    location.pathname.startsWith('/dashboard/contactbanner/edit/:id') ||
+    location.pathname.startsWith('/dashboard/contactbanner/create') ||
+
+
 
 
     

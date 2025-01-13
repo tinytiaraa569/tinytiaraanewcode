@@ -51,7 +51,7 @@ const Customisedsec1 = () => {
     return (
       <div className="slidersec sliderseccustom">
         <img
-          src="https://backend.tinytiaraa.com:8000/uploads/images/banners/custom/1c97d137106012d9156d.webp"
+          src="https://admin.tinytiaraa.com/uploads/images/banners/custom/1c97d137106012d9156d.webp"
           alt="Loading..."
         />
       </div>

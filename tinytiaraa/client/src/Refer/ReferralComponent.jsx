@@ -23,7 +23,7 @@ const ReferralComponent = () => {
     const fetchUserReferralCode = async () => {
         try {
             const response = await axios.get(
-                'https://backend.tinytiaraa.com:8000/api/v2/referral/user-referral-code',
+                'https://admin.tinytiaraa.com/api/v2/referral/user-referral-code',
                 { withCredentials: true }
             );
             const { referralCode } = response.data;
@@ -55,7 +55,7 @@ const ReferralComponent = () => {
             // Validate the referral code
             const validateReferralCode = async () => {
                 try {
-                    const response = await axios.post('https://backend.tinytiaraa.com:8000/api/v2/referral/validate-referral-code', { referralCode: storedReferralCode });
+                    const response = await axios.post('https://admin.tinytiaraa.com/api/v2/referral/validate-referral-code', { referralCode: storedReferralCode });
                     console.log('Validation Response:', response.data);
                     if (response.data.success) {
                         setReferralCode(storedReferralCode);
@@ -80,7 +80,7 @@ const ReferralComponent = () => {
         setIsGenerating(true);
         setError('');
         try {
-            const response = await axios.post('https://backend.tinytiaraa.com:8000/api/v2/referral/generate-referral-code', {}, { withCredentials: true });
+            const response = await axios.post('https://admin.tinytiaraa.com/api/v2/referral/generate-referral-code', {}, { withCredentials: true });
             const { referralCode } = response.data;
 
             // Generate the referral link

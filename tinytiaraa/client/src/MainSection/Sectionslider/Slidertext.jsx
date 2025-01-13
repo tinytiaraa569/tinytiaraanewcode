@@ -30,19 +30,19 @@ function Slidertext() {
             <div className="slidertextright">
                 <Slider {...settings}>
                     <div className='sliderrightimg'>
-                        <img className='shadowfilterimgod' src="https://backend.tinytiaraa.com:8000/uploads/images/products/mitharfwyizojclawhpk.png" alt="" />
+                        <img className='shadowfilterimgod' src="https://admin.tinytiaraa.com/uploads/images/products/mitharfwyizojclawhpk.png" alt="" />
                     </div>
                     <div className='sliderrightimg'>
-                        <img className='shadowfilterimgod' src="https://backend.tinytiaraa.com:8000/uploads/images/products/yz0szvwhccnhl1fhrbtc.png" alt="" />
+                        <img className='shadowfilterimgod' src="https://admin.tinytiaraa.com/uploads/images/products/yz0szvwhccnhl1fhrbtc.png" alt="" />
                     </div>
                     <div className='sliderrightimg'>
-                        <img className='shadowfilterimgod' src="https://backend.tinytiaraa.com:8000/uploads/images/products/tir9k74t1qr2s8ht8otx.png" alt="" />
+                        <img className='shadowfilterimgod' src="https://admin.tinytiaraa.com/uploads/images/products/tir9k74t1qr2s8ht8otx.png" alt="" />
                     </div>
                     <div className='sliderrightimg'>
-                        <img className='shadowfilterimgod' src="https://backend.tinytiaraa.com:8000/uploads/images/products/ed4ipy6itiaselgwf9jg.png" alt="" />
+                        <img className='shadowfilterimgod' src="https://admin.tinytiaraa.com/uploads/images/products/ed4ipy6itiaselgwf9jg.png" alt="" />
                     </div>
                     <div className='sliderrightimg'>
-                        <img className='shadowfilterimgod' src="https://backend.tinytiaraa.com:8000/uploads/images/products/dvs1rd5zhsabkjcfdfmd.png" alt="" />
+                        <img className='shadowfilterimgod' src="https://admin.tinytiaraa.com/uploads/images/products/dvs1rd5zhsabkjcfdfmd.png" alt="" />
                     </div>
 
                 </Slider>

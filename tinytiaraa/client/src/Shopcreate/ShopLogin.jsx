@@ -70,7 +70,7 @@ function ShopLogin() {
                 <div className="bg-white rounded-[12px] px-8 py-6 pb-8 shadowoglogin sm:px-12">
 
                     <div className='flex justify-center mb-4'>
-                        <img className='w-[150px] h-[100px] object-cover filtershadowoflogin' src="https://backend.tinytiaraa.com:8000/uploads/images/logowebsite/pgqpod1dbwdxo4kudbjl.webp" alt="" />
+                        <img className='w-[150px] h-[100px] object-cover filtershadowoflogin' src="https://admin.tinytiaraa.com/uploads/images/logowebsite/pgqpod1dbwdxo4kudbjl.webp" alt="" />
                     </div>
                     <form action="" className='space-y-6' onSubmit={handleSubmit}>
                         <div>

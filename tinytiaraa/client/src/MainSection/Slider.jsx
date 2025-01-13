@@ -240,7 +240,7 @@ const SliderSection = () => {
     return (
       <div className="slidersec cursor-pointer">
         <img
-          src="https://backend.tinytiaraa.com:8000/uploads/images/slidersbanner/upglf2ndz3cgbfhnsgbk.webp"
+          src="https://admin.tinytiaraa.com/uploads/images/slidersbanner/upglf2ndz3cgbfhnsgbk.webp"
           alt="Loading..."
         />
       </div>
