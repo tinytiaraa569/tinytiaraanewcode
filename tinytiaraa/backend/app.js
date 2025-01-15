@@ -150,13 +150,45 @@ app.use("/api/v2", chatbot);
 
 
 app.post("/order", async (req, res) => {
+
+  function decryptAmount(encryptedAmount, encryptionKey) {
+        try {
+            // The encrypted string in the format: U2FsdGVkX18fQ0ir73v9GOPIA52hYrKuezlqaxuz4U0=
+            // CryptoJS AES encrypts the data in base64 and includes a header like 'U2FsdGVkX1' for OpenSSL encryption compatibility.
+            
+            // Decode the base64 encrypted data
+            const encryptedBytes = CryptoJS.AES.decrypt(encryptedAmount, encryptionKey);
+    
+            // If the decryption process failed
+            if (!encryptedBytes) {
+                throw new Error("Decryption failed");
+            }
+    
+            // Convert the decrypted bytes back to a string
+            const decryptedText = encryptedBytes.toString(CryptoJS.enc.Utf8);
+            return decryptedText; // Return the decrypted amount
+        } catch (error) {
+            console.error("Decryption error:", error);
+            throw new Error("Decryption failed");
+        }
+    }
+
     try {
         const razorpay = new Razorpay({
             key_id: process.env.RAZORPAY_KEY_ID,
             key_secret: process.env.RAZORPAY_SECRET,
         });
+        const encryptionKey = 'qwertyuiopasdfghjklzxcvbnm123456'; // Replace with your actual key
 
-        const options = req.body;
+        const { amount, currency, receipt } = req.body;
+
+        const decryptedAmount = decryptAmount(amount, encryptionKey);
+
+        const options = {
+          amount: decryptedAmount, // Amount in paisa
+          currency,
+          receipt,
+        };
         const order = await razorpay.orders.create(options);
 
         if (!order) {

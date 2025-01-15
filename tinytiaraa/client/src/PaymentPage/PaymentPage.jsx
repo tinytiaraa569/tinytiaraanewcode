@@ -135,6 +135,7 @@ function PaymentPage() {
     // }
 
     const handleRazorpayPayment = async () => {
+        const encryptedAmount = encryptAmount(orderData.totalPrice * 100);
         try {
             // Step 1: Create an order on your backend
             const response = await fetch(`${backend_url}order`, {
@@ -143,7 +144,7 @@ function PaymentPage() {
                     "Content-Type": "application/json",
                 },
                 body: JSON.stringify({
-                    amount: orderData.totalPrice * 100,
+                    amount: encryptedAmount,
                     currency: "INR",
                     receipt: "qwsaq1",
                 })
@@ -154,7 +155,7 @@ function PaymentPage() {
             // Step 2: Initiate Razorpay payment
             const options = {
                 key: "rzp_test_TKfJulmRsFjGyI", // Replace with your Razorpay key
-                amount: orderData.totalPrice * 100, // Amount in paisa (INR)
+                amount: encryptedAmount, // Amount in paisa (INR)
                 currency: "INR",
                 name: "Tiny Tiaraa", // Your business name
                 description: "Test Transaction",
@@ -1219,7 +1220,7 @@ function PaymentPage() {
 
 
                                 </div>
-                                
+
                                 <div className='flex items-center gap-8'>
                                     <div className='flex items-center gap-2'>
                                         <input
