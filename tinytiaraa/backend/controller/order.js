@@ -851,7 +851,7 @@ const generateInvoiceTemplate = (order) => {
               <td rowspan="4">${discountPrice}</td>
               <td rowspan="4">${cgst}</td>
               <td rowspan="4">${sgst}</td>
-              <td rowspan="4">Amt & Rate</td>
+              <td rowspan="4">${igst}</td>
               <td rowspan="4">${discountPrice}</td>
             </tr>
             <tr style="text-align: center;">
@@ -902,8 +902,8 @@ const generateInvoiceTemplate = (order) => {
       </tr>
       <tr>
         <td colspan="8" rowspan="2">Rupees in Words: ${totalPriceInWords.toUpperCase()}.</td>
-        <td colspan="2">Total Invoice Value</td>
-        <td>Rs. ${order.totalPrice}</td>
+        <td colspan="2">Coupon Discount</td>
+        <td>Rs. ${order?.couponDiscount || 0}</td>
       </tr>
       <tr style="text-align: center;">
         <td colspan="2">Total Amount Payable</td>

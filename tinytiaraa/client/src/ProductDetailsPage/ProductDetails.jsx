@@ -432,11 +432,13 @@ function ProductDetails({ data }) {
             setSelectedChainSize('13inch'); // Set default to 13 inches
             setFinalPrice(data.discountPrice + 7200);
             setFinalOriginalPrice(data.originalPrice + 7200);
+            setSelect(0); 
         } else {
             setShowWithChain(false);
             setSelectedChainSize(null); // Clear the selection when "Without Chain" is selected
             setFinalPrice(data.discountPrice);
             setFinalOriginalPrice(data.originalPrice);
+            setSelect(0); 
         }
         // setShowWithChain(option === 'with'); // Set showWithChain based on the selected option ('with' or 'without')
         // setSelect(0); // Reset selected image index when toggling chain option
@@ -714,7 +716,7 @@ function ProductDetails({ data }) {
 
     // --------------------------------
 
-    const [selectedCombination, setSelectedCombination] = useState(''); 
+    const [selectedCombination, setSelectedCombination] = useState(null); 
 
     const getAvailableCombinationImages = (combinationImages, selectedMetalColor) => {
         console.log(combinationImages, "+===================");
@@ -888,9 +890,12 @@ function ProductDetails({ data }) {
                                 if (images.length > 0) {
                                     return images; // Return images for the selected combination and metal color
                                 } else {
+                                   setSelectedCombination("")
                                     // console.warn(`No images found for combination: ${selectedCombination}, metal: ${selectedMetal}`);
                                 }
                             } else {
+                                setSelectedCombination(null)
+
                                 // console.warn(`Invalid metal color or no images found for combination: ${selectedCombination}`);
                             }
                         } 
@@ -909,9 +914,11 @@ function ProductDetails({ data }) {
                         if (availableCombinationImages.length > 0) {
                             return availableCombinationImages; // Return all images for the selected combination
                         } else {
+                            setSelectedCombination(null)
                             // console.warn(`No general images found for combination: ${selectedCombination}`);
                         }
                     } else {
+                        setSelectedCombination(null);
                         // console.warn(`Invalid combination: ${selectedCombination}`);
                     }
                 }
@@ -1085,34 +1092,175 @@ function ProductDetails({ data }) {
     //         : data.images && data.images[0]?.url;
     // })();
 
+    
+
+
+    // old logic 
+    // const selectedImage = (() => {
+    //     let imageUrl = null;
+    
+    //     if (selectedColor !== null && selectedEnamelColor === null && selectedCombination === null) {
+    //         const metalColorImages = [
+    //             data.MetalColor.YellowGoldclr || [],
+    //             data.MetalColor.RoseGoldclr || [],
+    //             data.MetalColor.WhiteGoldclr || []
+    //         ];
+    
+    //         // Check with chain logic
+    //         const images = metalColorImages[selectedColor];
+    //         if (showWithChain && !select) {
+    //             imageUrl = images[2]?.url;
+    //         } else if (select !== null) {
+    //             imageUrl = images[select]?.url;
+    //         }
+    //     }
+    
+    //     // If there's no specific selected color, fallback to the general images array
+    //     if (!imageUrl && imagesArray.length > 0) {
+    //         imageUrl = imagesArray[select]?.url || data.images?.[0]?.url;
+    //     }
+    
+    //     return imageUrl;
+    // })();
+    useEffect(() => {
+        if (selectedColor !== null && selectedEnamelColor === null  && selectedCombination === null && shouldShowEnamel === false && shouldShowCombinations === false ) {
+            console.log("runnng 1 -------------------")
+            // If "with chain" is selected, set select to 2 (third image)
+            if (showWithChain) {
+                if (select !== 2) {
+                    setSelect(2); // Ensure "with chain" is selected (third image)
+                }
+            } else {
+                if (select !== 0) {
+                    setSelect(0); // Reset to the first image if "with chain" is not selected
+                }
+            }
+        }
+        if (selectedColor !== null && selectedEnamelColor !== null && shouldShowCombinations === false ) {
+            console.log("runnng 2 -------------------")
+
+            // If "with chain" is selected, set select to 2 (third image)
+            if (showWithChain && shouldShowEnamel === true  ) {
+                if (select !== 2) {
+                    setSelect(2); // Ensure "with chain" is selected (third image)
+                }
+            } else {
+                if (select !== 0) {
+                    setSelect(0); // Reset to the first image if "with chain" is not selected
+                }
+            }
+        }
+        if (selectedColor !== null && selectedCombination !== null && selectedEnamelColor === null ) {
+            console.log("runnng 3 -------------------")
+
+            // If "with chain" is selected, set select to 2 (third image)
+            if (showWithChain && selectedCombination !== null) {
+                console.log("runnng 3.1 -------------------")
+                
+                if (select !== 2 && selectedCombination !== null) {
+                    setSelect(2); // Ensure "with chain" is selected (third image)
+                }
+            } else {
+                console.log("runnng 3.2 -------------------")
+                if (select !== 0 && selectedCombination === null) {
+                    setSelect(0); // Reset to the first image if "with chain" is not selected
+                }
+            }
+        }
+        console.log(selectedCombination,"selected combination----------------------")
+    }, [showWithChain, selectedColor, selectedEnamelColor ,selectedCombination]);
+   
+    console.log(selectedEnamelColor,"slected enamel colors")
     const selectedImage = (() => {
         let imageUrl = null;
-    
-        if (selectedColor !== null && selectedEnamelColor === null && selectedCombination === null) {
+         // 1. Handle case where both metal color and enamel color are selected
+    if (selectedColor !== null && selectedEnamelColor !== null && shouldShowEnamel === true && shouldShowCombinations === false ) {
+        const enamelColorData = data.enamelColors[selectedEnamelColor] || {};
+        const formattedColor = selectedEnamelColor.toLowerCase().replace(/_/g, '');
+        const enamelKey = `${formattedColor}${["YellowGold", "RoseGold", "WhiteGold"][selectedColor]}clr`;
+
+        console.log("Enamel Key:", enamelKey);
+
+        const images = enamelColorData[enamelKey] || [];
+        if (images.length > 0) {
+            if (showWithChain && select === 2) {
+                imageUrl = images[2]?.url || data.images?.[0]?.url;
+            } else {
+                imageUrl = images[select]?.url || images[0]?.url;
+            }
+        } else {
+            setSelectedEnamelColor(null); // Reset if no images found
+        }
+    }
+        if (selectedColor !== null && selectedEnamelColor === null && shouldShowEnamel === false  && shouldShowCombinations === false ) {
+            // Define metal color arrays
             const metalColorImages = [
                 data.MetalColor.YellowGoldclr || [],
                 data.MetalColor.RoseGoldclr || [],
                 data.MetalColor.WhiteGoldclr || []
             ];
     
-            // Check with chain logic
+            // Get the images array for the selected color
             const images = metalColorImages[selectedColor];
-            if (showWithChain && !select) {
-                imageUrl = images[2]?.url;
-            } else if (select !== null) {
-                imageUrl = images[select]?.url;
+    
+            // Check if "with chain" is selected and if select is 2 (third image)
+            if (showWithChain && shouldShowEnamel === false && select === 2) {
+                // Use the 3rd index (index 2) for "with chain" logic
+                imageUrl = images[2]?.url || data.images?.[0]?.url;
+            } else {
+                // Check the user-selected image (select) or default to the 1st image
+                imageUrl = imagesArray.length > 0 
+                    ? imagesArray[select]?.url 
+                    : images[0]?.url;
+            }
+        }
+        if ( selectedColor !== null && shouldShowEnamel === false &&  selectedCombination === true) {
+        const combinationData = data.combinationmetalImages || {};
+
+            const formattedCombination = selectedCombination.toLowerCase().replace(/_/g, '');
+            console.log("Formatted Combination:", formattedCombination);
+    
+            const combinationKey = combinationData[formattedCombination];
+            console.log("Combination Key Data:", combinationKey);
+    
+            if (combinationKey) {
+                if (selectedColor !== null) {
+                    const selectedMetal = ["yellowGold", "roseGold", "whiteGold"][selectedColor];
+    
+                    if (selectedMetal && Array.isArray(combinationKey[selectedMetal])) {
+                        const images = combinationKey[selectedMetal];
+                        if (images.length > 0) {
+                            return images[select]?.url || images[0]?.url; // Return selected image or first image
+                        }
+                    }
+                }
+    
+                // Collect all images for the specific combination, ignoring metal color
+                const availableCombinationImages = [];
+                const availableMetalKeys = ["yellowGold", "roseGold", "whiteGold"];
+    
+                availableMetalKeys.forEach(key => {
+                    if (Array.isArray(combinationKey[key])) {
+                        availableCombinationImages.push(...combinationKey[key]);
+                    }
+                });
+    
+                if (availableCombinationImages.length > 0) {
+                    return availableCombinationImages[select]?.url || availableCombinationImages[0]?.url; // Return selected image or first image
+                }
             }
         }
     
-        // If there's no specific selected color, fallback to the general images array
-        if (!imageUrl && imagesArray.length > 0) {
-            imageUrl = imagesArray[select]?.url || data.images?.[0]?.url;
+        // Fallback to the general image array if no metal color is selected
+        if (!imageUrl) {
+            imageUrl = imagesArray.length > 0 
+                ? imagesArray[select]?.url 
+                : data.images?.[0]?.url;
         }
     
         return imageUrl;
     })();
-   
-   
+    
    
     return (
         <div className='bg-white'>

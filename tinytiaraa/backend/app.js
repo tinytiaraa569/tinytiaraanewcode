@@ -88,6 +88,8 @@ const contactbanner = require("./controller/contactbanner")
 const category = require("./controller/category")
 const currency = require("./controller/Currency")
 const popup = require("./controller/popup")
+const chatbot = require("./controller/chatbot")
+
 
 
 
@@ -134,6 +136,8 @@ app.use("/api/v2", calculateEDDRoutes);
 app.use("/api/v2", category);
 app.use("/api/v2", currency);
 app.use("/api/v2", popup);
+app.use("/api/v2", chatbot);
+
 
 
 
