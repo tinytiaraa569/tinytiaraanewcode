@@ -222,16 +222,6 @@ function App() {
     location.pathname.startsWith('/dashboard/contactbanner/create') ||
 
 
-
-
-    
-    
-
-
-
-    
-
-
     
 
     location.pathname.startsWith('/order/:id')

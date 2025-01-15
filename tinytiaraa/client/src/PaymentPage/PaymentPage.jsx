@@ -69,8 +69,6 @@ function PaymentPage() {
         cart: orderData?.cart,
         shippingAddress: orderData?.shippingAddress,
         billingAddress: orderData?.finalBillingAddress,
-
-        
         user: user && orderData?.user ,
         totalPrice: orderData?.totalPrice,
         couponDiscount: orderData?.discountPrice,
@@ -592,7 +590,6 @@ function PaymentPage() {
     };
 
 
-
     // const handlePayUPayment = async () => {
     //     try {
     //         // Fetch payment details from your backend
@@ -638,8 +635,6 @@ function PaymentPage() {
     //         toast.error('Error occurred while processing PayU payment.');
     //     }
     // };
-
-
 
 
     const handlecashondel = async (e) => {
@@ -742,9 +737,6 @@ function PaymentPage() {
         }
     };
     
-    
-
-
     //payu success
     const handlePayUSuccess = async (paymentDetails) => {
         console.log('Payment successful via PayU. Details:', paymentDetails);
@@ -1206,27 +1198,8 @@ function PaymentPage() {
                             </div>
 
                             <div className=''>
-                                {/* <div className='flex items-center gap-8'>
-                                    <div className='flex items-center gap-2'>
-                                        <input
-                                            id="razorpay"
-                                            type="radio"
-                                            name="paymentMethod"
-                                            value="razorpay"
-                                            checked={selectedPaymentMethod === 'razorpay'}
-                                            onChange={handlePaymentMethodChange}
-                                            className="int-emailcheck !w-[15px] !h-[15px] cursor-pointer"
-                                            required
-                                        />
-                                        <div>
-                                            <label htmlFor="razorpay" className='cursor-pointer'>
-                                                <img src={razopayimg} alt="" className='!w-[100px] !h-[60px]' />
-                                            </label>
-                                        </div>
-                                    </div>
-                                </div> */}
 
-                                <div className='flex items-center gap-8'>
+                            <div className='flex items-center gap-8'>
                                     <div className='flex items-center gap-2'>
                                         <input
                                             id="payu"
@@ -1246,6 +1219,28 @@ function PaymentPage() {
 
 
                                 </div>
+                                
+                                <div className='flex items-center gap-8'>
+                                    <div className='flex items-center gap-2'>
+                                        <input
+                                            id="razorpay"
+                                            type="radio"
+                                            name="paymentMethod"
+                                            value="razorpay"
+                                            checked={selectedPaymentMethod === 'razorpay'}
+                                            onChange={handlePaymentMethodChange}
+                                            className="int-emailcheck !w-[15px] !h-[15px] cursor-pointer"
+                                            required
+                                        />
+                                        <div>
+                                            <label htmlFor="razorpay" className='cursor-pointer'>
+                                                <img src={razopayimg} alt="" className='!w-[100px] !h-[60px]' />
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                
 
 
                                     {/* cod method */}
