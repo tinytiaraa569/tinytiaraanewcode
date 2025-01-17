@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import SliderSection from './Slider'
 import Categories from './Categories'
 import Shippingpage from './Shippingpage'
@@ -16,6 +16,17 @@ import { useNavigate } from 'react-router-dom';
 
 function MainSection() {
   const navigate = useNavigate();
+
+  const [showText, setShowText] = useState(true);
+
+  useEffect(() => {
+    // Automatically hide the "Spin and Win" text after 5 seconds
+    const timer = setTimeout(() => {
+      setShowText(false);
+    }, 5000);
+
+    return () => clearTimeout(timer); // Cleanup the timer
+  }, []);
 
   const handleGiftClick = () => {
     navigate('/spinandwin'); // Navigate to Spin and Win page
@@ -37,13 +48,44 @@ function MainSection() {
       <Ttclub />
 
        {/* Fixed Gift Icon */}
-       <div
+       {/* <div
         className="fixed bottom-8 left-6 bg-gradient-to-r from-pink-500 to-red-500 text-white p-4 rounded-full shadow-lg cursor-pointer hover:bg-red-500 transition-transform transform hover:scale-110"
         onClick={handleGiftClick}
         title='spin and win'
+        
+      >
+        <FaGift size={32} />
+      </div> */}
+
+
+    <div
+      className="fixed bottom-3 left-4 flex flex-col items-center cursor-pointer "
+      onClick={handleGiftClick}
+      title="Spin and Win"
+    >
+      {/* "Spin and Win" Text */}
+      {showText && (
+       <span
+       className="text-sm font-bold text-white px-4 py-1 bg-gradient-to-r from-pink-500 to-red-500 rounded-full shadow-lg mb-3 animate-slide-bounce-fade"
+       style={{
+         fontFamily: "Arial, sans-serif",
+         letterSpacing: "0.5px",
+       }}
+     >
+       Spin and Win
+     </span>
+      )}
+
+      {/* Icon Circle */}
+      <div
+        className="bg-gradient-to-r from-pink-500 to-red-500 text-white p-4 rounded-full shadow-lg hover:scale-110 transition-transform transform"
+        style={{
+          animation: "float 2s ease-in-out infinite",
+        }}
       >
         <FaGift size={32} />
       </div>
+    </div>
     </div>
   )
 }

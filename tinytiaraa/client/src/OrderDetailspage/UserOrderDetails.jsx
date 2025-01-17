@@ -7,11 +7,12 @@ import { Link, useParams } from 'react-router-dom'
 import { CiViewList } from "react-icons/ci";
 import { backend_url, imgdburl, server } from '@/server'
 import { RxCross1 } from 'react-icons/rx'
-import { AiFillStar, AiOutlineStar } from 'react-icons/ai'
+import { AiFillStar, AiOutlinePlusCircle, AiOutlineStar } from 'react-icons/ai'
 import axios from 'axios'
 import { toast } from 'react-toastify'
 import { TbTruckReturn } from 'react-icons/tb'
 import { VscFeedback } from 'react-icons/vsc'
+import { TfiHandDrag } from 'react-icons/tfi'
 
 function UserOrderDetails() {
     const { orders, isLoading } = useSelector((state) => state.order)
@@ -29,6 +30,57 @@ function UserOrderDetails() {
     const [refundReason, setRefundReason] = useState("") // State to store selected refund reason
     const [error, setError] = useState('');
     const [otherReason, setOtherReason] = useState('');
+    const [images, setImages] = useState([])
+
+     const [draggingIndex, setDraggingIndex] = useState(null);
+
+     const handleImageChange = (e) => {
+        e.preventDefault()
+
+        const files = Array.from(e.target.files);
+
+        // setImages([]);
+
+        files.forEach((file) => {
+            const reader = new FileReader();
+
+            reader.onload = () => {
+                if (reader.readyState === 2) {
+                    setImages((old) => [...old, reader.result]);
+                }
+            };
+            reader.readAsDataURL(file);
+        });
+    }
+    
+        const handleDragStart = (e, index) => {
+            e.dataTransfer.setData('text/plain', index);
+            setDraggingIndex(index);
+        };
+    
+        const handleDragOver = (e) => {
+            e.preventDefault();
+        };
+    
+        const handleDrop = (e, index) => {
+            e.preventDefault();
+            const fromIndex = e.dataTransfer.getData('text/plain');
+            if (fromIndex === index) return;
+    
+            const updatedImages = [...images];
+            const [movedImage] = updatedImages.splice(fromIndex, 1);
+            updatedImages.splice(index, 0, movedImage);
+    
+            setImages(updatedImages);
+            setDraggingIndex(null); // Reset dragging index
+        };
+    
+        const handleRemoveImage = (index) => {
+            setImages(images.filter((_, i) => i !== index));
+        };
+
+   
+    
 
     const { id } = useParams()
 
@@ -52,6 +104,7 @@ function UserOrderDetails() {
             user,
             rating,
             comment,
+            images,
             productId: selectedItem?._id,
             orderId: id
         }, { withCredentials: true }).then((res) => {
@@ -59,6 +112,7 @@ function UserOrderDetails() {
             dispatch(getAllOrdersOfUser(user._id))
             setComment("")
             setRating(null)
+            setImages("")
             setOpen(false)
 
         }).catch((error) => {
@@ -134,102 +188,124 @@ function UserOrderDetails() {
 
     return (
         <div className={`py-4 min-h-screen ${styles.section}`}>
-            <div className='w-full flex items-center justify-between'>
-                <div className='flex items-center'>
-                    <BsFillBagFill size={28} color='crimson' />
-                    <h1 className='pl-2 text-[22px]'>Order Details</h1>
-
+            <div className="w-full flex items-center justify-center px-4 py-1">
+                <div className="flex items-center ">
+                    <BsFillBagFill size={28} color="crimson" />
+                    <h1 className="pl-2 text-[22px] font-semibold text-gray-800">Order Details</h1>
+                </div>
                 </div>
 
+            <div className="w-full flex  justify-between pt-3 flex-col md:flex-row">
+                <h5 className="text-[#000b] text-[17px] mb-2 md:mb-0">
+                    Order Id : - #<span>{data?._id}</span>
+                </h5>
 
-            </div>
-
-            <div className='w-full flex items-center justify-between pt-6'>
-                <h5 className='text-[#000b] text-[17px]'>Order Id : - #<span>{data?._id}</span></h5>
-
-                <h5 className='text-[#000b] text-[17px]'>Placed on :- <span>{data?.createdAt?.slice(0, 10)}</span> </h5>
-            </div>
+                <h5 className="text-[#000b] text-[17px]">
+                    Placed on :- <span>{data?.createdAt?.slice(0, 10)}</span>
+                </h5>
+                </div>
             {/* order items */}
             {
-                data && data?.cart.map((item, index) => {
-                    return (
-                        <div key={index} className='w-full flex items-start mt-5 mb-5'>
-                            <img 
-                            // src={`${item.images && item.images[1]?.url}`} 
-                            src={
-                                item.images && item.images[1]?.url?.match(/https:\/\/res\.cloudinary\.com\/ddaef5aw1\/image\/upload\/v[0-9]+/)
-                                    ? item.images[1].url.replace(
-                                        /https:\/\/res\.cloudinary\.com\/ddaef5aw1\/image\/upload\/v[0-9]+/,
-                                        `${imgdburl}/uploads/images`
-                                    )
-                                    : `${imgdburl}${item.images[1]?.url}` // Prepend imgdburl if not a Cloudinary URL
-                            }
-                            alt="" className='w-[160px] h-[160px] border border-gray-200' />
-                            <div className="w-full pl-2">
-                                <h5 className='pl-3 text-[15px] font-[600]'>{item.name}</h5>
-                                <p className='pl-3 text-[12px] text-[#0000008c]'>{item.skuid}</p>
+            data && data?.cart.map((item, index) => {
+                return (
+                <div key={index} className='w-full flex flex-col sm:flex-row items-center mt-5 mb-5 border border-gray-100 shadow-md rounded-[10px] p-4'>
+                    {/* Image */}
+                    <img
+                        src={
+                            item.images && item.images[1]?.url?.match(/https:\/\/res\.cloudinary\.com\/ddaef5aw1\/image\/upload\/v[0-9]+/)
+                            ? item.images[1].url.replace(
+                                /https:\/\/res\.cloudinary\.com\/ddaef5aw1\/image\/upload\/v[0-9]+/,
+                                `${imgdburl}/uploads/images`
+                            )
+                            : `${imgdburl}${item.images[1]?.url}` // Prepend imgdburl if not a Cloudinary URL
+                        }
+                        alt=""
+                        className="w-[140px] h-[140px] object-cover border border-gray-200 rounded-lg mb-4 sm:mb-0 sm:mr-4"
+                    />
+                    {/* Product details */}
+                    <div className="w-full sm:w-auto pl-2">
+                        <h5 className='pl-3 text-[16px] font-[600] text-[#333]'>{item.name}</h5>
+                        <p className='pl-3 text-[13px] text-[#666]'>{item.skuid}</p>
 
-                                <span className="pl-3 text-[12px] text-[#0000008c] line-through">₹{item.chainPrice > 0 ? item.originalPrice + item.chainPrice : item.originalPrice} </span>
-                                <span className="pl-2 text-[12px] text-[#0000008c]">₹{item.chainPrice > 0 ? item.discountPrice + item.chainPrice : item.discountPrice} x {item.qty}</span>
+                        <span className="pl-3 text-[12px] text-[#999] line-through">
+                            ₹{item.chainPrice > 0 ? item.originalPrice + item.chainPrice : item.originalPrice}
+                        </span>
+                        <span className="pl-2 text-[12px] text-[#333]">
+                            ₹{item.chainPrice > 0 ? item.discountPrice + item.chainPrice : item.discountPrice} x {item.qty}
+                        </span>
 
-                                <div className='mt-2'>
-                                {item.showWithChain !== undefined && (
-                                    <h5 className='pl-3 text-[13px] text-[#0000008c]'>
-                                        <span className='font-[600]'>Chain :</span> {item.showWithChain ? 'With Chain' : 'Without Chain'} {item.selectedChainSize ? (item.selectedChainSize) : ""}
-                                    </h5>
-                                )}
-                                {item.selectedColor !== null && (
-                                    <h5 className='pl-3 text-[13px] text-[#0000008c]'>
-                                        <span className='font-[600]'>Metal Color :</span> {metalColors[item.selectedColor]}
-                                    </h5>
-                                )}
-                                {item.selectedEnamelColor !== null && (
-                                    <h5 className='pl-3 text-[13px] text-[#0000008c]'>
-                                        <span className='font-[600]'>Enamel :</span> {item.selectedEnamelColor}
-                                    </h5>
-                                )}
-                            </div>
+                        <div className='mt-2'>
+                            {item.showWithChain !== undefined && (
+                            <h5 className='pl-3 text-[13px] text-[#666]'>
+                                <span className='font-[600]'>Chain :</span> {item.showWithChain ? 'With Chain' : 'Without Chain'} {item.selectedChainSize ? (item.selectedChainSize) : ""}
+                            </h5>
+                            )}
+                            {item.selectedColor !== null && (
+                            <h5 className='pl-3 text-[13px] text-[#666]'>
+                                <span className='font-[600]'>Metal Color :</span> {metalColors[item.selectedColor]}
+                            </h5>
+                            )}
+                            {item.selectedEnamelColor !== null && (
+                            <h5 className='pl-3 text-[13px] text-[#666]'>
+                                <span className='font-[600]'>Enamel :</span> {item.selectedEnamelColor}
+                            </h5>
+                            )}
+                        </div>
+                    </div>
 
-
-                            </div>
-
+                    {/* Review Section */}
+                    {
+                        data?.status === "Delivered" && (
+                            <>
                             {
-                                data?.status === "Delivered" && (
-                                    <>
-                                        {
-                                            item.isReviewed ?
-                                                null
-                                                :
-                                                (
-                                                    <div className={`${styles.button} !w-[220px] !px-3 text-[#fff]`} onClick={() => setOpen(true) || setSelectedItem(item)}>
-                                                        <VscFeedback className='mr-3' />
-                                                        <h5>Write a review</h5>
-
-                                                    </div>
-                                                )
-                                        }
-                                    </>
+                                item.isReviewed ?
+                                null
+                                :
+                                (
+                                    <div className="w-full sm:w-auto sm:ml-auto flex justify-center sm:justify-end mt-4 sm:mt-0">
+                                        <div className={`${styles.button} !w-[220px] !px-3 text-[#fff]`} onClick={() => setOpen(true) || setSelectedItem(item)}>
+                                            <VscFeedback className='mr-3' />
+                                            <h5>Write a review</h5>
+                                        </div>
+                                    </div>
                                 )
                             }
-                        </div>
-                    )
-                })
-            }
+                            </>
+                        )
+                    }
+                </div>
+                )
+            })
+        }
+
+
+
 
             {/* review */}
-            {
+            {/* {
                 open && (
-                    <div className='w-full fixed top-0 left-0 h-screen bg-[#00000062] z-50 flex items-center justify-center'>
-                        <div className='w-[50%] h-min bg-[#fff] shadow rounded-md p-3 pb-7'>
+                    <div className='w-full fixed top-12 left-0 h-screen bg-[#00000062] z-50 flex items-center justify-center'>
+                        <div className='w-[50%] h-min bg-[#fff] shadow-lg rounded-md p-3 pb-7'>
                             <div className='w-full flex justify-end p-3'>
-                                <RxCross1 size={30} onClick={() => setOpen(false)} className='cursor-pointer' />
+                                <RxCross1 size={26} onClick={() => setOpen(false)} className='cursor-pointer' />
                             </div>
                             <h2 className='text-[25px] font-[500] text-center'>Give a review</h2>
 
                             <div className='w-full flex mt-3'>
-                                <img src={`${selectedItem?.images[0]?.url}`} alt="" className='w-[120px] h-[120px] border' />
+                                <img
+                                    src={
+                                        selectedItem?.images[0]?.url?.match(/https:\/\/res\.cloudinary\.com\/ddaef5aw1\/image\/upload\/v[0-9]+/)
+                                        ? selectedItem.images[0].url.replace(
+                                            /https:\/\/res\.cloudinary\.com\/ddaef5aw1\/image\/upload\/v[0-9]+/,
+                                            `${imgdburl}/uploads/images`
+                                            )
+                                        : `${imgdburl}${selectedItem?.images[0]?.url}` // Prepend imgdburl if not a Cloudinary URL
+                                    }
+                                    alt=""
+                                    className="w-[120px] h-[120px] border"
+                                    />
                                 <div>
-                                    <div className='pl-3 text-[20px]'>
+                                    <div className='pl-3 text-[16px]'>
                                         <p>{selectedItem?.name}</p>
                                         <p className='text-[15px] text-[#0000008e]'>{selectedItem?.skuid}</p>
                                     </div>
@@ -240,8 +316,8 @@ function UserOrderDetails() {
 
                             </div>
 
-                            <div>
-                                <h5 className='pl-5 text-[20px] font-[500]'>Give a Rating <span className='text-red-500'>*</span></h5>
+                            <div className='mt-3'>
+                                <h5 className='pl-5  font-[600]'>Give a Rating <span className='text-red-500'>*</span></h5>
                                 <div className="flex w-full ml-5 pt-1">
                                     {
                                         [1, 2, 3, 4, 5].map((i) => rating >= i ? (
@@ -254,13 +330,67 @@ function UserOrderDetails() {
                                 </div>
 
                                 <div className='w-full ml-5 mt-2'>
-                                    <label htmlFor="" className='block text-[20px] font-[500]'>Write a Comment
-                                        <span className='font-[400] text-[16px] text-[#0000006c] ml-2'>(optional)</span>
+
+                                    <div className='font-Poppins mt-4 cursor-pointer'>
+                                                        <label htmlFor="" className='pb-2 font-[600]'>Upload Images<span className='text-[#0000006c]'>(Optional)</span></label>
+                                                        <div className='w-full flex items-center flex-wrap'>
+                                                            <input type="file" className='hidden' id='upload' multiple onChange={handleImageChange} />
+                                                            <label htmlFor="upload">
+                                                                <AiOutlinePlusCircle size={30} className='mt-3' color='#555' />
+                                                            </label>
+                                    
+                                                            {images.map((image, index) => (
+                                                                <div
+                                                                    key={image}
+                                                                    draggable
+                                                                    onDragStart={(e) => handleDragStart(e, index)}
+                                                                    onDragOver={handleDragOver}
+                                                                    onDrop={(e) => handleDrop(e, index)}
+                                                                    className={`relative m-2 ${index === draggingIndex ? 'opacity-50' : ''}`}
+                                                                >
+                                                                    <img
+                                                                        src={image}
+                                                                        alt=""
+                                                                        className='h-[120px] w-[120px] object-cover rounded-md'
+                                                                    />
+                                                                    <button
+                                                                        onClick={() => handleRemoveImage(index)}
+                                                                        className='absolute top-0 right-0 p-1 text-red-500'
+                                                                    >
+                                                                        X
+                                                                    </button>
+                                                                    {index === draggingIndex && (
+                                                                        <div className="absolute inset-0 flex items-center justify-center bg-gray-200 bg-opacity-50">
+                                                                            <TfiHandDrag size={30} color='#000' />
+                                                                        </div>
+                                                                    )}
+                                                                </div>
+                                                            ))}
+                                    
+                                                        </div>
+                                    
+                                                    </div>
+
+                                </div>
+
+
+                                <div className='w-full ml-5 mt-2'>
+                                    <label htmlFor="" className='block  font-[600]'>Write a Comment
+                                        <span className='font-[400] text-[#0000006c] ml-2'>(optional)</span>
                                     </label>
                                   
-                                    <textarea name="comment" id="" value={comment} onChange={(e) => setComment(e.target.value)} cols={20} rows={5} placeholder='how was your product? write your Review' className='mt-2 !w-[90%]  border p-2 outline-none'></textarea>
+                                    <textarea name="comment" id="" value={comment} onChange={(e) => setComment(e.target.value)} cols={20} rows={4} placeholder='how was your product? write your Review' className='mt-2 !w-[90%]  border p-2 outline-none'></textarea>
                                 </div>
-                                <div className={`${styles.button} text-white text-[20px] ml-3`} onClick={rating > 1 ? reviewHandler : null}>
+
+
+
+
+                                
+
+
+
+
+                                <div className={`bg-black flex justify-center rounded-[8px] items-center w-[100px] px-3 py-2 text-white text-[15px] mt-3 ml-3`} onClick={rating > 1 ? reviewHandler : null}>
                                     Submit
                                 </div>
                             </div>
@@ -269,21 +399,127 @@ function UserOrderDetails() {
                         </div>
                     </div>
                 )
-            }
-            <div className='border-t w-full text-right mb-5'>
-                <h5 className='pt-3 text-[18px]'>Total Price : <strong>₹{data?.totalPrice}</strong> </h5>
-
-            </div>
-            <div className="w-full flex justify-between items-center mb-5">
-                <div className='w-[50%] '>
-                    <h4 className='pt-3 text-[18px] font-[600]'>Shipping Address</h4>
-                    <h4 className='pt-3 text-[14px] text-[#000b]'>{data?.shippingAddress?.address1}</h4>
-                    <h4 className='pt-1 text-[14px] text-[#000b]'>{data?.shippingAddress?.address2}</h4>
-                    <h4 className='pt-1 text-[14px] text-[#000b]'>{data?.shippingAddress?.city}</h4>
-                    <h4 className='pt-1 text-[14px] text-[#000b]'>{data?.shippingAddress?.country}</h4>
-                    <h4 className='pt-1 text-[14px] font-[500] text-[#000b]'>{data?.shippingAddress?.phoneNumber}</h4>
+            } */}
+            {
+               open && (
+                <div className='fixed top-0 left-0 w-full h-screen bg-[#0000006c] z-[1000] flex justify-center items-center'>
+                    <div className='w-[80%] mt-[100px] sm:w-[80%] md:w-[55%] h-[85vh] p-3 pb-7 overflow-x-hidden overflow-y-scroll bg-white rounded-md shadow pb-5'>
+                        <div className='w-full flex justify-end p-3'>
+                            <RxCross1 size={26} onClick={() => setOpen(false)} className='cursor-pointer' />
+                        </div>
+                        <h2 className='text-[25px] font-[500] text-center'>Give a review</h2>
+            
+                        <div className='w-full flex mt-3 px-5'>
+                            <img
+                                src={
+                                    selectedItem?.images[0]?.url?.match(/https:\/\/res\.cloudinary\.com\/ddaef5aw1\/image\/upload\/v[0-9]+/)
+                                        ? selectedItem.images[0].url.replace(
+                                            /https:\/\/res\.cloudinary\.com\/ddaef5aw1\/image\/upload\/v[0-9]+/,
+                                            `${imgdburl}/uploads/images`
+                                        )
+                                        : `${imgdburl}${selectedItem?.images[0]?.url}` // Prepend imgdburl if not a Cloudinary URL
+                                }
+                                alt=""
+                                className="w-[120px] h-[120px] border"
+                            />
+                            <div>
+                                <div className='pl-3 text-[16px]'>
+                                    <p>{selectedItem?.name}</p>
+                                    <p className='text-[15px] text-[#0000008e]'>{selectedItem?.skuid}</p>
+                                </div>
+                                <h4 className='pl-3 text-[15px]'>₹{selectedItem?.discountPrice} x {selectedItem?.qty}</h4>
+                            </div>
+                        </div>
+            
+                        <div className='mt-3'>
+                            <h5 className='pl-5 font-[600]'>Give a Rating <span className='text-red-500'>*</span></h5>
+                            <div className="flex w-full ml-5 pt-1">
+                                {[1, 2, 3, 4, 5].map((i) =>
+                                    rating >= i ? (
+                                        <AiFillStar key={i} className='mr-1 cursor-pointer' color='rgb(246,186,0)' size={25} onClick={() => setRating(i)} />
+                                    ) : (
+                                        <AiOutlineStar key={i} className='mr-1 cursor-pointer' color='rgb(246,186,0)' size={25} onClick={() => setRating(i)} />
+                                    )
+                                )}
+                            </div>
+            
+                            <div className='w-full ml-5 mt-2'>
+                                <div className='font-Poppins mt-4 cursor-pointer'>
+                                    <label htmlFor="" className='pb-2 font-[600]'>Upload Images<span className='text-[#0000006c]'>(Optional)</span></label>
+                                    <div className='w-full flex items-center flex-wrap'>
+                                        <input type="file" className='hidden' id='upload' multiple onChange={handleImageChange} />
+                                        <label htmlFor="upload">
+                                            <AiOutlinePlusCircle size={30} className='mt-3' color='#555' />
+                                        </label>
+            
+                                        {images.map((image, index) => (
+                                            <div
+                                                key={image}
+                                                draggable
+                                                onDragStart={(e) => handleDragStart(e, index)}
+                                                onDragOver={handleDragOver}
+                                                onDrop={(e) => handleDrop(e, index)}
+                                                className={`relative m-2 ${index === draggingIndex ? 'opacity-50' : ''}`}
+                                            >
+                                                <img
+                                                    src={image}
+                                                    alt=""
+                                                    className='h-[120px] w-[120px] object-cover rounded-md'
+                                                />
+                                                <button
+                                                    onClick={() => handleRemoveImage(index)}
+                                                    className='absolute top-0 right-0 p-1 text-red-500'
+                                                >
+                                                    X
+                                                </button>
+                                                {index === draggingIndex && (
+                                                    <div className="absolute inset-0 flex items-center justify-center bg-gray-200 bg-opacity-50">
+                                                        <TfiHandDrag size={30} color='#000' />
+                                                    </div>
+                                                )}
+                                            </div>
+                                        ))}
+            
+                                    </div>
+                                </div>
+                            </div>
+            
+                            <div className='w-full ml-5 mt-2'>
+                                <label htmlFor="" className='block font-[600]'>Write a Comment
+                                    <span className='font-[400] text-[#0000006c] ml-2'>(optional)</span>
+                                </label>
+            
+                                <textarea name="comment" id="" value={comment} onChange={(e) => setComment(e.target.value)} cols={20} rows={4} placeholder='how was your product? write your Review' className='mt-2 !w-[90%] border p-2 outline-none'></textarea>
+                            </div>
+            
+                            <div className={`bg-black flex justify-center rounded-[8px] items-center w-[100px] px-3 py-2 text-white text-[15px] mt-3 ml-3`} onClick={rating > 1 ? reviewHandler : null}>
+                                Submit
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div className='w-[50%] '>
+            )
+            
+                
+            }
+            <div className='border-t w-full text-right mt-3 mb-3'>
+                <h5 className='pt-2 text-[16px] sm:text-[18px] font-medium'>
+                    Total Price: <strong className='text-[18px] sm:text-[20px]'>₹{data?.totalPrice}</strong>
+                </h5>
+            </div>
+            <div className="w-full flex flex-col sm:flex-row justify-between items-start sm:items-center mb-5">
+    {/* Shipping Address */}
+            <div className='w-full sm:w-[50%] mb-4 sm:mb-0'>
+                <h4 className='pt-3 text-[18px] font-[600]'>Shipping Address</h4>
+                <h4 className='pt-3 text-[14px] text-[#000b]'>{data?.shippingAddress?.address1}</h4>
+                <h4 className='pt-1 text-[14px] text-[#000b]'>{data?.shippingAddress?.address2}</h4>
+                <h4 className='pt-1 text-[14px] text-[#000b]'>{data?.shippingAddress?.city}</h4>
+                <h4 className='pt-1 text-[14px] text-[#000b]'>{data?.shippingAddress?.country}</h4>
+                <h4 className='pt-1 text-[14px] font-[500] text-[#000b]'>{data?.shippingAddress?.phoneNumber}</h4>
+            </div>
+
+    {/* Billing Address */}
+                <div className='w-full sm:w-[50%]'>
                     <h4 className='pt-3 text-[18px] font-[600]'>Billing Address</h4>
                     <h4 className='pt-3 text-[14px] text-[#000b]'>{data?.billingAddress?.address1}</h4>
                     <h4 className='pt-1 text-[14px] text-[#000b]'>{data?.billingAddress?.address2}</h4>
@@ -291,8 +527,8 @@ function UserOrderDetails() {
                     <h4 className='pt-1 text-[14px] text-[#000b]'>{data?.billingAddress?.country}</h4>
                     <h4 className='pt-1 text-[14px] font-[500] text-[#000b]'>{data?.billingAddress?.phoneNumber}</h4>
                 </div>
-
             </div>
+
             <div className="w-[100%] border-t">
                     <h4 className='pt-3 text-[18px] font-[600]'>Payment Information</h4>
                     <h4 className='pt-1 text-[14px] font-[500] text-[#000b]'>Status : {

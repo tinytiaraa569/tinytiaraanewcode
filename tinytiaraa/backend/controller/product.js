@@ -1689,7 +1689,49 @@ router.get("/get-all-products", catchAsyncErrors(async (req, res, next) => {
 router.put("/create-new-review", isAuthenticated, catchAsyncErrors(async (req, res, next) => {
 
     try {
-        const { user, rating, comment, productId, orderId } = req.body;
+
+        let images = [];
+        if (typeof req.body.images === "string") {
+            images.push(req.body.images);
+        } else {
+            images = req.body.images;
+        }
+
+        const imagesLinks = [];
+
+        const processBase64Images = (imageArray, imageLinksArray) => {
+            for (let i = 0; i < imageArray.length; i++) {
+                const base64Image = imageArray[i];
+                const matches = base64Image.match(/^data:(.+);base64,(.+)$/);
+                if (!matches) {
+                    console.error('Invalid image format:', base64Image);
+                    continue; 
+                }
+        
+                const mimeType = matches[1]; 
+                const base64Data = matches[2]; 
+        
+                const extension = mimeType.split('/')[1]; // e.g., 'png', 'jpeg', etc.
+                const imageBuffer = Buffer.from(base64Data, 'base64');
+        
+                const uniqueId = generateRandomString(20); // Adjust length as needed
+                const publicId = `products/${uniqueId}`; // Create the public_id
+        
+                const imagePath = path.join(__dirname, '../uploads/images/products', `${uniqueId}.${extension}`);
+                fs.writeFileSync(imagePath, imageBuffer); // Save the image to the file system
+        
+                imageLinksArray.push({
+                    public_id: publicId,
+                    url: `/uploads/images/products/${uniqueId}.${extension}`
+                });
+            }
+        };
+
+        processBase64Images(images, imagesLinks);
+
+
+
+        const { user, rating, comment, productId, orderId} = req.body;
 
 
 
@@ -1698,6 +1740,7 @@ router.put("/create-new-review", isAuthenticated, catchAsyncErrors(async (req, r
             rating,
             comment,
             productId,
+            images:imagesLinks,
         };
         // const files = req.files;
         // const reviewimages = files.reviewimages ? files.reviewimages.map((file) => file.filename) : [];
@@ -3234,6 +3277,9 @@ router.post('/update-rate-card', async (req, res) => {
         res.status(500).json({ error: 'Failed to update rate card.' });
     }
 });
+
+
+
 
 
 

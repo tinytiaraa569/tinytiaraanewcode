@@ -110,22 +110,19 @@ const ReferralComponent = () => {
     };
 
     return (
-        <>
-
-            <div className="p-6 max-w-md mx-auto bg-white rounded-xl shadow-md mt-4 space-y-4 mb-5">
+ <>
+            <div className="p-6 max-w-md mx-auto bg-white rounded-xl shadow-md mt-4 space-y-4 mb-5 md:max-w-lg lg:max-w-xl">
                 <h2 className="text-2xl font-bold text-center">Referral Program</h2>
                 <button
                     onClick={generateReferralCode}
                     disabled={isGenerating}
-                    className={`w-full py-2 px-4 text-white rounded-md ${isGenerating ? 'bg-gray-400' : 'bg-blue-500 hover:bg-blue-600'}`}
+                    className={`w-full py-2 px-4 text-white rounded-md ${
+                        isGenerating ? 'bg-gray-400' : 'bg-blue-500 hover:bg-blue-600'
+                    }`}
                 >
                     {isGenerating ? 'Generating...' : 'Generate Referral Code'}
                 </button>
-                {error && (
-                    <div className="text-red-500 text-center">
-                        {error}
-                    </div>
-                )}
+                {error && <div className="text-red-500 text-center">{error}</div>}
                 {referralCode && (
                     <div className="space-y-4">
                         <div className="bg-gray-100 p-4 rounded-md">
@@ -150,11 +147,7 @@ const ReferralComponent = () => {
                     </div>
                 )}
             </div>
-
-
             <ReferralList />
-
-
         </>
     );
 };

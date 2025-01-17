@@ -25,6 +25,7 @@ function Allpopup() {
   const [popupData, setPopupData] = useState({
     title: '',
     bannerimg: '',
+    link: '', // New property
   });
   const [popups, setPopups] = useState([]);
   const [isEditing, setIsEditing] = useState(false);
@@ -89,7 +90,7 @@ function Allpopup() {
         await axios.post(`${server}/create-popup`, popupData);
         swal('Success', 'Popup created successfully!', 'success');
       }
-      setPopupData({ title: '', bannerimg: '' });
+      setPopupData({ title: '', bannerimg: '' , link:"" });
       setIsEditing(false);
       setEditId(null);
       fetchPopups();
@@ -123,6 +124,7 @@ function Allpopup() {
     setPopupData({
       title: popup.title,
       bannerimg: popup.bannerimg,
+      link: popup.link || '', // Include link
     });
     setIsEditing(true);
     setEditId(popup._id);
@@ -206,6 +208,16 @@ function Allpopup() {
           variant="outlined"
           sx={{ mb: 3 }}
         />
+              <TextField
+        fullWidth
+        label="Popup Link ( use '/' before links  eg:- /shop)"
+        name="link"
+        value={popupData.link}
+        onChange={handleChange}
+        variant="outlined"
+        sx={{ mb: 3 }}
+        placeholder="Enter the URL"
+      />
         <input
           type="file"
           name="bannerimg"
@@ -269,6 +281,8 @@ function Allpopup() {
           <TableHead>
             <TableRow sx={{ backgroundColor: '#f5f5f5' }}>
               <TableCell sx={{ fontWeight: 'bold', color: '#333' }}>Title</TableCell>
+              <TableCell sx={{ fontWeight: 'bold', color: '#333' }}>Link</TableCell>
+
               <TableCell sx={{ fontWeight: 'bold', color: '#333' }}>Banner</TableCell>
               <TableCell sx={{ fontWeight: 'bold', color: '#333' }}>Live</TableCell>
               <TableCell sx={{ fontWeight: 'bold', color: '#333' }}>Actions</TableCell>
@@ -278,6 +292,14 @@ function Allpopup() {
             {popups.map((popup) => (
               <TableRow key={popup._id} hover>
                 <TableCell>{popup.title}</TableCell>
+                <TableCell> {popup.link ? (
+                    <Link href={popup.link}  style={{ color: '#007bff', textDecoration: 'underline' }}>
+                    {popup.link}
+                    </Link>
+                  ) : (
+                    'No Link'
+                  )}</TableCell>
+
                 <TableCell>
                   <img
                     src={getBannerImageSrc(popup.bannerimg)}

@@ -4,7 +4,7 @@ import { Link, NavLink, useNavigate } from 'react-router-dom'
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-import { FaAngleRight, FaRegHeart, FaRegUser, FaSearch } from 'react-icons/fa';
+import { FaAngleRight, FaRegHeart, FaRegUser, FaSearch, FaUserAlt } from 'react-icons/fa';
 import { MdChevronRight, MdOutlineArrowDropDown, MdOutlineKeyboardArrowRight, MdOutlineShoppingBag, MdSupportAgent } from 'react-icons/md';
 import navimg from './about.webp'
 // import { categoriesData } from '@/static/data';
@@ -270,7 +270,7 @@ function Navbar1() {
       // Fetch user's geolocation
   const fetchUserCountry = async () => {
     try {
-      const response = await fetch("https://ipapi.co/json/");
+      const response = await fetch("https://ipapi.co/json");
       const data = await response.json();
       console.log(data,"data to show")
       return data.currency; // ISO 3166-1 alpha-2 country code
@@ -1426,6 +1426,16 @@ function Navbar1() {
                                 <div className="mb-4">
                                     <h3 className="font-semibold text-[16px] text-center">Shop Now</h3>
                                     <h6
+                                        className="pb-2 pt-2 collectionnav1 text-[14px]"
+                                        onClick={() => {
+                                            navigate("/products");
+                                            closenavbar();
+                                            setMobileShopOpen(false); // Close dropdown
+                                        }}
+                                    >
+                                        All Products
+                                    </h6>
+                                    <h6
                                         className="pb-2 collectionnav1 text-[14px]"
                                         onClick={() => {
                                             handleMetalSelect('gold');
@@ -1502,9 +1512,31 @@ function Navbar1() {
                                     {
                                         isAuthenticated ?
                                             <>
-                                                <div className='flex flex-col items-center mt-6 font-Poppins'>
-                                                    <img className='w-[50px] h-[50px] rounded-full' src={`${user?.avatar}`} alt="" />
+                                                <div className='flex flex-col items-center mt-6 font-Poppins cursor-pointer' onClick={()=>{
+                                                    navigate("/profile")
+                                                    closenavbar()
+                                                }}>
+                                                    {/* <img className='w-[50px] h-[50px] rounded-full' src={`${user?.avatar}`} alt="" /> */}
+                                                     {user?.avatar?.url && user?.avatar.url.match(/https:\/\/res\.cloudinary\.com\/ddaef5aw1\/image\/upload\/v[0-9]+/) ? (
+                                                                                            <img 
+                                                                                                src={user?.avatar.url
+                                                                                                .replace(/https:\/\/res\.cloudinary\.com\/ddaef5aw1\/image\/upload\/v[0-9]+/, `${imgdburl}/uploads/images`)
+                                                                                                .replace("/avatars/", "/products/")}
+                                                                                                className="w-[60px] h-[60px] rounded-full"
+                                                                                                alt="User Avatar"
+                                                                                            />
+                                                                                            ) : user?.avatar?.url ? (
+                                                                                            <img 
+                                                                                                src={`${imgdburl}${avatar?.url}`.replace("/avatars/", "/products/")}
+                                                                                                className="w-[60px] h-[60px] rounded-full"
+                                                                                                alt="User Avatar"
+                                                                                            />
+                                                                                            ) : (
+                                                                                                <FaUserAlt className="w-[50px] h-[50px] text-gray-500 border-2 border-gray-500 rounded-full p-1" />
+                                                                                            )}
+                                                    
                                                     <h3 className='capitalize font-[500]'>{user.name}</h3>
+                                                    <button className='my-2 px-4 py-2 bg-[#006039] text-white rounded-[8px] hover:bg-[#257354]'>Dashboard</button>
                                                 </div>
 
                                             </>

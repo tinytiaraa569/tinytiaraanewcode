@@ -15,6 +15,9 @@ const popupSchema = new mongoose.Schema({
             // Not required, as per your preference
         },
     },
+    link: {
+        type: String,
+    },
     isLive: {
         type: Boolean,
         default: false, // initially, popup is not live

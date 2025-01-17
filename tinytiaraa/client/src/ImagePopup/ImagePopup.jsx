@@ -3,6 +3,7 @@ import Modal from "react-modal";
 import { gsap } from "gsap";
 import { imgdburl, server } from "@/server";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 Modal.setAppElement("#root");
 
@@ -10,6 +11,8 @@ const ImagePopup = ({ onClose }) => {
   const [isOpen, setIsOpen] = useState(true);
   const popupContentRef = useRef(null); // Create a reference to the popup content
   const [imageUrl, setImageUrl] = useState(null); 
+  const [popupData, setPopupData] = useState(null); // Store the live popup data
+  const navigate = useNavigate()
 
   useEffect(() => {
     // Fetch all popups from the API
@@ -23,6 +26,7 @@ const ImagePopup = ({ onClose }) => {
           if (livePopup && livePopup.bannerimg) {
             setImageUrl(livePopup.bannerimg.url); // Assuming the image URL is in the 'url' field of 'bannerimg'
           }
+          setPopupData(livePopup)
         }
       
       } catch (error) {
@@ -33,6 +37,11 @@ const ImagePopup = ({ onClose }) => {
     fetchPopups();
   }, []); // Runs once when the component mounts
 
+  const handleImageClick = () => {
+    if (popupData?.link) {
+      navigate(`${popupData.link}`) ; // Navigate to the link
+    }
+  };
 
 
   // GSAP Animation for Opening with Continuous Bounce
@@ -80,6 +89,8 @@ const ImagePopup = ({ onClose }) => {
 
   if (!isOpen || !imageUrl) return null;
 
+
+
   
 
   return (
@@ -112,6 +123,8 @@ const ImagePopup = ({ onClose }) => {
             src={`${imgdburl}${imageUrl}`}
             alt="Popup"
             className="popup-image !object-cover"
+            onClick={handleImageClick} // Handle click on the image
+            style={{ cursor: popupData.link ? "pointer" : "default" }}
           />
           <button
             onClick={closeModal}

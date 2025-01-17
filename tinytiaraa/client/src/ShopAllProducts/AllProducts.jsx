@@ -87,12 +87,39 @@ function AllProducts() {
     };
 
     const rows = filteredProducts?.map((item) => {
+        const calculateStockCount = (stockData) => {
+            if (!stockData || typeof stockData !== 'object') return 0;
+    
+            return Object.values(stockData).reduce((total, value) => {
+                if (typeof value === 'object') {
+                    return total + calculateStockCount(value); // Recursive for nested objects
+                }
+                return total + (typeof value === 'number' ? value : 0);
+            }, 0);
+        };
+
+        const normalStockCount = item?.stock;
+        const metalStockCount = calculateStockCount(item?.Metalcolorstock);
+        const enamelStockCount = calculateStockCount(item?.Enamelcolorstock);
+        const combinationStockCount = calculateStockCount(item?.combinationStocks);
+         // Determine which category to show based on available stock data
+            let stockToShow = 'Not Upadted'; // Default value if no stock available
+            if (normalStockCount > 0) {
+                stockToShow = normalStockCount;
+            } else if (metalStockCount > 0) {
+                stockToShow = metalStockCount;
+            } else if (enamelStockCount > 0) {
+                stockToShow = enamelStockCount;
+            } else if (combinationStockCount > 0) {
+                stockToShow = combinationStockCount;
+            }
         return {
             id: item._id,
             skuid: item.skuid,
             name: item.name,
             price: `₹ ${item.discountPrice}`,
-            Stock: item.stock !== null ? item.stock : 'M/E',
+            Stock:stockToShow,
+            // Stock: item.stock !== null ? item.stock : 'M/E',
             sold: item?.sold_out, // Replace with actual sold count if available
             isLowStock: checkLowStock(item),
         };
@@ -332,7 +359,7 @@ const handleExcelImport = async (event) => {
             name: item.Name || null,
             originalPrice: item.OriginalPrice || null,
             discountPrice: item.Price || null,
-            stock: parseStockValue(item.Stock) || null,
+            // stock: parseStockValue(item.Stock) || null,
             sold_out: parseStockValue(item.Sold_Out) || null,
             category: item.Category || null,
             subcategory: item.Subcategory || null,
@@ -343,51 +370,51 @@ const handleExcelImport = async (event) => {
           
     
             // Nested MetalColorStock
-            Metalcolorstock: {
-                YellowGoldclrStock: parseStockValue(item.Metalcolorstock_YellowGoldclrStock),
-                RoseGoldclrStock: parseStockValue(item.Metalcolorstock_RoseGoldclrStock),
-                WhiteGoldclrStock: parseStockValue(item.Metalcolorstock_WhiteGoldclrStock),
-              },
+            // Metalcolorstock: {
+            //     YellowGoldclrStock: parseStockValue(item.Metalcolorstock_YellowGoldclrStock),
+            //     RoseGoldclrStock: parseStockValue(item.Metalcolorstock_RoseGoldclrStock),
+            //     WhiteGoldclrStock: parseStockValue(item.Metalcolorstock_WhiteGoldclrStock),
+            //   },
     
            
-            // Nested EnamelColorStock
-            Enamelcolorstock: {
-                deepblue: {
-                  deepblueYellowGoldclrStock: parseStockValue(item.Enamelcolorstock_deepblue_deepblueYellowGoldclrStock),
-                  deepblueRoseGoldclrStock: parseStockValue(item.Enamelcolorstock_deepblue_deepblueRoseGoldclrStock),
-                  deepblueWhiteGoldclrStock: parseStockValue(item.Enamelcolorstock_deepblue_deepblueWhiteGoldclrStock),
-                },
-                pink: {
-                  pinkYellowGoldclrStock: parseStockValue(item.Enamelcolorstock_pink_pinkYellowGoldclrStock),
-                  pinkRoseGoldclrStock: parseStockValue(item.Enamelcolorstock_pink_pinkRoseGoldclrStock),
-                  pinkWhiteGoldclrStock: parseStockValue(item.Enamelcolorstock_pink_pinkWhiteGoldclrStock),
-                },
-                turquoise: {
-                  turquoiseYellowGoldclrStock: parseStockValue(item.Enamelcolorstock_turquoise_turquoiseYellowGoldclrStock),
-                  turquoiseRoseGoldclrStock: parseStockValue(item.Enamelcolorstock_turquoise_turquoiseRoseGoldclrStock),
-                  turquoiseWhiteGoldclrStock: parseStockValue(item.Enamelcolorstock_turquoise_turquoiseWhiteGoldclrStock),
-                },
-                red: {
-                  redYellowGoldclrStock: parseStockValue(item.Enamelcolorstock_red_redYellowGoldclrStock),
-                  redRoseGoldclrStock: parseStockValue(item.Enamelcolorstock_red_redRoseGoldclrStock),
-                  redWhiteGoldclrStock: parseStockValue(item.Enamelcolorstock_red_redWhiteGoldclrStock),
-                },
-                black: {
-                  blackYellowGoldclrStock: parseStockValue(item.Enamelcolorstock_black_blackYellowGoldclrStock),
-                  blackRoseGoldclrStock: parseStockValue(item.Enamelcolorstock_black_blackRoseGoldclrStock),
-                  blackWhiteGoldclrStock: parseStockValue(item.Enamelcolorstock_black_blackWhiteGoldclrStock),
-                },
-                deepgreen: {
-                  deepgreenYellowGoldclrStock: parseStockValue(item.Enamelcolorstock_deepgreen_deepgreenYellowGoldclrStock),
-                  deepgreenRoseGoldclrStock: parseStockValue(item.Enamelcolorstock_deepgreen_deepgreenRoseGoldclrStock),
-                  deepgreenWhiteGoldclrStock: parseStockValue(item.Enamelcolorstock_deepgreen_deepgreenWhiteGoldclrStock),
-                },
-                lotusgreen: {
-                  lotusgreenYellowGoldclrStock: parseStockValue(item.Enamelcolorstock_lotusgreen_lotusgreenYellowGoldclrStock),
-                  lotusgreenRoseGoldclrStock: parseStockValue(item.Enamelcolorstock_lotusgreen_lotusgreenRoseGoldclrStock),
-                  lotusgreenWhiteGoldclrStock: parseStockValue(item.Enamelcolorstock_lotusgreen_lotusgreenWhiteGoldclrStock),
-                },
-              },
+            // // Nested EnamelColorStock
+            // Enamelcolorstock: {
+            //     deepblue: {
+            //       deepblueYellowGoldclrStock: parseStockValue(item.Enamelcolorstock_deepblue_deepblueYellowGoldclrStock),
+            //       deepblueRoseGoldclrStock: parseStockValue(item.Enamelcolorstock_deepblue_deepblueRoseGoldclrStock),
+            //       deepblueWhiteGoldclrStock: parseStockValue(item.Enamelcolorstock_deepblue_deepblueWhiteGoldclrStock),
+            //     },
+            //     pink: {
+            //       pinkYellowGoldclrStock: parseStockValue(item.Enamelcolorstock_pink_pinkYellowGoldclrStock),
+            //       pinkRoseGoldclrStock: parseStockValue(item.Enamelcolorstock_pink_pinkRoseGoldclrStock),
+            //       pinkWhiteGoldclrStock: parseStockValue(item.Enamelcolorstock_pink_pinkWhiteGoldclrStock),
+            //     },
+            //     turquoise: {
+            //       turquoiseYellowGoldclrStock: parseStockValue(item.Enamelcolorstock_turquoise_turquoiseYellowGoldclrStock),
+            //       turquoiseRoseGoldclrStock: parseStockValue(item.Enamelcolorstock_turquoise_turquoiseRoseGoldclrStock),
+            //       turquoiseWhiteGoldclrStock: parseStockValue(item.Enamelcolorstock_turquoise_turquoiseWhiteGoldclrStock),
+            //     },
+            //     red: {
+            //       redYellowGoldclrStock: parseStockValue(item.Enamelcolorstock_red_redYellowGoldclrStock),
+            //       redRoseGoldclrStock: parseStockValue(item.Enamelcolorstock_red_redRoseGoldclrStock),
+            //       redWhiteGoldclrStock: parseStockValue(item.Enamelcolorstock_red_redWhiteGoldclrStock),
+            //     },
+            //     black: {
+            //       blackYellowGoldclrStock: parseStockValue(item.Enamelcolorstock_black_blackYellowGoldclrStock),
+            //       blackRoseGoldclrStock: parseStockValue(item.Enamelcolorstock_black_blackRoseGoldclrStock),
+            //       blackWhiteGoldclrStock: parseStockValue(item.Enamelcolorstock_black_blackWhiteGoldclrStock),
+            //     },
+            //     deepgreen: {
+            //       deepgreenYellowGoldclrStock: parseStockValue(item.Enamelcolorstock_deepgreen_deepgreenYellowGoldclrStock),
+            //       deepgreenRoseGoldclrStock: parseStockValue(item.Enamelcolorstock_deepgreen_deepgreenRoseGoldclrStock),
+            //       deepgreenWhiteGoldclrStock: parseStockValue(item.Enamelcolorstock_deepgreen_deepgreenWhiteGoldclrStock),
+            //     },
+            //     lotusgreen: {
+            //       lotusgreenYellowGoldclrStock: parseStockValue(item.Enamelcolorstock_lotusgreen_lotusgreenYellowGoldclrStock),
+            //       lotusgreenRoseGoldclrStock: parseStockValue(item.Enamelcolorstock_lotusgreen_lotusgreenRoseGoldclrStock),
+            //       lotusgreenWhiteGoldclrStock: parseStockValue(item.Enamelcolorstock_lotusgreen_lotusgreenWhiteGoldclrStock),
+            //     },
+            //   },
             // Additional Data
             ageGroup: {
                 infants: item.AgeGroup_Infants === "Yes",

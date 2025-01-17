@@ -1,0 +1,61 @@
+/* Bounce-in Animation for Text */
+@keyframes bounce-in {
+    0% {
+      transform: scale(0.5);
+      opacity: 0;
+    }
+    60% {
+      transform: scale(1.1);
+      opacity: 1;
+    }
+    100% {
+      transform: scale(1);
+    }
+  }
+  
+  /* Float Animation for the Icon */
+  @keyframes float {
+    0%, 100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-10px);
+    }
+  }
+  
+  /* Apply bounce-in animation */
+  .animate-bounce-in {
+    overflow: hidden;
+    display: inline-block;
+    animation: bounce-in 1.5s cubic-bezier(0.17, 0.67, 0.73, 0.67);
+  }
+
+  /* Flip and Fade Animation */
+  @keyframes slide-bounce-fade {
+    0% {
+      transform: translateX(-100%) translateY(0);
+      opacity: 0;
+    }
+    20% {
+      transform: translateX(0) translateY(0);
+      opacity: 1;
+    }
+    40% {
+      transform: translateX(0) translateY(-10px);
+    }
+    60% {
+      transform: translateX(0) translateY(10px);
+    }
+    80% {
+      transform: translateX(0) translateY(0);
+    }
+    100% {
+      opacity: 0;
+      transform: translateX(0) translateY(0);
+    }
+  }
+  
+  .animate-slide-bounce-fade {
+    animation: slide-bounce-fade 5s ease-in-out forwards;
+  }
+  

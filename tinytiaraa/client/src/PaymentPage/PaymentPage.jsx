@@ -154,7 +154,7 @@ function PaymentPage() {
 
             // Step 2: Initiate Razorpay payment
             const options = {
-                key: "rzp_test_TKfJulmRsFjGyI", // Replace with your Razorpay key
+                key: "rzp_live_Zugso0cE9kQkHG", // Replace with your Razorpay key
                 amount: encryptedAmount, // Amount in paisa (INR)
                 currency: "INR",
                 name: "Tiny Tiaraa", // Your business name
@@ -182,7 +182,7 @@ function PaymentPage() {
             rzp1.open();
         } catch (error) {
             console.error("Error in handleRazorpayPayment:", error);
-            alert("Error occurred while processing payment.");
+            alert("Error occurred while processing payment amount not matched.");
         }
     };
 
@@ -510,6 +510,8 @@ function PaymentPage() {
 
     const handlePaymentSuccess = async (paymentDetails) => {
         console.log('Payment successful. Details:', paymentDetails);
+        setIsLoading(true);
+
 
         // Retrieve referral code from session storage
         const referralCode = sessionStorage.getItem('referralCode');
@@ -574,6 +576,7 @@ function PaymentPage() {
             localStorage.setItem("cartItems", JSON.stringify([]));
             localStorage.setItem("latestOrder", JSON.stringify([]));
             localStorage.setItem("orderDetails", JSON.stringify({ ...updatedOrder, orderId }));
+            setIsLoading(false);
             navigate("/order/success");
             window.location.reload();
 
@@ -585,6 +588,7 @@ function PaymentPage() {
 
         } catch (error) {
             console.log(error);
+            setIsLoading(false);
             toast.error("Failed to place order. Please try again.");
             // Optionally, navigate back to the checkout page or show additional error details
         }

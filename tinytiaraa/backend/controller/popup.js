@@ -13,7 +13,7 @@ const generateRandomString = (length) => {
 };
 
 router.post('/create-popup', catchAsyncErrors(async (req, res, next) => {
-    const { title, bannerimg } = req.body;
+    const { title, bannerimg ,link} = req.body;
 
     // Check if title is provided
     if (!title) {
@@ -54,6 +54,7 @@ router.post('/create-popup', catchAsyncErrors(async (req, res, next) => {
     const popup = new Popup({
         title,
         bannerimg: processedBannerImg || {},
+        link
     });
 
     await popup.save();
@@ -113,7 +114,7 @@ router.get('/get-popup/:popupId', catchAsyncErrors(async (req, res, next) => {
 
   router.put('/update-popup/:popupId', catchAsyncErrors(async (req, res, next) => {
     const { popupId } = req.params;
-    const { title, bannerimg } = req.body; // Include `order` in the request body
+    const { title, bannerimg ,link } = req.body; // Include `order` in the request body
 
   
     try {
@@ -158,6 +159,10 @@ router.get('/get-popup/:popupId', catchAsyncErrors(async (req, res, next) => {
       // If title is provided, update the title
     if (title) {
         popup.title = title;
+      }
+
+      if(link){
+        popup.link=link
       }
       
   

@@ -12,9 +12,9 @@ function ProfilePage() {
   return (
     <div className=' bg-[#f5f5f5]' >
       <div className={`${styles.section} flex py-10`}>
-        <div className="w-[335px]">
-          <ProfileSidebar active={active} setActive={setActive} />
-        </div>
+      <div className="w-[65px] lg:w-[335px]">
+        <ProfileSidebar active={active} setActive={setActive} />
+      </div>
         <ProfileContent active={active} setActive={setActive} />
 
       </div>

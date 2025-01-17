@@ -212,14 +212,21 @@ function App() {
     location.pathname.startsWith('/shop-login') ||
 
     
-    location.pathname.startsWith('/dashboard/banner/edit/:id') ||
+    location.pathname.startsWith('/dashboard/banner/edit') ||
     location.pathname.startsWith('/dashboard/banner/create') ||
-    location.pathname.startsWith('/dashboard/aboutbanner/edit/:id') ||
+    location.pathname.startsWith('/dashboard/aboutbanner/edit') ||
     location.pathname.startsWith('/dashboard/aboutbanner/create') ||
-    location.pathname.startsWith('/dashboard/custombanner/edit/:id') ||
+    location.pathname.startsWith('/dashboard/custombanner/edit') ||
     location.pathname.startsWith('/dashboard/custombanner/create') ||
-    location.pathname.startsWith('/dashboard/contactbanner/edit/:id') ||
+    location.pathname.startsWith('/dashboard/contactbanner/edit') ||
     location.pathname.startsWith('/dashboard/contactbanner/create') ||
+
+    location.pathname.startsWith('/shopproduct') ||
+
+    
+
+
+    
 
 
     

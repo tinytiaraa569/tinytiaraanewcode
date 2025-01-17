@@ -700,3 +700,5 @@ export const updateProduct = (
         });
     }
 };
+
+

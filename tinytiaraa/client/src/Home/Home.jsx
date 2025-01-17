@@ -3,7 +3,7 @@ import MainSection from '../MainSection/MainSection'
 import { useAuth } from '../Context/auth'
 import { Helmet } from 'react-helmet-async'
 import axios from 'axios';
-// import ImagePopup from '@/ImagePopup/ImagePopup';
+import ImagePopup from '@/ImagePopup/ImagePopup';
 import { server } from '@/server';
 function Home() {
 

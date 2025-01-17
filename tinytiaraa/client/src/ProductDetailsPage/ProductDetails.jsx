@@ -11,7 +11,7 @@ import { IoChevronBackOutline, IoChevronForwardOutline, IoDiamondOutline } from 
 import { RxDimensions } from "react-icons/rx";
 import { MdFeaturedPlayList } from "react-icons/md";
 import { MdHealthAndSafety } from "react-icons/md";
-import { FaAngleRight, FaChild, FaFacebook, FaInstagram, FaWhatsapp } from "react-icons/fa";
+import { FaAngleRight, FaChild, FaFacebook, FaInstagram, FaUserAlt, FaWhatsapp } from "react-icons/fa";
 import { TbBrandMinecraft } from "react-icons/tb";
 import { TbCertificate } from "react-icons/tb";
 import { MdOutlineAppRegistration } from "react-icons/md";
@@ -3100,8 +3100,45 @@ const ProductDetailsInfo = ({ data ,shouldShowChainOptions }) => {
                     <div className='w-full  min-h-[40vh] flex flex-col items-center py-3 overflow-y-scroll'>
                         {
                             data && data.reviews.map((item, index) => (
-                                <div key={index} className='w-full flex my-2'>
-                                    <img src={`${backend_url}/${item.user.avatar}`} className='w-[60px] h-[60px] rounded-full' alt="" />
+                                <div key={index} className='w-full flex my-1'>
+                                    {/* <img src={`${backend_url}/${item.user.avatar}`} className='w-[60px] h-[60px] rounded-full' alt="" /> */}
+                                    {/* <img 
+                                        src={
+                                            item?.user.avatar?.url &&
+                                            item?.user.avatar.url.match(/https:\/\/res\.cloudinary\.com\/ddaef5aw1\/image\/upload\/v[0-9]+/)
+                                            ? item?.user.avatar.url
+                                                .replace(/https:\/\/res\.cloudinary\.com\/ddaef5aw1\/image\/upload\/v[0-9]+/, `${imgdburl}/uploads/images`)
+                                                .replace("/avatars/", "/products/")
+                                            : item?.user.avatar?.url
+                                            ? `${imgdburl}${user.avatar.url}`.replace("/avatars/", "/products/")
+                                            : "Not Uploaded."
+                                        } 
+                                        className="w-[60px] h-[60px] rounded-full" 
+                                        
+                                        />
+                                        {
+                                            !item?.user.avatar?.url && (
+                                                <FaUserAlt className="w-[60px] h-[60px] text-gray-500" />
+                                            )
+                                            } */}
+
+                                        {item?.user.avatar?.url && item?.user.avatar.url.match(/https:\/\/res\.cloudinary\.com\/ddaef5aw1\/image\/upload\/v[0-9]+/) ? (
+                                        <img 
+                                            src={item?.user.avatar.url
+                                            .replace(/https:\/\/res\.cloudinary\.com\/ddaef5aw1\/image\/upload\/v[0-9]+/, `${imgdburl}/uploads/images`)
+                                            .replace("/avatars/", "/products/")}
+                                            className="w-[60px] h-[60px] rounded-full"
+                                            alt="User Avatar"
+                                        />
+                                        ) : item?.user.avatar?.url ? (
+                                        <img 
+                                            src={`${imgdburl}${user.avatar.url}`.replace("/avatars/", "/products/")}
+                                            className="w-[60px] h-[60px] rounded-full"
+                                            alt="User Avatar"
+                                        />
+                                        ) : (
+                                            <FaUserAlt className="w-[50px] h-[50px] text-gray-500 border-2 border-gray-500 rounded-full p-1" />
+                                        )}
 
                                     <div className='pl-3'>
                                         <h1 className='font-[500] capitalize'>{item.user.name}</h1>
@@ -3111,7 +3148,20 @@ const ProductDetailsInfo = ({ data ,shouldShowChainOptions }) => {
                                             <img src={review1img} alt="" className='w-[200px] h-[200px] border object-fill shadow rounded-[5px]' />
                                             <img src={review2img} alt="" className='w-[200px] h-[200px] border object-fill shadow rounded-[5px]' />
                                         </div> */}
-                                        <p className='w-[60%] mt-3'>{item.comment}</p>
+
+                            {item?.images?.length > 0 && (
+                                                <div className='w-full flex mt-2 gap-4 flex-wrap'>
+                                                    {item.images.map((img, i) => (
+                                                        <img 
+                                                            key={i} 
+                                                            src={`${imgdburl}${img.url}`} 
+                                                            alt={`Review Image ${i + 1}`} 
+                                                            className='w-[150px] h-[150px] border object-cover shadow rounded-[5px]' 
+                                                        />
+                                                    ))}
+                                                </div>
+                                            )}
+                                        <p className='w-[70%] mt-1'>{item.comment}</p>
 
                                     </div>
 
