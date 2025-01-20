@@ -1,5 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react'
+import '../Navbar/Navbar.css'
 import './Navbar1.css'
+
 import { Link, NavLink, useNavigate } from 'react-router-dom'
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
@@ -1155,7 +1157,7 @@ function Navbar1() {
 
 
             {/* Mobile Navbar */}
-            <div className='nav1bannermobile '>
+            <div className='nav1bannermobile'>
                     
 
                     <div className='couponscetion !text-[12px] w-[85%]'>
@@ -1206,7 +1208,7 @@ function Navbar1() {
                 </div>
 
             <div
-                className={`mobile-nav  ${active === true ? "shadow-sm fixed top-0 left-0 z-10" : null
+                className={`mobile-nav ${active === true ? "shadow-sm fixed top-0 left-0 z-10" : null
                     }
                     w-full h-[70px] bg-[#fff] z-50 top-0 left-0 shadow-sm 800px:hidden `}
             >   
