@@ -151,7 +151,7 @@ function ShopEditProductPage() {
         if (success) {
             toast.success("Product Uploaded successfully")
             navigate("/dashboard-products")
-            // window.location.reload()
+            window.location.reload()
         }
 
     }, [dispatch, error, success])
@@ -1616,14 +1616,34 @@ function ShopEditProductPage() {
   
     // Add a new combination
     const handleAddCombination = (e) => {
-        e.preventDefault()
-      const colors = currentColors.split(",").map((color) => color.trim());
-      if (colors.length > 0) {
-        setCombinations([...combinations, ...colors]);
-        setCurrentColors("");
+        e.preventDefault();
+        const colors = currentColors.split(",").map((color) => color.trim());
         
-      }
-    };
+        if (colors.length > 0) {
+          // Add new combinations to the combinations array
+          setCombinations((prevCombinations) => {
+            const newCombinations = [...prevCombinations, ...colors];
+            return newCombinations;
+          });
+      
+          // Initialize combinationmetalImages for each new combination
+          setcombinationMetalImages((prevImages) => {
+            const newImages = { ...prevImages };
+            colors.forEach((color) => {
+              if (!newImages[color]) {
+                newImages[color] = {
+                  yellowGold: [],
+                  roseGold: [],
+                  whiteGold: [],
+                };
+              }
+            });
+            return newImages;
+          });
+      
+          setCurrentColors(""); // Clear input field
+        }
+      };
   
     const handleOpenPopup = (e, combination) => {
         e.preventDefault();
@@ -1727,7 +1747,8 @@ function ShopEditProductPage() {
     };
   
     // Handle image deletion
-    const handleDeleteImage = (combination, metalType, index) => {
+    const handleDeleteImage = (e,combination, metalType, index) => {
+        e.preventDefault()
       setcombinationMetalImages((prev) => ({
         ...prev,
         [combination]: {
@@ -1738,11 +1759,21 @@ function ShopEditProductPage() {
     }
     const handleDeleteCombination = (index) => {
         const deletedCombination = combinations[index];
+      
+        // Remove the combination from the combinations array
         setCombinations((prev) => prev.filter((_, i) => i !== index));
+      
+        // Remove the combination's stock data
         setCombinationStocks((prev) => {
-            const { [deletedCombination]: _, ...remainingStocks } = prev;
-            return remainingStocks;
-          });
+          const { [deletedCombination]: _, ...remainingStocks } = prev;
+          return remainingStocks;
+        });
+      
+        // Remove the combination's images
+        setcombinationMetalImages((prev) => {
+          const { [deletedCombination]: _, ...remainingImages } = prev;
+          return remainingImages;
+        });
       };
 
     useEffect(() => {
@@ -2295,7 +2326,8 @@ function ShopEditProductPage() {
             lotusgreenRoseGoldclr,
             lotusgreenWhiteGoldclr,
             combinationmetalImages,
-            combinationStocks
+            combinationStocks,
+            combinations
         });
 
 
@@ -2381,7 +2413,8 @@ function ShopEditProductPage() {
             lotusgreenWhiteGoldclr,
 
             combinationmetalImages,
-            combinationStocks
+            combinationStocks,
+            combinations
 
         }))
 
@@ -5043,7 +5076,10 @@ function ShopEditProductPage() {
                                                             <TfiHandDrag className="text-white text-3xl" />
                                                             </div>
                                                             <button
-                                                            onClick={() => handleDeleteImage(popupCombination, metal, index)}
+                                                            onClick={(e) => {
+                                                                
+                                                                handleDeleteImage(e,popupCombination, metal, index)
+                                                            }}
                                                             className="absolute top-2 right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center"
                                                             >
                                                             &times;

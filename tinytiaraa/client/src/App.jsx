@@ -4,7 +4,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 import { Route, Routes, useLocation, useNavigate } from 'react-router-dom'
-import Navbar from './Navbar/Navbar'
+// import Navbar from './Navbar/Navbar'
 import Cartpage from './CartPage/Cartpage'
 import MainSection from './MainSection/MainSection'
 import Home from './Home/Home.jsx'

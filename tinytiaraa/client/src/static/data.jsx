@@ -1,11 +1,11 @@
 // navigation Data
-import religiousimg from './religious.jpg'
-import pendantimg from './pendents.jpg'
-import setimg from './set.jpg'
-import bangleimg from './bangles.jpg'
-import earringimg from './earrings.jpg'
-import pearlimg from './pearl.jpg'
-import meandmomimg from './meandmon.jpg'
+// import religiousimg from './religious.jpg'
+// import pendantimg from './pendents.jpg'
+// import setimg from './set.jpg'
+// import bangleimg from './bangles.jpg'
+// import earringimg from './earrings.jpg'
+// import pearlimg from './pearl.jpg'
+// import meandmomimg from './meandmon.jpg'
 
 
 //product page bannner 
@@ -31,7 +31,7 @@ export const categoriesData = [
     title: "Diamond Earrings",
     subTitle: "",
     bannerimg: "https://backend.tinytiaraa.com:8000/uploads/images/homecategory/uibyrfneap5pipa9xfbd.webp",
-    productbanner: earringbanner,
+    productbanner: "https://backend.tinytiaraa.com:8000/uploads/images/homecategory/uibyrfneap5pipa9xfbd.webp",
     image_Url:
       "https://d2j6dbq0eux0bg.cloudfront.net/images/90976509/4320772799.png",
     subcategories: [
@@ -57,8 +57,8 @@ export const categoriesData = [
 
 
     ],
-    bannerimg: pendantimg,
-    productbanner: pendantbanner,
+    bannerimg: "https://backend.tinytiaraa.com:8000/uploads/images/products/yktdqyyf8uq36roltwtk.png",
+    productbanner: "https://backend.tinytiaraa.com:8000/uploads/images/products/yktdqyyf8uq36roltwtk.png",
     type:'Gold',
 
     subTitle: "",
@@ -72,7 +72,7 @@ export const categoriesData = [
     image_Url:
       "https://d2j6dbq0eux0bg.cloudfront.net/images/90976509/4388136306.png",
 
-    bannerimg: pearlimg,
+    bannerimg: "https://d2j6dbq0eux0bg.cloudfront.net/images/90976509/4388136306.png",
      type:'Gold',
     productbanner: pearlbanner,
     subcategories: [
@@ -121,7 +121,7 @@ export const categoriesData = [
 
     ],
     subTitle: "",
-    bannerimg: bangleimg,
+    bannerimg: "https://backend.tinytiaraa.com:8000/uploads/images/jgruybidtzxt0brpc6eo.jpg",
     productbanner: braceletsbanner,
     type:'Gold',
 
@@ -138,7 +138,7 @@ export const categoriesData = [
 
 
     ],
-    bannerimg: setimg,
+    bannerimg: "https://d2j6dbq0eux0bg.cloudfront.net/images/90976509/4388136314.png",
     type:'Gold',
     productbanner:setsbanner,
 
@@ -149,7 +149,7 @@ export const categoriesData = [
     id: 7,
     title: "Religious Collections",
     subTitle: "",
-    bannerimg: religiousimg,
+    bannerimg: "https://d2j6dbq0eux0bg.cloudfront.net/images/90976509/4320761225.png",
     productbanner:religiousbanner,
     type:'Gold',
 
@@ -202,7 +202,7 @@ export const categoriesData = [
   },{
     id: 8,
     title: "Coming Soon ...",
-    bannerimg: meandmomimg,
+    bannerimg: "https://d2j6dbq0eux0bg.cloudfront.net/images/90976509/4320761225.png",
 
     productbanner: mombanner,
 

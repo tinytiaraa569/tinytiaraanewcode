@@ -1862,6 +1862,8 @@ router.put("/update-product/:id", catchAsyncErrors(async (req, res, next) => {
             console.log("Request Files:", req.files);
         }
 
+        console.log(req.body,"requested body format data ------------")
+
        
 
         // let images = [];
@@ -2905,6 +2907,99 @@ router.put("/update-product/:id", catchAsyncErrors(async (req, res, next) => {
             }
         }
 
+        const comboEditprocessBase64Image = (imagePath, destinationArray = []) => {
+            if (!Array.isArray(destinationArray)) {
+                destinationArray = [];
+            }
+        
+            // Validate if the imagePath is a base64 string
+            if (typeof imagePath === "string" && imagePath.startsWith("data:")) {
+                const matches = imagePath.match(/^data:(.+);base64,(.+)$/);
+                if (!matches) {
+                    console.error('Invalid base64 format:', imagePath);
+                    return destinationArray; // Return empty array if invalid base64
+                }
+        
+                const mimeType = matches[1];
+                const base64Data = matches[2];
+                const extension = mimeType.split('/')[1];
+                const imageBuffer = Buffer.from(base64Data, 'base64');
+                const uniqueId = generateRandomString(20);
+                const localImagePath = path.join(__dirname, '../uploads/images/products', `${uniqueId}.${extension}`);
+        
+                // Write the image to disk
+                fs.writeFileSync(localImagePath, imageBuffer);
+        
+                // Push the processed image to destinationArray with public_id and url
+                destinationArray.push({
+                    public_id: `products/${uniqueId}`,
+                    url: `/uploads/images/products/${uniqueId}.${extension}` // Store both public_id and url
+                });
+            } else {
+                // For non-base64 images, just push the image URL
+                destinationArray.push({ url: imagePath });
+            }
+        
+            return destinationArray; // Return the updated array
+        };
+        
+        
+
+
+        const processCombinationMetalImages = async (req, product) => {
+            const updatedCombinationImages = {};
+        
+            // Process images, checking for existing ones and uploading new ones
+            const processImages = async (imageList, existingImages, destinationPath) => {
+                let imageLinks = []; // Initialize as an array
+        
+                // Create a Set for fast lookup
+                const existingImageUrls = new Set(existingImages.map(img => img.url));
+        
+                for (const image of imageList) {
+                    const imagePath = image.url || image.path;
+        
+                    if (!imagePath) throw new Error("Invalid image format provided");
+        
+                    // Handle image upload or linking based on whether it exists already
+                    if (!existingImageUrls.has(imagePath)) {
+                        // Process and upload new image (base64 image handling assumed)
+                        imageLinks = await comboEditprocessBase64Image(imagePath, imageLinks);
+                    } else {
+                        // Keep existing image if already present
+                        const existingImage = existingImages.find(img => img.url === imagePath);
+                        if (existingImage) {
+                            imageLinks.push(existingImage);
+                        }
+                    }
+                }
+        
+                return imageLinks;
+            };
+        
+            // Loop through combination metal images
+            for (const [combination, metals] of Object.entries(req.body.combinationmetalImages || {})) {
+                updatedCombinationImages[combination] = {};
+        
+                for (const [metal, images] of Object.entries(metals)) {
+                    // Get existing images for this combination and metal
+                    const existingImages = product.enamelColors[combination]?.[metal]?.map(img => img.url) || [];
+        
+                    // Process new images and merge with existing images
+                    updatedCombinationImages[combination][metal] = await processImages(
+                        images,
+                        existingImages,
+                        "./uploads/images/products"
+                    );
+                }
+            }
+        
+            return updatedCombinationImages;
+        };
+        
+        
+        const updatedCombinationImages = await processCombinationMetalImages(req, product);
+
 
 
         const updateData = req.body;
@@ -3051,9 +3146,12 @@ router.put("/update-product/:id", catchAsyncErrors(async (req, res, next) => {
             },
         };
 
+        updateData.combinationmetalImages = updatedCombinationImages;
+
+            // Log the final object for debugging
+
 
         // Log the final updateData object to see what will be updated in the database
-        console.log("Update Data:", updateData);
 
         // Find the product by ID and update
         const updatedProduct = await Product.findByIdAndUpdate(productId, updateData, {

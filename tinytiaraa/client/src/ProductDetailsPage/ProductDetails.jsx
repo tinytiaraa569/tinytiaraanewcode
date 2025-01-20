@@ -31,8 +31,7 @@ import { addToCart } from '@/redux/actions/cart';
 import { toast } from 'react-toastify';
 import { addToWishlist, removeFromWishlist } from '@/redux/actions/wishlist';
 import Ratings from './Ratings';
-import review1img from './reviewsimages/review1.jpg'
-import review2img from './reviewsimages/review2.jpg'
+
 import axios from 'axios';
 import Modal from 'react-modal';
 import './productdetails.css'

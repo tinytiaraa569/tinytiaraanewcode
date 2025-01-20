@@ -505,7 +505,8 @@ export const updateProduct = (
             lotusgreenRoseGoldclr,
             lotusgreenWhiteGoldclr,
             combinationmetalImages,
-            combinationStocks
+            combinationStocks,
+            combinations
 
     
     
@@ -595,7 +596,8 @@ export const updateProduct = (
             lotusgreenRoseGoldclr,
             lotusgreenWhiteGoldclr,
             combinationmetalImages,
-            combinationStocks
+            combinationStocks,
+            combinations
 
 
         }, "from action in redux")
@@ -678,7 +680,8 @@ export const updateProduct = (
             lotusgreenRoseGoldclr,
             lotusgreenWhiteGoldclr,
             combinationmetalImages,
-            combinationStocks
+            combinationStocks,
+            combinations
 
         }
 
