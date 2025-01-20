@@ -1,6 +1,6 @@
 import React from 'react';
 import './Aboutsection3.css';
-import founder1 from './images/founderimg1.jpg';
+import founder1 from './images/founderimg.webp';
 
 function Aboutsection3() {
     return (
