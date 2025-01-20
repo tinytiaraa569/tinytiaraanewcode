@@ -1,6 +1,6 @@
 import React from 'react';
 import './Aboutsection3.css';
-import founder from './images/founder.jpg';
+import founder1 from './images/founderimg1.jpg';
 
 function Aboutsection3() {
     return (
@@ -34,7 +34,10 @@ function Aboutsection3() {
                     </div>
 
                     <div className="founderimg" onContextMenu={(e) => e.preventDefault()} >
-                        <img loading='lazy' src="https://admin.tinytiaraa.com/uploads/images/products/ul1cjxxwycebfjbz619h.webp" alt="Rashmi Jain - Founder" />
+                        {/* <img loading='lazy' src="https://admin.tinytiaraa.com/uploads/images/products/ul1cjxxwycebfjbz619h.webp" alt="Rashmi Jain - Founder" /> */}
+
+                        <img loading='lazy' src={founder1} alt="Rashmi Jain - Founder" />
+
                     </div>
                 </div>
             </div>

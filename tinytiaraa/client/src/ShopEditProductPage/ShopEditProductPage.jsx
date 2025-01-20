@@ -151,7 +151,7 @@ function ShopEditProductPage() {
         if (success) {
             toast.success("Product Uploaded successfully")
             navigate("/dashboard-products")
-            window.location.reload()
+            // window.location.reload()
         }
 
     }, [dispatch, error, success])
@@ -1608,6 +1608,142 @@ function ShopEditProductPage() {
         mom: false,
     });
 
+    const [combinations, setCombinations] = useState([]);
+    const [currentColors, setCurrentColors] = useState("");
+    const [popupCombination, setPopupCombination] = useState(null);
+    const [combinationmetalImages, setcombinationMetalImages] = useState({});
+    const [combinationStocks, setCombinationStocks] = useState({});
+  
+    // Add a new combination
+    const handleAddCombination = (e) => {
+        e.preventDefault()
+      const colors = currentColors.split(",").map((color) => color.trim());
+      if (colors.length > 0) {
+        setCombinations([...combinations, ...colors]);
+        setCurrentColors("");
+        
+      }
+    };
+  
+    const handleOpenPopup = (e, combination) => {
+        e.preventDefault();
+        setPopupCombination(combination);
+    
+        if (!combinationmetalImages[combination]) {
+          setcombinationMetalImages((prev) => ({
+            ...prev,
+            [combination]: {
+              yellowGold: [],
+              roseGold: [],
+              whiteGold: [],
+            },
+          }));
+        }
+    
+        if (!combinationStocks[combination]) {
+          setCombinationStocks((prev) => ({
+            ...prev,
+            [combination]: {
+              yellowGold: "",
+              roseGold: "",
+              whiteGold: "",
+            },
+          }));
+        }
+      };
+     
+  
+    // Close the popup
+    const handleClosePopup = () => {
+      setPopupCombination(null);
+    };
+
+
+  // Update stock values
+  const handleStockChange = (e, combination, metalType) => {
+    const value = e.target.value; // Keep the value as-is (blank if empty)
+    setCombinationStocks((prev) => ({
+      ...prev,
+      [combination]: {
+        ...prev[combination],
+        [metalType]: value,
+      },
+    }));
+  };
+  
+    // Handle image uploads for a specific metal color
+    const handleImageUpload = (e, combination, metalType) => {
+        const files = Array.from(e.target.files);
+        const newImages = [];
+      
+        files.forEach((file) => {
+          const reader = new FileReader();
+          reader.onload = () => {
+            if (reader.readyState === 2) {
+              newImages.push({ url: reader.result, isNew: true }); // Add new images with the `isNew` flag
+            }
+          };
+          reader.readAsDataURL(file);
+        });
+      
+        // Update state after loading all images
+        setTimeout(() => {
+          setcombinationMetalImages((prev) => ({
+            ...prev,
+            [combination]: {
+              ...prev[combination],
+              [metalType]: [...prev[combination][metalType], ...newImages],
+            },
+          }));
+        }, 500);
+      };
+  
+    // Handle image drag and drop
+    const combinationhandleDragStart = (e, combination, metalType, index) => {
+      e.dataTransfer.setData(
+        "text/plain",
+        JSON.stringify({ combination, metalType, index })
+      );
+    };
+  
+    const combinationhandleDrop = (e, combination, metalType, dropIndex) => {
+      e.preventDefault();
+      const data = JSON.parse(e.dataTransfer.getData("text/plain"));
+      const { index: dragIndex } = data;
+  
+      if (combination === data.combination && metalType === data.metalType) {
+        const updatedImages = [...combinationmetalImages[combination][metalType]];
+        const [draggedImage] = updatedImages.splice(dragIndex, 1);
+        updatedImages.splice(dropIndex, 0, draggedImage);
+  
+        setcombinationMetalImages((prev) => ({
+          ...prev,
+          [combination]: {
+            ...prev[combination],
+            [metalType]: updatedImages,
+          },
+        }));
+      }
+    };
+  
+    // Handle image deletion
+    const handleDeleteImage = (combination, metalType, index) => {
+      setcombinationMetalImages((prev) => ({
+        ...prev,
+        [combination]: {
+          ...prev[combination],
+          [metalType]: prev[combination][metalType].filter((_, i) => i !== index),
+        },
+      }));
+    }
+    const handleDeleteCombination = (index) => {
+        const deletedCombination = combinations[index];
+        setCombinations((prev) => prev.filter((_, i) => i !== index));
+        setCombinationStocks((prev) => {
+            const { [deletedCombination]: _, ...remainingStocks } = prev;
+            return remainingStocks;
+          });
+      };
 
     useEffect(() => {
         if (products?.length > 0) {
@@ -1717,6 +1853,10 @@ function ShopEditProductPage() {
 
 
                 }
+
+            setCombinations(product.combinations || []);
+            setcombinationMetalImages(product.combinationmetalImages || {});
+            setCombinationStocks(product.combinationStocks || {});
             }
         }
     }, [products, id]);
@@ -1987,6 +2127,27 @@ function ShopEditProductPage() {
         });
 
 
+   // Process combinations
+        Object.keys(combinationmetalImages).forEach((combination) => {
+            const metalImages = combinationmetalImages[combination];
+
+            // Iterate through metal types (yellowGold, roseGold, whiteGold)
+            Object.keys(metalImages).forEach((metalType) => {
+                metalImages[metalType].forEach((image) => {
+                    if (image.isNew) {
+                        newForm.append(
+                            `newCombinationImages[${combination}][${metalType}]`,
+                            image.url
+                        );
+                    } else {
+                        newForm.append(
+                            `existingCombinationImages[${combination}][${metalType}]`,
+                            JSON.stringify(image)
+                        );
+                    }
+                });
+            });
+        });
 
 
 
@@ -2133,6 +2294,8 @@ function ShopEditProductPage() {
             lotusgreenYellowGoldclr,
             lotusgreenRoseGoldclr,
             lotusgreenWhiteGoldclr,
+            combinationmetalImages,
+            combinationStocks
         });
 
 
@@ -2216,6 +2379,9 @@ function ShopEditProductPage() {
             lotusgreenYellowGoldclr,
             lotusgreenRoseGoldclr,
             lotusgreenWhiteGoldclr,
+
+            combinationmetalImages,
+            combinationStocks
 
         }))
 
@@ -4767,6 +4933,159 @@ function ShopEditProductPage() {
 
 
                     {/* enamel color  */}
+
+
+                    <div className="mt-4">
+                                        <div>
+                                            <h2 className="mb-2 text-gray-800">Add Combination for the Product <span className='text-gray-400'>(2 or more tone )</span> </h2>
+                    
+                                            <div className="flex flex-col md:flex-row items-center gap-4 mb-1">
+                                            <input
+                                                type="text"
+                                                value={currentColors}
+                                                onChange={(e) => setCurrentColors(e.target.value)}
+                                                placeholder="Enter Colors (e.g., Red, Blue, Green)"
+                                                className="border border-gray-300 px-4 py-2 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none text-gray-700 w-full md:w-2/3 shadow-sm"
+                                            />
+                                            <button
+                                                onClick={handleAddCombination}
+                                                className="bg-blue-500 text-white px-6 py-3 rounded-lg hover:bg-blue-600 transition duration-200 shadow-md w-full md:w-auto"
+                                            >
+                                                Add Combinations
+                                            </button>
+                                            </div>
+                                        </div>
+                    
+                                        <div className="flex flex-col gap-4 mt-3">
+                                            {combinations.map((combination, index) => (
+                                                <div
+                                                key={index}
+                                                className="px-5 border border-gray-200 py-3 flex flex-col md:flex-row justify-between items-center gap-7"
+                                                >
+                                                <div className="flex flex-col md:flex-row items-center gap-4">
+                                                    
+                                                    <span className="font-semibold text-[16px] text-gray-700 text-center">{combination}</span>
+                                                </div>
+                                                <div className="flex gap-3 mt-4 md:mt-0">
+                                                    <button
+                                                     type="button" // Add this line
+                                                     
+                                                     onClick={(e) => handleOpenPopup(e, combination)} // Pass the event object
+                                                    className="text-[15px] w-[150px] flex items-center justify-center gap-2 bg-green-500 text-white px-1 py-2 rounded-[4px] hover:bg-green-600 shadow-md transition"
+                                                    >
+                                                    <i className="fas fa-upload"></i> Add Images
+                                                    </button>
+                                                    <button
+                                                    type="button" 
+                                                    onClick={() => handleDeleteCombination(index)}
+                                                    className="text-[15px] flex items-center gap-2 bg-red-500 text-white px-4 py-2 rounded-[4px] hover:bg-red-600 shadow-md transition"
+                                                    >
+                                                    <i className="fas fa-trash"></i> Delete
+                                                    </button>
+                                                </div>
+                                                </div>
+                                            ))}
+                                            </div>
+                    
+                                        {popupCombination && (
+                                            <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+                                            <div className="bg-white rounded-lg p-8 w-full max-w-4xl max-h-screen overflow-auto">
+                                                <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center">
+                                                Upload Images for: {popupCombination}
+                                                </h2>
+                    
+                                                {["yellowGold", "roseGold", "whiteGold"].map((metal) => (
+                                                <div key={metal} className="mb-8">
+                                                    <h3 className="font-semibold text-lg text-gray-800 mb-4 capitalize">
+                                                    {metal.replace("Gold", " Gold")}
+                                                    </h3>
+                                                    <input
+                                                    type="file"
+                                                    multiple
+                                                    onChange={(e) => handleImageUpload(e, popupCombination, metal)}
+                                                    className="file-input mb-4 border border-gray-300 rounded-lg px-4 py-2 w-full"
+                                                    />
+                    
+                                                    <div
+                                                    className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4"
+                                                    onDragOver={(e) => e.preventDefault()}
+                                                    >
+                                                    {combinationmetalImages[popupCombination]?.[metal].length > 0 ? (
+                                                        combinationmetalImages[popupCombination]?.[metal].map((image, index) => (
+                                                        <div
+                                                            key={index}
+                                                            className={`relative rounded-lg shadow-lg overflow-hidden ${
+                                                            draggingIndex === index ? "border-2 border-blue-500" : ""
+                                                            }`}
+                                                            draggable
+                                                            onDragStart={(e) =>
+                                                            combinationhandleDragStart(e, popupCombination, metal, index)
+                                                            }
+                                                            onDrop={(e) =>
+                                                            combinationhandleDrop(e, popupCombination, metal, index)
+                                                            }
+                                                        >
+                                                            <img
+                                                            // src={image}
+                                                            src={
+                                                                image.url.match(/https:\/\/res\.cloudinary\.com\/ddaef5aw1\/image\/upload\/v[0-9]+/)
+                                                                    ? image.url.replace(
+                                                                        /https:\/\/res\.cloudinary\.com\/ddaef5aw1\/image\/upload\/v[0-9]+/,
+                                                                        `${imgdburl}/uploads/images`
+                                                                    ): image.url.includes("base64")
+                                                                    ? `${image.url}`
+                                                                    : `${imgdburl}${image.url}` // Prepend imgdburl if not Cloudinary
+                                                            }
+                                                            alt="Uploaded"
+                                                            className="w-full h-40 object-cover rounded-lg"
+                                                            />
+                                                            <div className="absolute inset-0 flex justify-center items-center opacity-0 hover:opacity-100 bg-black bg-opacity-50 transition-opacity">
+                                                            <TfiHandDrag className="text-white text-3xl" />
+                                                            </div>
+                                                            <button
+                                                            onClick={() => handleDeleteImage(popupCombination, metal, index)}
+                                                            className="absolute top-2 right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center"
+                                                            >
+                                                            &times;
+                                                            </button>
+                                                        </div>
+                                                        ))
+                                                    ) : (
+                                                        <p className="text-gray-500 text-[14px] col-span-full">No images uploaded yet.</p>
+                                                    )}
+                                                    </div>
+                                                    <div className="mb-4 mt-4 flex items-center space-x-4">
+                                                        <label
+                                                            htmlFor={`${metal}-stock`}
+                                                            className="text-gray-700 text-[15px] font-medium "
+                                                        >
+                                                            Stock:
+                                                        </label>
+                                                        <input
+                                                            type="number"
+                                                            id={`${metal}-stock`}
+                                                            value={combinationStocks[popupCombination]?.[metal] || ""}
+                                                            onChange={(e) => handleStockChange(e, popupCombination, metal)}
+                                                            placeholder="Enter stock"
+                                                            className="border text-[15px] border-gray-300 px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 w-24 sm:w-32 lg:w-40"
+                                                        />
+                                                        </div>
+                                                </div>
+                                                ))}
+                    
+                                                <div className="flex justify-end">
+                                                <button
+                                                    onClick={handleClosePopup}
+                                                    className="bg-red-500 text-white px-6 py-3 rounded-lg hover:bg-red-600"
+                                                >
+                                                    Close
+                                                </button>
+                                                </div>
+                                            </div>
+                                            </div>
+                                        )}
+                                        </div>
+                    
 
 
 
