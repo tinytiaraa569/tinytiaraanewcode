@@ -16,7 +16,7 @@ const app = express()
 
 
 app.use(cors({
-    origin: 'https://tiny-tiaraanew.vercel.app',
+    origin: 'https://tiny-tiaraanew.vercel.app/',
     credentials: true
 }));
 
