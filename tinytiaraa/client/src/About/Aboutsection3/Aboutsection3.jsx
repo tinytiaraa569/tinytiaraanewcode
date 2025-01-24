@@ -34,7 +34,7 @@ function Aboutsection3() {
                     </div>
 
                     <div className="founderimg" onContextMenu={(e) => e.preventDefault()} >
-                        <img loading='lazy' src="https://admin.tinytiaraa.com/uploads/images/products/ul1cjxxwycebfjbz61mp.webp" alt="Rashmi Jain - Founder" />
+                        <img loading='lazy' src="https://admin.tinytiaraa.com/uploads/images/products/ul1cjxxwycebfjbz61np.webp" alt="Rashmi Jain - Founder" />
 
                         {/* <img loading='lazy' src={founder1} alt="Rashmi Jain - Founder" /> */}
 

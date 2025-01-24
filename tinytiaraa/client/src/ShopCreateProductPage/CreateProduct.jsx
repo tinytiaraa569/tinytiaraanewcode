@@ -4295,7 +4295,7 @@ function CreateProduct() {
                 {/* weight section */}
 
                 <div className='font-Poppins mt-4'>
-                    <label htmlFor="" className='pb-2 font-[600]'>Gold Weight<span className='text-red-500'>*</span></label>
+                    <label htmlFor="" className='pb-2 font-[600]'>Gold/Silver Weight<span className='text-red-500'>*</span></label>
                     <div className='flex justify-between items-center'>
 
                         <div className='mt-1 w-[45%]'>

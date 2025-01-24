@@ -331,7 +331,9 @@ function ProductDetails({ data }) {
                 // toast.info(stockMessage); // Inform the user about available stock
             }
 
-            const chainPrice = selectedChainSize === '13inch' ? 7200 : (selectedChainSize === '18inch' ? 14400 : 0);
+            // const chainPrice = selectedChainSize === '13inch' ? 7200 : (selectedChainSize === '18inch' ? 14400 : 0);
+            
+            const chainPrice = fnchainPrice(selectedChainSize, productType);
 
             // Proceed with adding to cart
             const cartData = {
@@ -425,27 +427,27 @@ function ProductDetails({ data }) {
     };
     const [showWithChain, setShowWithChain] = useState(null);
 
-    const toggleChainOption = (option) => {
-        if (option === 'with') {
-            setShowWithChain(true);
-            setSelectedChainSize('13inch'); // Set default to 13 inches
-            setFinalPrice(data.discountPrice + 7200);
-            setFinalOriginalPrice(data.originalPrice + 7200);
-            setSelect(0); 
-        } else {
-            setShowWithChain(false);
-            setSelectedChainSize(null); // Clear the selection when "Without Chain" is selected
-            setFinalPrice(data.discountPrice);
-            setFinalOriginalPrice(data.originalPrice);
-            setSelect(0); 
-        }
-        // setShowWithChain(option === 'with'); // Set showWithChain based on the selected option ('with' or 'without')
-        // setSelect(0); // Reset selected image index when toggling chain option
-        // setSelectedColorIndex(null);
-        if (option === 'without') {
-            setSelectedChainSize(""); // Reset selected chain size when without chain is chosen
-        }
-    };
+    // const toggleChainOption = (option) => {
+    //     if (option === 'with') {
+    //         setShowWithChain(true);
+    //         setSelectedChainSize('13inch'); // Set default to 13 inches
+    //         setFinalPrice(data.discountPrice + 7200);
+    //         setFinalOriginalPrice(data.originalPrice + 7200);
+    //         setSelect(0); 
+    //     } else {
+    //         setShowWithChain(false);
+    //         setSelectedChainSize(null); // Clear the selection when "Without Chain" is selected
+    //         setFinalPrice(data.discountPrice);
+    //         setFinalOriginalPrice(data.originalPrice);
+    //         setSelect(0); 
+    //     }
+    //     // setShowWithChain(option === 'with'); // Set showWithChain based on the selected option ('with' or 'without')
+    //     // setSelect(0); // Reset selected image index when toggling chain option
+    //     // setSelectedColorIndex(null);
+    //     if (option === 'without') {
+    //         setSelectedChainSize(""); // Reset selected chain size when without chain is chosen
+    //     }
+    // };
 
     // const imagesArray =
     // selectedColor === 0
@@ -948,22 +950,114 @@ function ProductDetails({ data }) {
 
     // --------------------------------
 
+    const [categoriesData, setCategoriesData] = useState([]);
+
+    // Fetch categories from the API
+    useEffect(() => {
+        const fetchCategories = async () => {
+            try {
+                const response = await axios.get(`${server}/get-allcategories`);
+                // Filter categories based on type (gold or silver)
+                const filteredGoldCategories = response.data.categories.filter(category => category.type === 'gold');
+                setCategoriesData(filteredGoldCategories); // Store gold categories
+            } catch (error) {
+                console.error('Error fetching categories:', error);
+                alert('Failed to fetch categories');
+            } 
+        };
+
+        fetchCategories();
+    }, []);
+
+
+    console.log(categoriesData,"categoriesData-------------------")
+    const productCategory = data?.category;
+    const productType = categoriesData.some(category => 
+        category.title.toLowerCase().includes(productCategory.toLowerCase()) && category.type === 'gold'
+    ) ? 'gold' : 'silver';
+
+    const fnchainPrice = (selectedChainSize, productType) => {
+        // Check for chain sizes and category type
+        if (productType === 'gold') {
+            if (selectedChainSize === '13inch') {
+                return 7200;  // Price for 13inch chain in gold
+            } else if (selectedChainSize === '18inch') {
+                return 14400; // Price for 18inch chain in gold
+            }
+        } else if (productType === 'silver') {
+            if (selectedChainSize === '13inch') {
+                return 500;  // Price for 13inch chain in silver
+            } else if (selectedChainSize === '16inch') {
+                return 800;  // Price for 16inch chain in silver
+            }
+        }
+    
+        return 0; // Default if no valid chain size matches
+    };
+
+    const toggleChainOption = (option) => {
+        if (option === 'with') {
+            setShowWithChain(true);
+            const chainPrice = productType === 'gold' ? 7200 : 500; // Default price based on product type
+            setSelectedChainSize('13inch'); // Set default to 13 inches
+            setFinalPrice(data.discountPrice + chainPrice);
+            setFinalOriginalPrice(data.originalPrice + chainPrice);
+            setSelect(0); 
+        } else {
+            setShowWithChain(false);
+            setSelectedChainSize(null); // Clear the selection when "Without Chain" is selected
+            setFinalPrice(data.discountPrice);
+            setFinalOriginalPrice(data.originalPrice);
+            setSelect(0); 
+        }
+        if (option === 'without') {
+            setSelectedChainSize(""); // Reset selected chain size when without chain is chosen
+        }
+    };
+    
+
 
     const [finalPrice, setFinalPrice] = useState(data.discountPrice);
     const [finalOriginalPrice, setFinalOriginalPrice] = useState(data.originalPrice);
 
 
-    const handleChainSizeChange = (event) => {
-        setSelectedChainSize(event.target.value);
+    // const handleChainSizeChange = (event) => {
+    //     setSelectedChainSize(event.target.value);
 
-        // Calculate the new price based on the selected chain size
+    //     // Calculate the new price based on the selected chain size
+    //     const chainSize = event.target.value;
+    //     let additionalPrice = 0;
+    //     if (chainSize === "13inch") {
+    //         additionalPrice = 7200;
+    //     } else if (chainSize === "18inch") {
+    //         additionalPrice = 14400;
+    //     }
+    //     const basePrice = data.discountPrice;
+    //     setFinalPrice(basePrice + additionalPrice);
+    //     setFinalOriginalPrice(data.originalPrice + additionalPrice);
+    // };
+
+    const handleChainSizeChange = (event) => {
         const chainSize = event.target.value;
+        setSelectedChainSize(chainSize);
+    
+        // Calculate the additional price based on the product type and chain size
         let additionalPrice = 0;
-        if (chainSize === "13inch") {
-            additionalPrice = 7200;
-        } else if (chainSize === "18inch") {
-            additionalPrice = 14400;
+        if (productType === 'gold') {
+            if (chainSize === "13inch") {
+                additionalPrice = 7200;
+            } else if (chainSize === "18inch") {
+                additionalPrice = 14400;
+            }
+        } else if (productType === 'silver') {
+            if (chainSize === "13inch") {
+                additionalPrice = 500;
+            } else if (chainSize === "16inch") {
+                additionalPrice = 800;
+            }
         }
+    
+        // Update the final prices
         const basePrice = data.discountPrice;
         setFinalPrice(basePrice + additionalPrice);
         setFinalOriginalPrice(data.originalPrice + additionalPrice);
@@ -1771,10 +1865,6 @@ function ProductDetails({ data }) {
                         <svg width="13" height="11" viewBox="0 0 13 11" fill="none" xmlns="http://www.w3.org/2000/svg">
                         {(() => {
 
-                                                        
-                           
-
-
                             // Handle case when both enamel and metal colors are selected
                             if (selectedEnamelColor !== null && selectedEnamelColor !== undefined && selectedColor !== null) {
                             const cleanedEnamelColor = selectedEnamelColor.toLowerCase().replace(/_/g, '');
@@ -2524,7 +2614,7 @@ function ProductDetails({ data }) {
 
 
 
-                                    {shouldShowChainOptions && (
+                                    {/* {shouldShowChainOptions && (
                                         <div className='chainotionproduct'>
                                             <div className='chainopiontitle'>
                                                 <h3>Chain Type :</h3>
@@ -2580,7 +2670,7 @@ function ProductDetails({ data }) {
                                                             {/* <div className={`withchainimgcon  ${showWithChain ? 'mt-[2px]' : 'mt-[22px]'} `}>
                                                                 <img src={withchainimg} alt="" />
                                                             </div> */}
-                                                        </label>
+                                                        {/* </label>
                                                     </div>
 
                                                 </div>
@@ -2600,11 +2690,11 @@ function ProductDetails({ data }) {
 
                                                             
                                                             Without Chain
-                                                            </div>
+                                                            </div> */}
                                                             {/* <div className='withchainimgcon mt-[22px]'>
                                                                 <img src={withoutchainimg} alt="" />
                                                             </div> */}
-                                                        </label>
+                                                        {/* </label>
                                                     </div>
 
                                                 </div>
@@ -2615,7 +2705,99 @@ function ProductDetails({ data }) {
 
                                         </div>
 
-                                    )}
+                                    )} */} 
+
+{shouldShowChainOptions && (
+    <div className="chainotionproduct">
+        <div className="chainopiontitle">
+            <h3>Chain Type :</h3>
+        </div>
+
+        <div className="chainotionproductflex">
+            {/* With Chain Option */}
+            <div className="withchainoption">
+                <div className="withchainoptioncon text-[14px] font-Poppins py-1">
+                    <input
+                        className="hidden"
+                        type="radio"
+                        id="withChain"
+                        name="chainOption"
+                        value="with"
+                        onChange={() => toggleChainOption("with")}
+                        checked={showWithChain}
+                    />
+                    <label htmlFor="withChain" className="cursor-pointer">
+                        <div className={`tagwithchain ${showWithChain ? "border border-[#006039]" : "border-none"}`}>
+                            With Chain
+                        </div>
+                        <div className={`chain-options mt-2 flex gap-2 ${showWithChain ? "visible" : "hidden"}`}>
+                            {/* Chain Size Options */}
+                            <label className={`chain-size-label cursor-pointer flex`}>
+                                <input
+                                    type="radio"
+                                    name="chainSize"
+                                    value="13inch"
+                                    onChange={handleChainSizeChange}
+                                    checked={selectedChainSize === "13inch"}
+                                />
+                                <span
+                                    className={`chainboxtsec chain-size-text ${
+                                        selectedChainSize === "13inch"
+                                            ? "!font-[600] !bg-[#a8eeb6] border border-[#006039]"
+                                            : ""
+                                    }`}
+                                >
+                                    13 inches
+                                </span>
+                            </label>
+                            <label className={`chain-size-label cursor-pointer flex`}>
+                                <input
+                                    type="radio"
+                                    name="chainSize"
+                                    value={productType === "gold" ? "18inch" : "16inch"}
+                                    onChange={handleChainSizeChange}
+                                    checked={
+                                        selectedChainSize === (productType === "gold" ? "18inch" : "16inch")
+                                    }
+                                />
+                                <span
+                                    className={`chainboxtsec chain-size-text ${
+                                        selectedChainSize === (productType === "gold" ? "18inch" : "16inch")
+                                            ? "!font-[600] !bg-[#a8eeb6] border border-[#006039]"
+                                            : ""
+                                    }`}
+                                >
+                                    {productType === "gold" ? "18 inches" : "16 inches"}
+                                </span>
+                            </label>
+                        </div>
+                    </label>
+                </div>
+            </div>
+
+            {/* Without Chain Option */}
+            <div className="withchainoption">
+                <div className="withchainoptioncon text-[14px] font-Poppins py-1">
+                    <input
+                        className="hidden"
+                        type="radio"
+                        id="withoutChain"
+                        name="chainOption"
+                        value="without"
+                        onChange={() => toggleChainOption("without")}
+                        checked={!showWithChain}
+                    />
+                    <label htmlFor="withoutChain" className="cursor-pointer">
+                        <div className={`tagwithchain ${!showWithChain ? "border border-[#006039]" : "border-none"}`}>
+                            Without Chain
+                        </div>
+                    </label>
+                </div>
+            </div>
+        </div>
+    </div>
+)}
+
 
 
 
@@ -2800,6 +2982,9 @@ const ProductDetailsInfo = ({ data ,shouldShowChainOptions }) => {
 
     console.log(categoriesData,"categoriesData-------------------")
     const productCategory = data?.category;
+    const productType = categoriesData.some(category => 
+        category.title.toLowerCase().includes(productCategory.toLowerCase()) && category.type === 'gold'
+    ) ? 'gold' : 'silver';
 
 
     return (
@@ -2882,37 +3067,37 @@ const ProductDetailsInfo = ({ data ,shouldShowChainOptions }) => {
                             </div> */}
 
                             {/* Render the main container only if there is valid weight or quality */}
-{(data?.diamondWeight?.weight !== "NA" && data?.diamondWeight?.weight !== null) || 
-(data?.diamondWeight?.quality !== "NA" && data?.diamondWeight?.quality !== null) ? (
-  <div className="bg-[#5DC2B0] w-[300px] font-Poppins mb-3 rounded-[4px] productdetailresptable">
-    <div className="t1sec px-[12.5px] py-[16px] gap-2 flex items-center">
-      <span><IoDiamondOutline /></span>
-      <span className='font-[500]'>Diamond</span>
-    </div>
-    
-    <div className="tsec2 flex font-Poppins">
-      {/* Conditional rendering for Weight */}
-      {data?.diamondWeight?.weight !== "NA" && data?.diamondWeight?.weight !== null ? (
-        <div className='w-[200px] bg-[#b6f0e5] mr-[1.5px] px-[10px] py-[10px]'>
-          <div className='pb-[8px] font-[600] '>Weight</div>
-          <p className='text-[#4f3267] text-[13px]'>
-            {data?.diamondWeight?.weight || "Not Updated"}
-          </p>
-        </div>
-      ) : null}
+                            {(data?.diamondWeight?.weight && data?.diamondWeight?.weight !== "NA" && data?.diamondWeight?.weight !== null) || 
+                            (data?.diamondWeight?.quality && data?.diamondWeight?.quality !== "NA" && data?.diamondWeight?.quality !== null) ? (
+                            <div className="bg-[#5DC2B0] w-[300px] font-Poppins mb-3 rounded-[4px] productdetailresptable">
+                                <div className="t1sec px-[12.5px] py-[16px] gap-2 flex items-center">
+                                <span><IoDiamondOutline /></span>
+                                <span className="font-[500]">Diamond</span>
+                                </div>
+                                
+                                <div className="tsec2 flex font-Poppins">
+                                {/* Conditional rendering for Weight */}
+                                {data?.diamondWeight?.weight && data?.diamondWeight?.weight !== "NA" && data?.diamondWeight?.weight !== null ? (
+                                    <div className="w-[200px] bg-[#b6f0e5] mr-[1.5px] px-[10px] py-[10px]">
+                                    <div className="pb-[8px] font-[600]">Weight</div>
+                                    <p className="text-[#4f3267] text-[13px]">
+                                        {data?.diamondWeight?.weight || "Not Updated"}
+                                    </p>
+                                    </div>
+                                ) : null}
 
-      {/* Conditional rendering for Quality */}
-      {data?.diamondWeight?.quality !== "NA" && data?.diamondWeight?.quality !== null ? (
-        <div className='w-[200px] bg-[#b6f0e5] mr-[1.5px] px-[10px] py-[10px]'>
-          <div className='pb-[8px] font-[600] '>Quality</div>
-          <p className='text-[#4f3267] text-[13px]'>
-            {data?.diamondWeight?.quality || "GH-VS"}
-          </p>
-        </div>
-      ) : null}
-    </div>
-  </div>
-) : null}
+                                {/* Conditional rendering for Quality */}
+                                {data?.diamondWeight?.quality && data?.diamondWeight?.quality !== "NA" && data?.diamondWeight?.quality !== null ? (
+                                    <div className="w-[200px] bg-[#b6f0e5] mr-[1.5px] px-[10px] py-[10px]">
+                                    <div className="pb-[8px] font-[600]">Quality</div>
+                                    <p className="text-[#4f3267] text-[13px]">
+                                        {data?.diamondWeight?.quality || "GH-VS"}
+                                    </p>
+                                    </div>
+                                ) : null}
+                                </div>
+                            </div>
+                            ) : null}
 
 
                             <div className="bg-[#5DC2B0] w-[300px] font-Poppins mb-3 rounded-[4px] productdetailresptable">
@@ -2941,8 +3126,19 @@ const ProductDetailsInfo = ({ data ,shouldShowChainOptions }) => {
                             <div className="tsec2 flex font-Poppins">
                                 <div className='w-[200px] bg-[#b6f0e5] mr-[1.5px] px-[10px] py-[2px]'>
                                     <div className='pb-[2px] font-[600] '>Length</div>
-                                    <p className='text-[#4f3267] text-[13px]'>13 inch</p>
-                                    <p className='text-[#4f3267] text-[13px]'>18 inch</p>
+                                    {/* <p className='text-[#4f3267] text-[13px]'>13 inch</p>
+                                    <p className='text-[#4f3267] text-[13px]'>18 inch</p> */}
+                                    {productType === 'gold' ? (
+                                        <>
+                                            <p className="text-[#4f3267] text-[13px]">13 inch</p>
+                                            <p className="text-[#4f3267] text-[13px]">18 inch</p>
+                                        </>
+                                        ) : productType === 'silver' ? (
+                                        <>
+                                            <p className="text-[#4f3267] text-[13px]">13 inch</p>
+                                            <p className="text-[#4f3267] text-[13px]">16 inch</p>
+                                        </>
+                                        ) : null}
 
                                 </div>
                                 <div className='w-[200px] bg-[#b6f0e5] mr-[1.5px] px-[10px] py-[2px]'>
