@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { server } from '@/server';
+import { imgdburl, server } from '@/server';
 import { toast } from 'react-toastify';
 import { RiCloseFill } from 'react-icons/ri';
 
@@ -50,9 +50,19 @@ function RequestDetail({ requestId, onClose }) {
                     <div className="images mb-4">
                         <h3 className="text-lg font-semibold mb-2">Images</h3>
                         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-                            {request.images.map((img, idx) => (
+                            {/* {request.images.map((img, idx) => (
                                 <img key={idx} src={img} alt="Custom design" className="w-full h-auto rounded-md shadow" />
-                            ))}
+                            ))} */}
+                            {request.images.map((img, idx) => {
+                                const imgSrc = img.match(/https:\/\/res\.cloudinary\.com\/ddaef5aw1\/image\/upload\/v[0-9]+/)
+                                    ? img.replace(
+                                        /https:\/\/res\.cloudinary\.com\/ddaef5aw1\/image\/upload\/v[0-9]+/,
+                                        `${imgdburl}/uploads/images`
+                                    )
+                                    : `${imgdburl}${img}`; // Prepend imgdburl if not a Cloudinary URL
+
+                                return <img key={idx} src={imgSrc} alt="Custom design" className="w-full h-auto rounded-md shadow" />;
+                            })}
                         </div>
                     </div>
                 )}

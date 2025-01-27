@@ -592,6 +592,8 @@ const productSchema = new mongoose.Schema({
           whiteGold: { type: Number, default: 0 },
         },
       },
+
+      isLive: { type: Boolean, default: true },
     CreatedAt: {
         type: Date,
         default: Date.now()

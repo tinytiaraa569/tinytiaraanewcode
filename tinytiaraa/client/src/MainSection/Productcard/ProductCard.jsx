@@ -171,17 +171,17 @@ function ProductCard({ data ,selectedEnamelColorimg}) {
               />
           }
 
-          <AiOutlineEye
+          {/* <AiOutlineEye
             size={22}
             className='cursor-pointer absolute right-2 top-14'
             color='#333'
             title='Quick View'
             onClick={() => setOpen(!open)}
-          />
+          /> */}
 
           <AiOutlineShareAlt
             size={23}
-            className='cursor-pointer absolute right-2 top-24'
+            className='cursor-pointer absolute right-2 top-14'
             color='#444'
             title='Share'
             onClick={toggleShareIcons}

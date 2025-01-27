@@ -48,8 +48,14 @@ function NewArrivals() {
   }, [products]);
 
   // Sort products by `sold_out` value in descending order (higher sold_out first)
+  // const sortedProducts = products && Array.isArray(products)
+  //   ? [...products].sort((a, b) => b.sold_out - a.sold_out)
+  //   : [];
+
   const sortedProducts = products && Array.isArray(products)
-    ? [...products].sort((a, b) => b.sold_out - a.sold_out)
+    ? [...products]
+        .filter((product) => product?.isLive === undefined || product?.isLive) // Only include live products
+        .sort((a, b) => b.sold_out - a.sold_out) // Sort by sold_out in descending order
     : [];
 
   return (

@@ -172,7 +172,13 @@ function ProductsPage() {
       return 0; // Return 0 if products is undefined or not an array
     }
 
-    return products.filter((product) => product.category === categoryTitle)
+    // return products.filter((product) => product.category === categoryTitle)
+
+    return products.filter(
+      (product) =>
+        (product?.isLive === undefined || product?.isLive) && // Include only live products
+        product.category === categoryTitle // Match the category
+    )
       .length;
   };
   const filterProducts = () => {
@@ -182,6 +188,11 @@ function ProductsPage() {
       }
 
       let filteredProducts = [...products];
+
+      // Filter out products that are not live
+      filteredProducts = filteredProducts.filter(
+        (product) => product?.isLive === undefined || product?.isLive
+      );
 
       // Filter by category
       if (categoryData) {

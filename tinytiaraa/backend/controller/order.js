@@ -2292,7 +2292,7 @@ router.put("/update-order-status/:id", isSeller, catchAsyncErrors(async (req, re
                 <div class="totalcost">
                 <p>Subtotal: ₹${order.totalPrice}</p>
                 <p style="padding: 4px 0;">Shipping: Free</p>
-                <p>Coupon: ₹${order.couponDiscount ? order.couponDiscount : '500 off'}</p>
+                <p>Coupon: ₹${order.couponDiscount ? order.couponDiscount : 'No coupon applied'}</p>
                 <p style="padding: 4px 0;">Total: ₹${order.totalPrice}</p>
                 </div>
 

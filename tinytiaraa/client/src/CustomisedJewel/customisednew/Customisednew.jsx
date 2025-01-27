@@ -112,10 +112,10 @@ function Customisednew() {
         setEmail("");
         setMessage("");
         setPhonenumber("");
-        setImages();
+        setImages("");
         setBudget("");
         setAddress("");
-        navigate("/");
+        navigate("/personalised-prosperity");
       })
       .catch((error) => {
         toast.error(error.response.data.message);
@@ -171,16 +171,18 @@ function Customisednew() {
                   />
                 </div>
 
-                {images.length > 0 && (
+                {images?.length > 0 && (
       <div className="file-details">
         <h5>Uploaded Files:</h5>
         <ul className="flex flex-wrap">
-          {images.map((file, index) => (
+          {images?.map((file, index) => (
             <li key={index} className="relative cursor-pointer">
               <img
                 src={file}
                 alt={`Uploaded ${index}`}
                 width="100"
+                height={"100"}
+                className="border border-gray-200 mr-2"
               />
               <button
                 type="button"

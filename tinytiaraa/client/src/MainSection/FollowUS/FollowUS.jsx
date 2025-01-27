@@ -38,7 +38,7 @@ function FollowUS() {
                 </div>
                 </Link>
 
-                <Link to="https://www.instagram.com/tiny_tiaraa" target="_blank" >
+                <Link to="https://www.pinterest.com/tiny_tiaraa657" target="_blank" >
 
                 <div className="socailcardfollow socialpintrest">
                     <FaPinterest className='socialiconfollow' />
@@ -49,7 +49,7 @@ function FollowUS() {
                 </Link>
 
 
-                <Link to="">
+                <Link to="https://www.youtube.com/@TinyTiaraa" target="_blank" >
                 <div className="socailcardfollow socialyoutube">
                     <FaYoutube className='socialiconfollow' />
                     <span>Youtube</span>

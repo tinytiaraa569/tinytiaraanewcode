@@ -3377,8 +3377,31 @@ router.post('/update-rate-card', async (req, res) => {
 });
 
 
+//toggle for live swtich for product 
 
+router.put('/status/:id', async (req, res) => {
 
+    try {
+        const { id } = req.params; // Get product ID from URL
+        const product = await Product.findById(id); // Find product by ID
+
+        if (!product) {
+            return res.status(404).json({ message: 'Product not found' });
+        }
+
+        // Toggle the 'isLive' field
+        product.isLive = !product.isLive;
+        await product.save(); // Save the updated product
+
+        res.status(200).json({
+            message: 'Product live status updated successfully',
+            isLive: product.isLive, // Return updated live status
+        });
+    } catch (error) {
+        res.status(500).json({ message: 'Error updating live status', error });
+    }
+
+});
 
 
 

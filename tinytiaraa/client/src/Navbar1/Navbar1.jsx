@@ -132,7 +132,8 @@ function Navbar1() {
             const filteredProducts = products && products.filter((product) => {
                 // Convert both name and SKU ID to lowercase for case-insensitive search
                 const lowerCaseTerm = term.toLowerCase();
-                return (
+                const isProductLive = product?.isLive === undefined || product?.isLive;
+                return isProductLive &&(
                     product.name.toLowerCase().includes(lowerCaseTerm) ||
                     (product.skuid && product.skuid.toLowerCase().includes(lowerCaseTerm))
                 );
@@ -258,7 +259,7 @@ function Navbar1() {
     const handleCurrencySelect = (currency) => {
         setSelectedCurrency(currency);
         dispatch(changeCurrency(currency)); // Dispatch action to update global currency state
-    dispatch(initializeConversionRates(currency));
+        dispatch(initializeConversionRates(currency));
         toggleCurrencySelector(); // Close the selector after selecting
     };
 

@@ -241,7 +241,7 @@ function App() {
 
       dispatch(getAllProducts(20, 0)); // Fetch the first 40 products
 
-      dispatch(getAllProducts(540, 20));
+      dispatch(getAllProducts(640, 20));
        // Fetch the next 200 products
        Store.dispatch(loadUser())
        Store.dispatch(loadSeller())

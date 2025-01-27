@@ -11,6 +11,7 @@ import { MdUpload } from 'react-icons/md';
 import axios from 'axios';
 import { server } from '@/server';
 import swal from 'sweetalert';
+import { Switch } from '@mui/material';
 
 
 function AllProducts() {
@@ -44,9 +45,9 @@ function AllProducts() {
 
     useEffect(() => {
         setFilteredProducts(
-            products.filter((product) =>
-                product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                product.skuid.toLowerCase().includes(searchQuery.toLowerCase())
+            products?.filter((product) =>
+                product?.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                product?.skuid?.toLowerCase().includes(searchQuery.toLowerCase())
             )
         );
     }, [products, searchQuery]);
@@ -85,7 +86,37 @@ function AllProducts() {
 
         return isLowStock;
     };
-
+    
+    const handleLiveStatusToggle = async (productId) => {
+        // Handle toggling the "isLive" status here. This could be a dispatch to update the status in the backend.
+        console.log(`Toggling live status for product: ${productId}`);
+        try {
+            const response = await fetch(`${server}/product/status/${productId}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+    
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.message || 'Failed to update live status');
+            }
+    
+            const data = await response.json();
+    
+            // Update the local state
+            setFilteredProducts((prevProducts) =>
+                prevProducts.map((product) =>
+                    product._id === productId
+                        ? { ...product, isLive: data.isLive }
+                        : product
+                )
+            );
+        } catch (error) {
+            console.error('Error updating live status:', error.message);
+        }
+    };
     const rows = filteredProducts?.map((item) => {
         const calculateStockCount = (stockData) => {
             if (!stockData || typeof stockData !== 'object') return 0;
@@ -122,6 +153,7 @@ function AllProducts() {
             // Stock: item.stock !== null ? item.stock : 'M/E',
             sold: item?.sold_out, // Replace with actual sold count if available
             isLowStock: checkLowStock(item),
+            isLive: item?.isLive,
         };
     });
 
@@ -141,6 +173,30 @@ function AllProducts() {
             sortable: false,
             renderCell: (params) => (
                 params.row.isLowStock ? <AiOutlineWarning size={20} color="red" /> : null
+            ),
+        },
+        {
+            field: 'isLive',
+            headerName: 'Live Status',
+            flex: 1,
+            minWidth: 120,
+            renderCell: (params) => (
+                <div>
+                    <Switch
+                        checked={params.row?.isLive}
+                        onChange={() => handleLiveStatusToggle(params.row.id)}
+                        color={params.row.isLive ? 'primary' : 'default'}
+                        name={`liveSwitch-${params.row.id}`}
+                        sx={{
+                            '& .MuiSwitch-switchBase.Mui-checked': {
+                                color: 'green', // Set the color to green when checked
+                            },
+                            '& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track': {
+                                backgroundColor: 'green', // Set the track color to green when checked
+                            },
+                        }}
+                    />
+                </div>
             ),
         },
         {
@@ -169,6 +225,18 @@ function AllProducts() {
                 </button>
             ),
         },
+        // {
+        //     field: 'Delete',
+        //     headerName: 'Delete',
+        //     flex: 0.8,
+        //     minWidth: 120,
+        //     sortable: false,
+        //     renderCell: (params) => (
+        //         <button onClick={() => handleDelete(params.id)}>
+        //             <AiOutlineDelete size={20} />
+        //         </button>
+        //     ),
+        // },
         {
             field: 'Delete',
             headerName: 'Delete',
@@ -176,7 +244,26 @@ function AllProducts() {
             minWidth: 120,
             sortable: false,
             renderCell: (params) => (
-                <button onClick={() => handleDelete(params.id)}>
+                <button
+                    onClick={() => {
+                        // Show SweetAlert confirmation dialog
+                        swal({
+                            title: "Are you sure?",
+                            text: "You won't be able to revert this!",
+                            icon: "warning",
+                            buttons: ["Cancel", "Delete"],
+                            dangerMode: true,
+                        }).then((willDelete) => {
+                            if (willDelete) {
+                                // If user confirms, call the handleDelete function
+                                handleDelete(params.id);
+                            } else {
+                                // If user cancels, just close the dialog
+                                swal("Your data is safe!");
+                            }
+                        });
+                    }}
+                >
                     <AiOutlineDelete size={20} />
                 </button>
             ),
