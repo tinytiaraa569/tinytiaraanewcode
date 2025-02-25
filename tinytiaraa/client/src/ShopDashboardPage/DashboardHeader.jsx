@@ -75,7 +75,7 @@ function DashboardHeader() {
   const navigate = useNavigate()
 
   return (
-    <AppBar position="sticky"  sx={{ backgroundColor: '#fff', color: '#555' }} className='w-full h-[90px] border-b border-b-gray-200 bg-white !shadow-none sticky top-0 left-0 z-30 px-4'>
+    <AppBar position="sticky"  sx={{ backgroundColor: '#fff', color: '#555' }} className='w-full h-[90px] border-b border-b-gray-200 bg-white !shadow-none sticky top-0 left-0 !z-30 px-4'>
       <Toolbar sx={{ display: 'flex', justifyContent: 'space-between', px: 2 }}>
         {/* Logo */}
         <div className='ml-10'>

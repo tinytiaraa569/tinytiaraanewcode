@@ -111,6 +111,11 @@ import axios from 'axios';
 import { server } from './server';
 import ShopAllStocks from './ShopallStocks/ShopAllStocks';
 import Chatbotmsg from './chatbot/Chatbotmsg';
+import Blogs from './blogs/Blogs';
+import ShopAllBlogs from './blogs/ShopallBlogs';
+import BlogDetails from './blogs/BlogDetails';
+import QrCode from './qrcode/QrCode';
+import ShopAllQrCode from './qrcode/ShopAllQrCode/ShopAllQrCode';
 
 
 
@@ -222,16 +227,18 @@ function App() {
     location.pathname.startsWith('/dashboard/contactbanner/create') ||
 
     location.pathname.startsWith('/shopproduct') ||
+    location.pathname.startsWith('/order') ||
+    location.pathname.startsWith('/dashboard-blogs') ||
+
+    location.pathname.startsWith('/qr-code') ||
+    location.pathname.startsWith('/dashboard-qrcode') 
 
     
 
 
-    
 
 
     
-
-    location.pathname.startsWith('/order/:id')
 
 
 
@@ -390,6 +397,8 @@ function App() {
           <Route path='/return-policy' element={<ReturnPolicy />} />
           <Route path='/affiliate-program-commission-policy' element={<Affiliatepolicy />} />
           <Route path='/gold-jewellery-insurance-policy' element={<Goldinsurance />} />
+          <Route path='/blogs' element={<Blogs />} />
+
 
           <Route path='/children-safety-jewellery-policy' element={<Childrensafety />} />
           <Route path='/customised-jewellery-policy' element={<CustomisedPolicy />} />
@@ -608,6 +617,22 @@ function App() {
           } />
 
 
+          <Route path='/dashboard-blogs' element={
+            <SellerProtectedRoute >
+              <ShopAllBlogs />
+            </SellerProtectedRoute>
+          } />
+
+
+        <Route path='/dashboard-qrcode' element={
+            <SellerProtectedRoute >
+              <ShopAllQrCode />
+            </SellerProtectedRoute>
+          } />
+
+
+
+
 
 
 
@@ -630,9 +655,14 @@ function App() {
           <Route path='/checkout-page' element={<CheckoutPage />} />
           <Route path='/payment' element={<PaymentPage />} />
           <Route path='/order/success' element={<OrderSuccessPage />} />
+          <Route path="/blog/:id" element={<BlogDetails />} />
+
+          <Route path='/qr-code' element={<QrCode/>} />
+
 
 
           <Route path='/*' element={<Error404/>} />
+
 
 
 

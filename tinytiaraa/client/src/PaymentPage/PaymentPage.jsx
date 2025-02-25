@@ -1250,7 +1250,7 @@ function PaymentPage() {
 
                                     {/* cod method */}
                                 
-                                {/* <div className='flex items-center gap-8 mt-3'>
+                                <div className='flex items-center gap-8 mt-3'>
                                     <div className='flex items-center gap-2'>
                                         <input
                                             id="cod"
@@ -1268,7 +1268,7 @@ function PaymentPage() {
                                             </label>
                                         </div>
                                     </div>
-                                </div> */}
+                                </div>
 
 
                             </div>
@@ -1308,7 +1308,7 @@ function PaymentPage() {
                                 {
                                     orderData?.cart?.map((val, index) => {
                                         const convertedOriginalPrice = (val.chainPrice > 0 
-                                            ? (val.originalPrice + val.chainPrice) * (conversionRates[currency] || 1)
+                                            ? (val.originalPrice + val.chainPrice + (val?.extraCost || 0)) * (conversionRates[currency] || 1)
                                             : val.originalPrice * (conversionRates[currency] || 1)).toFixed();
                                     
                                         const convertedDiscountPrice = (val.chainPrice > 0 

@@ -90,6 +90,9 @@ const currency = require("./controller/Currency")
 const popup = require("./controller/popup")
 const chatbot = require("./controller/chatbot")
 
+const blog = require("./controller/blog")
+const qrcode = require("./controller/qrcodeRoutes")
+
 
 
 
@@ -136,6 +139,12 @@ app.use("/api/v2", calculateEDDRoutes);
 app.use("/api/v2", category);
 app.use("/api/v2", currency);
 app.use("/api/v2", popup);
+app.use("/api/v2", blog);
+app.use("/api/v2", qrcode);
+
+
+
+
 app.use("/api/v2", chatbot);
 
 

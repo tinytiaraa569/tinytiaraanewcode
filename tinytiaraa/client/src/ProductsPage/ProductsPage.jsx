@@ -29,6 +29,8 @@ function ProductsPage() {
   const [selectedAgeGroup, setSelectedAgeGroup] = useState("");
 
   const [isFilterVisible, setIsFilterVisible] = useState(true);
+  const [loading, setLoading] = useState(true);
+
 
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [selectedSubcategory, setSelectedSubcategory] = useState(null);
@@ -39,12 +41,18 @@ function ProductsPage() {
     useEffect(() => {
     const fetchCategories = async () => {
     try {
+      setLoading(true);
+
       const response = await axios.get(`${server}/get-allcategories`);
       // Assuming your API response has a `categories` key
       const filteredData = response.data.categories.filter(i => i.title !== 'Coming Soon ...');
       setCategoriesData(filteredData);
+      setLoading(false);
+
     } catch (error) {
       console.error('Error fetching categories:', error);
+      setLoading(false);
+
       alert('Failed to fetch categories');
     } finally {
       setLoading(false);
@@ -59,9 +67,7 @@ function ProductsPage() {
   const categoryData = searchParams.get("category");
   const subcategoryData = searchParams.get("subcategory");
   const metalType = searchParams.get("type");
-  console.log(metalType,"Metal type -----------")
-  console.log(categoryData, "see what is category data");
-  console.log(subcategoryData, "see what is subcategory data");
+ 
   const useIsMobile = () => {
     const [isMobile, setIsMobile] = useState(window.innerWidth <= 768); // Adjust breakpoint as needed
   
@@ -89,6 +95,7 @@ function ProductsPage() {
       setIsFilterVisible(true);
     }
   }, [isMobile]);
+
   useEffect(() => {
     // Extract the parameters from the URL
     const searchParams = new URLSearchParams(location.search);
@@ -96,8 +103,8 @@ function ProductsPage() {
     const subcategoryData = searchParams.get("subcategory"); // Extract the subcategory
     
     
-    console.log(categoryData, "see what is category data");
-    console.log(subcategoryData, "see what is subcategory data");
+    
+    setLoading(true);
 
     // Find the category that matches the categoryData
     if (categoryData && categoriesData?.length > 0) {
@@ -105,11 +112,12 @@ function ProductsPage() {
             (category) => category?.title === categoryData
         );
         setSelectedCategory(matchedCategory);
+
     }
 
     // Set the selected subcategory if it exists
     if (subcategoryData) {
-        setSelectedSubcategory(subcategoryData); // Assuming selectedSubcategory is defined in state
+        setSelectedSubcategory(subcategoryData);
     }
 }, [location.search,categoriesData]); // Dependency array to re-run when URL changes
 
@@ -129,13 +137,14 @@ function ProductsPage() {
   console.log(filteredData, "filtered products checking");
 
   // Handle loading and error states
-  const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const toggleFilterVisibility = () => {
     setIsFilterVisible((prev) => !prev);
   };
 
   useEffect(() => {
+    setLoading(true);
+
     // Extract price range from query params
     const minPrice = parseInt(searchParams.get("priceMin"), 10);
     const maxPrice = parseInt(searchParams.get("priceMax"), 10);
@@ -148,8 +157,8 @@ function ProductsPage() {
     }
 
     if (products) {
-      setLoading(false);
       filterProducts();
+      setLoading(false);
     } else {
       setLoading(true);
     }
@@ -161,6 +170,7 @@ function ProductsPage() {
       setSelectedAgeGroup(ageGroupParam);
     }
   }, [searchParams]);
+
   useEffect(() => {
     filterProducts();
   }, [priceRange, selectedAgeGroup]);
@@ -181,8 +191,10 @@ function ProductsPage() {
     )
       .length;
   };
+
   const filterProducts = () => {
     try {
+      setLoading(true);
       if (!products || !Array.isArray(products)) {
         throw new Error("Products data is not available.");
       }
@@ -574,9 +586,12 @@ function ProductsPage() {
       }
       console.log("Final filtered products:", filteredProducts);
       setFilteredData(filteredProducts);
+      setLoading(false)
       setError(null);
     } catch (err) {
       setError(err.message);
+      setLoading(false)
+
     }
   };
 
@@ -586,7 +601,9 @@ function ProductsPage() {
     setSearchQuery(e.target.value);
     updateURLParams({ search: e.target.value });
   };
+
   useEffect(() => {
+    
     // Ensure filtering happens only after categoriesData and products are loaded
     if (categoriesData.length > 0 && products.length > 0) {
       filterProducts();
@@ -853,7 +870,63 @@ function ProductsPage() {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [sortedData]);
+
+  // console.log(categoriesData,"catgeories data ")
+
+  const [selectedFilters, setSelectedFilters] = useState({
+    gold: false,
+    silver: false,
+  });
+
+  // Function to handle checkbox change
+  const handleFilterChange = (type) => {
+    // setSelectedFilters((prevFilters) => ({
+    //   gold: type === "gold" ? !prevFilters.gold : false,
+    //   silver: type === "silver" ? !prevFilters.silver : false,
+    // }));
+
+    // if(type === "gold"){
+    //   navigate("/products?type=gold")
+    // }else{
+    //   navigate("/products?type=silver")
+
+    // }
+    setSelectedFilters((prevFilters) => {
+      const updatedFilters = {
+        gold: type === "gold" ? !prevFilters.gold : false,
+        silver: type === "silver" ? !prevFilters.silver : false,
+      };
   
+      // Determine navigation based on the selected type
+      const selectedType = updatedFilters.gold ? "gold" : updatedFilters.silver ? "silver" : "";
+  
+      // Navigate only if a filter is selected, otherwise reset to "/products"
+      navigate(selectedType ? `/products?type=${selectedType}` : "/products");
+  
+      return updatedFilters;
+    });
+
+  };
+  
+
+  const filteredCategories = categoriesData.filter((category) => {
+    const categoryType = category.type.toLowerCase(); // Use type field instead
+  
+    if (!selectedFilters.gold && !selectedFilters.silver) {
+      return true; // Show all categories when no filter is selected
+    }
+  
+    const isGold = categoryType === "gold";
+    const isSilver = categoryType === "silver";
+  
+    if (selectedFilters.gold && isGold) {
+      return true;
+    }
+    if (selectedFilters.silver && isSilver) {
+      return true;
+    }
+    return false;
+  });
 
  
 
@@ -1062,7 +1135,7 @@ function ProductsPage() {
             </div>
             <div className="marginbottom"></div>
 
-            <div className="filtercategory ml-2">
+            {/* <div className="filtercategory ml-2">
               <h5>Product Categories</h5>
               <div className="filtercategorylist">
                 {categoriesData.map((category) => (
@@ -1085,7 +1158,61 @@ function ProductsPage() {
                 ))}
               </div>
               <div className="marginbottom"></div>
+            </div> */}
+
+          <div className="filtercategory ml-2">
+            <h5 className="font-semibold text-lg">Product Categories</h5>
+
+            {/* Filter Checkboxes */}
+            <div className="flex gap-4 mt-2">
+              <label className="flex items-center space-x-2 cursor-pointer text-sm">
+                <input
+                  type="checkbox"
+                  checked={selectedFilters.gold}
+                  onChange={() => handleFilterChange("gold")}
+                  className="w-3 h-3 accent-[#FFD700]"
+                />
+                <span className="text-gray-700">Gold</span>
+              </label>
+              <label className="flex items-center space-x-2 cursor-pointer text-sm">
+                <input
+                  type="checkbox"
+                  checked={selectedFilters.silver}
+                  onChange={() => handleFilterChange("silver")}
+                  className="w-3 h-3 accent-[#C0C0C0]"
+                />
+                <span className="text-gray-700">Silver</span>
+              </label>
             </div>
+
+            {/* Filtered Category List */}
+            <div className="filtercategorylist mt-2">
+              {filteredCategories.length === 0 ? (
+                <p className="text-gray-600 text-sm">No categories available.</p>
+              ) : (
+                filteredCategories.map((category) => (
+                  <div
+                    key={category.id}
+                    onClick={() => {
+                      handleViewProducts(category.title);
+                      window.scrollTo({ top: 0, behavior: "smooth" });
+                    }}
+                    className="cursor-pointer"
+                  >
+                    <ul>
+                      <li className="hover:text-[#49a9dd] transition duration-200 text-sm">
+                        {category.title} ({getCategoryProductCount(category.title)})
+                      </li>
+                    </ul>
+                  </div>
+                ))
+              )}
+            </div>
+
+            <div className="marginbottom"></div>
+          </div>
+
+
 
             <div className="Enamelcolours">
               <h5>Enamel Colors</h5>
@@ -1303,10 +1430,10 @@ function ProductsPage() {
             </div>
             ) : error ? (
               <p className="text-center text-red-500">{error}</p>
-            ) : filteredData.length === 0  && selectedCategory ? (
+            ) : filteredData.length === 0  && selectedCategory  ? (
               <>
-              <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 mb-12">
-              {[...Array(16)].map((_, index) => (
+              <div className="text-center">
+              {/* {[...Array(16)].map((_, index) => (
                 <div
                   key={index}
                   className="animate-pulse p-2 border rounded-[12px] shadow-md"
@@ -1318,9 +1445,10 @@ function ProductsPage() {
                     <div className="h-4 bg-gray-300 rounded w-1/2"></div>
                   </div>
                 </div>
-              ))}
+              ))} */}
+              <h1 className="text-center text-gray-500">No Results Found</h1>
             </div>
- {/* Display extracat data */}
+              {/* Display extracat data */}
              
               
               
@@ -1448,7 +1576,7 @@ function ProductsPage() {
                       <div className="mt-3 mb-10 pb-7 border-b border-[#5DC2B0]">
                           <h2 className="text-center text-[18px] font-[500] text-[#000000cf] mb-4">SubCategories</h2>
                           <div className="flex justify-center">
-                              <div className={`grid justify-center grid-cols-1 sm:grid-cols-2 ${selectedCategory.subcategories.length >= 4 ? "grid-cols-1 sm:grid-cols-2 md:grid-cols-4" : "grid-cols-1 sm:grid-cols-2 md:grid-cols-3 "}  gap-8`}>
+                              <div className={`grid justify-center grid-cols-1 sm:grid-cols-2 ${selectedCategory.subcategories.length >= 4 ? "grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4" : "grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4"}  gap-8`}>
                                   {selectedCategory.subcategories.map((subcat, subIndex) => (
                                       <div onClick={() => submitHandle(selectedCategory, subcat)} key={subIndex} className="subpendantcat cursor-pointer w-[210px] bg-white border border-[#41d399c1] shadow-lg rounded-[22px] p-4 text-center transition-transform duration-300 hover:shadow-xl hover:scale-105">
 
@@ -1459,11 +1587,11 @@ function ProductsPage() {
                                             <img
                                             src={`${imgdburl}${subcat.image_Url.url}`}
                                             alt={subcat.name}
-                                            className={`w-full h-32 object-contain ${selectedCategory.title === "kids accessories" ? "" : "scale-125"}  rounded-md mt-2`}
+                                            className={`w-full h-32 object-contain ${selectedCategory.title === "Kids Accessories" ? "" : "scale-125"}  rounded-md mt-2`}
                                             />
                                           )}
                                           </div>
-                                          <div className={`${selectedCategory.title === "kids accessories" ? "mt-[-2px]" : "mt-[-15px]"}  mb-3`}>
+                                          <div className={`${selectedCategory.title === "Kids Accessories" ? "mt-[-2px]" : "mt-[-15px]"}  mb-3`}>
                                           <button
                                               
                                               className="subpendantcatbtn px-5 py-2 bg-[#35a578] text-white rounded hover:bg-[#006039] text-[10px]"

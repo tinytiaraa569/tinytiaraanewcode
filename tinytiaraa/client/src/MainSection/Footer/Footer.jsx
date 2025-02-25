@@ -14,7 +14,7 @@ function Footer() {
     };
     const navigate = useNavigate()
     return (
-        <div className="footermain">
+        <div className="footermain ">
 
             <div className='footer'>
                 <div className="footerone">
@@ -68,6 +68,8 @@ function Footer() {
                             {/* <li><Link onClick={scrollToTop} to="/warranty-extension">WARRANTY EXTENSION</Link></li> */}
                             <li><Link onClick={scrollToTop} to="/exchange-policy" > Exchange Policy</Link></li>
                             <li><Link onClick={scrollToTop} to="/return-policy" > Return Policy</Link></li>
+                            <li><Link onClick={scrollToTop} to="/blogs" > Blogs</Link></li>
+
                         </ul>
                     </div>
                 </div>
@@ -84,8 +86,8 @@ function Footer() {
                 </div>
 
             </div>
-            <div className="copyright">
-                <p>All Rights Reserved | Tiny Tiaraa © 2024</p>
+            <div className="copyright text-center pt-4 pb-3  text-sm ">
+                <p>All Rights Reserved | Tiny Tiaraa ©  {new Date().getFullYear()}</p>
             </div>
         </div>
 

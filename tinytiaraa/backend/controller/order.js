@@ -18,8 +18,8 @@ const shippingMail = require('../utils/shippingMail')
 
 
 const pdf = require('html-pdf-node');
-const puppeteer = require('puppeteer')
-const chromium = require('chrome-aws-lambda')
+// const puppeteer = require('puppeteer')
+// const chromium = require('chrome-aws-lambda')
 const Welcome = require("@react-email/components").default;
 // const { Welcome } = require("@react-email/components");
 

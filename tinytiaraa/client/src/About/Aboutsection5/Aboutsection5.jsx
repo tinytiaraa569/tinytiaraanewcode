@@ -14,6 +14,40 @@ function Aboutsection5() {
   const [phonenumber, setPhonenumber] = useState('');
   const [emailError, setEmailError] = useState(false); // State to track email errors
 
+  // const handleSubmit = async (e) => {
+  //   e.preventDefault();
+
+  //   // Validate email before submitting
+  //   if (!validateEmail(email)) {
+  //     setEmailError(true); // Set email error to true if invalid
+  //     return; // Prevent form submission if email is invalid
+  //   }
+
+  //   // If the email is valid, reset the email error
+  //   setEmailError(false);
+
+  //   // Proceed with API call if validation passes
+  //   axios
+  //     .post(`${server}/subscribe/subscribe`, { email, phonenumber })
+  //     .then((res) => {
+  //       swal({
+  //         title: 'Thank you!',
+  //         text: "You're Subscribed to Tiny Tiaraa's Membership!",
+  //         icon: 'success',
+  //       });
+  //       setEmail('');
+  //       setPhonenumber('');
+  //     })
+  //     .catch((error) => {
+  //       toast.error(error.response.data.message);
+  //     });
+  // };
+
+  const validateEmail = (email) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -23,29 +57,22 @@ function Aboutsection5() {
       return; // Prevent form submission if email is invalid
     }
 
-    // If the email is valid, reset the email error
-    setEmailError(false);
+    setEmailError(false); // Reset email error if valid
 
     // Proceed with API call if validation passes
     axios
-      .post(`${server}/subscribe/subscribe`, { email, phonenumber })
+      .post(`${server}/ttclub/ttclub`, { email })
       .then((res) => {
         swal({
-          title: 'Thank you!',
-          text: "You're Subscribed to Tiny Tiaraa's Membership!",
-          icon: 'success',
+          title: "Thank you!",
+          text: "You're Subscribed to TT Member's Club!",
+          icon: "success",
         });
-        setEmail('');
-        setPhonenumber('');
+        setEmail("");
       })
       .catch((error) => {
         toast.error(error.response.data.message);
       });
-  };
-
-  const validateEmail = (email) => {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(email);
   };
 
   return (
@@ -59,9 +86,9 @@ function Aboutsection5() {
           <div className="associmgs">
             <img src={img1} alt="" />
           </div>
-          <div className="associmgs">
+          {/* <div className="associmgs">
             <img src={img2} alt="" />
-          </div>
+          </div> */}
           <div className="associmgs">
             <img src={img3} alt="" />
           </div>
@@ -72,13 +99,19 @@ function Aboutsection5() {
       </div>
 
       <form onSubmit={handleSubmit}>
-        <div className="sec5sub">
+        <div className="sec5sub bg-[#F3FFFD] h-auto pt-8 pb-12 !font-poppins">
           <div className="sec5flex">
-            <div>
-              <h6>Sign up for more offer updates</h6>
+          <div className='text-center'>
+              <h2 className="text-3xl font-poppins font-semibold text-[#01463A]">Join the TT Club</h2>
+              <p className="text-md text-gray-600">Sign up for exclusive updates, offers, and special perks.</p>
             </div>
 
-            <div className="sec5inp">
+            <div className='mt-6 flex justify-center items-center flex-col gap-5'>
+
+
+            <div>
+           
+            <div className="sec5inp flex justify-center items-center">
               <input
                 type="email"
                 placeholder="Your email address"
@@ -87,8 +120,22 @@ function Aboutsection5() {
                 onChange={(e) => setEmail(e.target.value)}
               />
               {emailError && <p style={{ color: 'red' }}>Invalid email address</p>}
+              
             </div>
-            <div className="sec5inp">
+            <div className="flex items-center space-x-2 mt-2 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    id="noUpdates"
+                    
+                    className="w-4 h-4 !cursor-pointer"
+                  />
+                  <label htmlFor="noUpdates" className="text-sm text-gray-700">
+                    Check this box if you don’t want to receive updates
+                  </label>
+                </div>
+            </div>
+            
+            {/* <div className="sec5inp">
               <input
                 type="tel"
                 placeholder="Your mobile number"
@@ -102,10 +149,12 @@ function Aboutsection5() {
                   }
                 }}
               />
-            </div>
+            </div> */}
             <div>
-              <button type="submit">Subscribe Now</button>
+              <button type="submit">Join Now</button>
             </div>
+            </div>
+
           </div>
         </div>
       </form>

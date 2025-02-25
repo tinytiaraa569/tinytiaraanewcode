@@ -62,7 +62,7 @@ const Aboutwho = () => {
   const banner = banners?.[0];
 
   return (
-    <div className="slidersec">
+    <div className="slidersec ">
       {banner ? (
         <img
           loading="lazy"

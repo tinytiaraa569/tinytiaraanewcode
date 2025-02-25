@@ -711,10 +711,14 @@ const CartSingle = ({ data, quantityChangeHandler, removeFromCartHandler }) => {
     1: "Rose Gold",
     2: "White Gold",
   };
+
+  const extraCostPrice = Number((data?.extraCost * (conversionRates[currency] || 1)).toFixed(0));
   
 
   const convertedDiscountPrice = (data.discountPrice * (conversionRates[currency] || 1)).toFixed(0);
-  const convertedOriginalPrice = (data.originalPrice * (conversionRates[currency] || 1)).toFixed(0);
+  const convertedOriginalPrice = (
+    (data.originalPrice * (conversionRates[currency] || 1)) + extraCostPrice
+  ).toFixed(0);
   const convertedChainPrice = data.chainPrice > 0 ? (data.chainPrice * (conversionRates[currency] || 1)).toFixed(0) : 0;
 
   // const totalPrice = data.chainPrice > 0 ? data.discountPrice + data.chainPrice : data.discountPrice * value;
@@ -885,7 +889,7 @@ const CartSingle = ({ data, quantityChangeHandler, removeFromCartHandler }) => {
         <span className="text-[#EB4F5C] ml-[5px] text-[0.9rem] pl-1">
           save <span className='ml-1'> {currency} 
           {(
-            ((data.originalPrice || 0) * (conversionRates[currency] || 1)) -
+            ((data.originalPrice + (data?.extraCost || 0)) * (conversionRates[currency] || 1)) -
             ((data.discountPrice || 0) * (conversionRates[currency] || 1))
           ).toFixed(0)}
           </span>

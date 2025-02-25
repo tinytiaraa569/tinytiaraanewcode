@@ -59,3 +59,25 @@
     animation: slide-bounce-fade 5s ease-in-out forwards;
   }
   
+
+  .gold-row {
+    border-left: 3px solid gold;
+    /* box-shadow: inset 5px 0px 10px rgba(255, 215, 0, 0.3);  */
+}
+
+.silver-row {
+    /* box-shadow: inset 5px 0px 10px rgba(192, 192, 192, 0.3); */
+    border-left: 3px solid #C1C1C1;
+} 
+
+.lineafterblog::after{
+  content: "";
+  width: 100px;
+  height: 3px;
+  background-color: #279e27;
+  display: block;
+  margin: 10px auto;
+  border-radius: 10px;
+
+  
+}

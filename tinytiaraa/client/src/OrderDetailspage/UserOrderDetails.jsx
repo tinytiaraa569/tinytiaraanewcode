@@ -228,7 +228,7 @@ function UserOrderDetails() {
                         <p className='pl-3 text-[13px] text-[#666]'>{item.skuid}</p>
 
                         <span className="pl-3 text-[12px] text-[#999] line-through">
-                            ₹{item.chainPrice > 0 ? item.originalPrice + item.chainPrice : item.originalPrice}
+                            ₹{item.chainPrice > 0 ? item.originalPrice + item?.extraCost || 0 + item.chainPrice : item.originalPrice}
                         </span>
                         <span className="pl-2 text-[12px] text-[#333]">
                             ₹{item.chainPrice > 0 ? item.discountPrice + item.chainPrice : item.discountPrice} x {item.qty}

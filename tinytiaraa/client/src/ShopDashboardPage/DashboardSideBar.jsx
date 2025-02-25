@@ -262,7 +262,7 @@ import UndoIcon from "@mui/icons-material/Undo";
 import { Link, useNavigate } from "react-router-dom";
 import { ChevronLeft, Menu, ExpandLess, ExpandMore } from '@mui/icons-material';
 import { VscRequestChanges } from "react-icons/vsc";
-import { MdColorLens } from "react-icons/md";
+import { MdColorLens, MdOutlineQrCodeScanner } from "react-icons/md";
 import { MdContactMail } from "react-icons/md";
 import { PiSpinnerBallFill } from "react-icons/pi";
 import { LiaClipboardListSolid } from "react-icons/lia";
@@ -270,6 +270,7 @@ import { MdCreateNewFolder } from "react-icons/md";
 import PollIcon from '@mui/icons-material/Poll';
 import './shopdashadjust.css'
 import { AiOutlineStock } from "react-icons/ai";
+import { FaBlogger } from "react-icons/fa";
 
 
 const DashboardSideBar = ({active}) => {
@@ -361,7 +362,13 @@ const DashboardSideBar = ({active}) => {
     { text: "Analytics", icon: <PollIcon />, path: "/dashboard-analytics",active:18 },
 
     { text: "Popup Manager", icon: <ReferralIcon />, path: "/dashboard-popup" ,active:19},
+    { text: "Blogs", icon: <FaBlogger />, path: "/dashboard-blogs" ,active:21},
+    { text: "Qr Code", icon: <MdOutlineQrCodeScanner />, path: "/dashboard-qrcode" ,active:22},
 
+
+
+
+    
    
   ];
 

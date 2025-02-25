@@ -273,7 +273,7 @@ function Navbar1() {
       // Fetch user's geolocation
   const fetchUserCountry = async () => {
     try {
-      const response = await fetch("https://ipapi.co/json");
+      const response = await fetch("https://ipapi.co/json/test");
       const data = await response.json();
       console.log(data,"data to show")
       return data.currency; // ISO 3166-1 alpha-2 country code
@@ -588,46 +588,73 @@ function Navbar1() {
                                             </div>
 
 
-                                            {/* <div className='mt-5 ml-4'>
-                                                <div className='mb-2'>
-                                                    <h3 className='font-[500]'>Shop By Metal</h3>
-                                                </div>
-                                                <div className='flex !items-center'>
-                                                <AiFillGolden size={22} color="#FFD700" />
-                                                <span className='pt-2 pb-1 collectionnav1 pl-1 ' onClick={() => { navigate("/products") }}>  Gold</span>
-
-                                                </div>
-
-                                                <div className='flex items-center'>
-                                                <AiFillGolden size={22} color="#C0C0C0" />
-
-                                                <h6 className='pb-1 pt-2 pl-1  collectionnav1' onClick={()=>{navigate("/products?category=kids%20accessories")}}>Silver</h6>
-                                                
-                                                </div>
-
-
-
-                                            </div> */}
-
+                                                {/* gold */}
                                                 <div className='mt-5 ml-4'>
+                                                <div className='borderright'>
+
                                                     <div className='mb-2'>
-                                                        <h3 className='font-[500]'>Shop By Metal</h3>
+                                                        <h3 className='font-[500]'>Gold Collection</h3>
                                                     </div>
 
-                                                    <div className='flex !items-center'>
+                                                    <div className="flex items-center text-sm gap-1 pb-1 transition-all cursor-pointer">
                                                         <AiFillGolden size={22} color="#FFD700" />
                                                         <span
-                                                        className='pt-2 pb-1 collectionnav1 pl-1'
-                                                        onClick={() => {
-                                                            handleMetalSelect('gold')
-                                                            // closeDropdown();
-                                                        }}
+                                                            className="collectionnav1 pl-1 inline-block border-b-2 border-transparent hover:border-[#FFD700] transition-all duration-200 font-medium text-gray-700"
+                                                            onClick={() => handleMetalSelect("gold")}
                                                         >
-                                                        Gold
+                                                            Gold
                                                         </span>
-                                                    </div>
+                                                        </div>
+                                                    {goldCategories.length > 0 && (
+                                                    <div>
+                                                       
+                                                        {goldCategories.map((i, index) => (
+                                                            <div
+                                                                key={index}
+                                                                className="subcatmain relative mb-1"
+                                                                onClick={() => submitHandle(i)}
+                                                            >
+                                                                <img
+                                                                    loading='lazy'
+                                                                    src={`${imgdburl}${i?.image_Url?.url}`}
+                                                                    alt={i.title}
+                                                                    style={{ width: '30px', height: '30px', objectFit: 'contain', userSelect: 'none' }}
+                                                                />
+                                                                <h3 className="text-[14px] m-1 cursor-pointer select-none font-Poppins hover:text-[#1BB8E5]">
+                                                                    {i.title}
+                                                                </h3>
+                                                                {(i.subcategories.length > 0) && (
+                                                                    <div className="absolute left-[95%]">
+                                                                        <IoMdArrowDropright />
+                                                                    </div>
+                                                                )}
+                                                                {(i.subcategories.length > 0) && (
+                                                                    <div className="subcatchild top-3 left-[100%] pt-[2px] pb-2 w-[230px] bg-[#fff] border border-[#eee] absolute z-30 rounded-[3px] shadow-sm" >
+                                                                        {i.subcategories.map((val, subIndex) => (
+                                                                            <div
+                                                                                key={subIndex}
+                                                                                className="pl-[10px]"
+                                                                                onClick={(e) => {  
+                                                                                    e.stopPropagation(); // Prevent click event from bubbling up
+                                                                                    submitHandle(i, val); // Handle the subcategory selection
+                                                                                    setIsDropdownVisible(false);  }}
+                                                                            >
+                                                                                <h3 className="m-2 cursor-pointer select-none font-Poppins hover:text-[#1BB8E5]">
+                                                                                    {val.name}
+                                                                                </h3>
+                                                                            </div>
+                                                                        ))}
+                                                                    </div>
+                                                                )}
+                                                            </div>
+                                                        ))}
 
-                                                    <div className='flex items-center'>
+                                               
+                                                    </div>
+                                                    )}
+                                                   
+
+                                                    {/* <div className='flex items-center'>
                                                         <AiFillGolden size={22} color="#C0C0C0" />
                                                         <h6
                                                         className='pb-1 pt-2 pl-1 collectionnav1'
@@ -635,14 +662,81 @@ function Navbar1() {
                                                         >
                                                         Silver
                                                         </h6>
+                                                    </div> */}
                                                     </div>
                                                     </div>
 
+                                                    
+                                                    {/* silver */}
+                                                    <div className='mt-5 ml-8'>
+                                                        <div className='borderright'>
+
+                                                    <div className='mb-2'>
+                                                        <h3 className='font-[500]'>Silver Collection</h3>
+                                                    </div>
+                                                    <div className="flex items-center text-sm gap-1 pb-1 transition-all cursor-pointer">
+                                                        <AiFillGolden size={22} color="#C0C0C0" /> {/* Silver Color */}
+                                                        <span
+                                                            className="collectionnav1 pl-1 inline-block border-b-2 border-transparent hover:border-[#C0C0C0] transition-all duration-200 font-medium text-gray-700"
+                                                            onClick={() => handleMetalSelect("silver")}
+                                                        >
+                                                            Silver
+                                                        </span>
+                                                        </div>
+                                                    {silverCategories.length > 0 && (
+                                                    <div>
+                                                        {/* <h3 className="font-[500] mb-1 text-[12px] border-b-2 border-b-[#0d0d0da4] inline-block">Silver</h3> */}
+                                                        {silverCategories.map((i, index) => (
+                                                            <div
+                                                                key={index}
+                                                                className="subcatmain relative mb-1"
+                                                                onClick={() => submitHandle(i)}
+                                                            >
+                                                                <img
+                                                                    loading='lazy'
+                                                                    src={`${imgdburl}${i?.image_Url?.url}`}
+                                                                    alt={i.title}
+                                                                    style={{ width: '30px', height: '30px', objectFit: 'contain', userSelect: 'none' }}
+                                                                />
+                                                                <h3 className="text-[14px] m-1 cursor-pointer select-none font-Poppins hover:text-[#1BB8E5]">
+                                                                    {i.title}
+                                                                </h3>
+                                                                {(i.subcategories.length > 0) && (
+                                                                    <div className="absolute left-[99%]">
+                                                                        <IoMdArrowDropright />
+                                                                    </div>
+                                                                )}
+                                                                {(i.subcategories.length > 0) && (
+                                                                    <div className="subcatchild top-3 left-[100%] pt-[2px] pb-2 w-[230px] bg-[#fff] border border-[#eee] absolute z-30 rounded-[3px] shadow-sm">
+                                                                        {i.subcategories.map((val, subIndex) => (
+                                                                            <div
+                                                                                key={subIndex}
+                                                                                className="pl-[10px]"
+                                                                                onClick={(e) => { e.stopPropagation(); 
+                                                                                    submitHandle(i, val);
+                                                                                    setIsDropdownVisible(false);
+                                                                                 }}
+                                                                            >
+                                                                                <h3 className="m-2 cursor-pointer select-none font-Poppins hover:text-[#1BB8E5]">
+                                                                                    {val.name}
+                                                                                </h3>
+                                                                            </div>
+                                                                        ))}
+                                                                    </div>
+                                                                )}
+                                                            </div>
+                                                        ))}
+                                                       
+                                                    </div>
+                                                )}
+                                                        </div>
 
 
+                                                    </div>
 
 
-                                            <div className='mt-5 ml-6'>
+                                             {/* third row  */}
+                                            <div className='mt-5 ml-8'>
                                                 <div className='borderright'>
                                                     <div className='mb-2'>
                                                         <h3 className='font-[500]'>Shop By Collection</h3>
@@ -654,7 +748,7 @@ function Navbar1() {
                                                     <h6 className='pb-2 collectionnav1' onClick={() => submitHandleagegroup("mom")}>Mom  </h6>
                                                     <h6 className='pb-2 collectionnav1' onClick={() => submitHandleagegroup("momandme")}>Mom & Me </h6>
 
-                                                    <h6 className='pb-2 collectionnav1' onClick={() => { navigate("/personalised-prosperity") }}>Customization </h6>
+                                                    {/* <h6 className='pb-2 collectionnav1' onClick={() => { navigate("/personalised-prosperity") }}>Customization </h6> */}
                                                     {/* <h6 className='pb-2 collectionnav1'>Gifts</h6>
                                                     <h6 className='pb-2 collectionnav1'>Gallery </h6>
                                                     <h6 className='pb-2 collectionnav1'>Media</h6> */}
@@ -792,12 +886,14 @@ function Navbar1() {
                                                 </div>
                                             </div>  */}
 
-                                            <div className='mt-5 ml-7'>
+
+                                            {/* navbar code working  */}
+
+                                            {/* <div className='mt-5 ml-7'>
                                             <div className='mb-1'>
                                                 <h3 className='font-[500]'>Shop By Category</h3>
                                             </div>
 
-                                                {/* GOLD CATEGORY SECTION */}
                                                 {goldCategories.length > 0 && (
                                                     <div>
                                                        <h3 className="font-[500] mb-1  text-[12px] border-b-2 border-b-[#0d0d0da4] inline-block">
@@ -809,24 +905,20 @@ function Navbar1() {
                                                                 className="subcatmain relative mb-1"
                                                                 onClick={() => submitHandle(i)}
                                                             >
-                                                                {/* Category Image */}
                                                                 <img
                                                                     loading='lazy'
                                                                     src={`${imgdburl}${i?.image_Url?.url}`}
                                                                     alt={i.title}
                                                                     style={{ width: '30px', height: '30px', objectFit: 'contain', userSelect: 'none' }}
                                                                 />
-                                                                {/* Category Title */}
                                                                 <h3 className="text-[14px] m-1 cursor-pointer select-none font-Poppins hover:text-[#1BB8E5]">
                                                                     {i.title}
                                                                 </h3>
-                                                                {/* Right Arrow Icon */}
                                                                 {(i.subcategories.length > 0) && (
                                                                     <div className="absolute left-[95%]">
                                                                         <IoMdArrowDropright />
                                                                     </div>
                                                                 )}
-                                                                {/* Subcategories Dropdown */}
                                                                 {(i.subcategories.length > 0) && (
                                                                     <div className="subcatchild top-3 left-[100%] pt-[2px] pb-2 w-[230px] bg-[#fff] border border-[#eee] absolute z-30 rounded-[3px] shadow-sm" >
                                                                         {i.subcategories.map((val, subIndex) => (
@@ -867,7 +959,7 @@ function Navbar1() {
                                                 )}
 
                                                 {/* SILVER CATEGORY SECTION */}
-                                                {silverCategories.length > 0 && (
+                                                {/* {silverCategories.length > 0 && (
                                                     <div>
                                                         <h3 className="font-[500] mb-1   text-[12px] border-b-2 border-b-[#0d0d0da4] inline-block">Silver</h3>
                                                         {silverCategories.slice(0, showAllSilver ? silverCategories.length : 3).map((i, index) => (
@@ -876,24 +968,20 @@ function Navbar1() {
                                                                 className="subcatmain relative mb-1"
                                                                 onClick={() => submitHandle(i)}
                                                             >
-                                                                {/* Category Image */}
                                                                 <img
                                                                     loading='lazy'
                                                                     src={`${imgdburl}${i?.image_Url?.url}`}
                                                                     alt={i.title}
                                                                     style={{ width: '30px', height: '30px', objectFit: 'contain', userSelect: 'none' }}
                                                                 />
-                                                                {/* Category Title */}
                                                                 <h3 className="text-[14px] m-1 cursor-pointer select-none font-Poppins hover:text-[#1BB8E5]">
                                                                     {i.title}
                                                                 </h3>
-                                                                {/* Right Arrow Icon */}
                                                                 {(i.subcategories.length > 0) && (
                                                                     <div className="absolute left-[95%]">
                                                                         <IoMdArrowDropright />
                                                                     </div>
                                                                 )}
-                                                                {/* Subcategories Dropdown */}
                                                                 {(i.subcategories.length > 0) && (
                                                                     <div className="subcatchild top-3 left-[100%] pt-[2px] pb-2 w-[230px] bg-[#fff] border border-[#eee] absolute z-30 rounded-[3px] shadow-sm">
                                                                         {i.subcategories.map((val, subIndex) => (
@@ -917,7 +1005,7 @@ function Navbar1() {
                                                         {silverCategories.length > 3 && (
                                                              <div className='text-center'>
                                                             <button
-                                                                onClick={() => {
+                                                                onClick={(e) => {
                                                                     e.stopPropagation();
                                                                     setShowAllSilver(!showAllSilver)
                                                                 }}
@@ -928,8 +1016,8 @@ function Navbar1() {
                                                             </div>
                                                         )}
                                                     </div>
-                                                )}
-                                            </div>
+                                                )} */}
+                                            {/* </div> */} 
 
 
 

@@ -782,7 +782,7 @@ const calculateEDD = async () => {
                                 {
                                     orderData?.cart?.map((val, index) => {
                                         const convertedOriginalPrice = (val.chainPrice > 0 
-                                            ? (val.originalPrice + val.chainPrice) * (conversionRates[currency] || 1)
+                                            ? (val.originalPrice + val.chainPrice + (val?.extraCost || 0)) * (conversionRates[currency] || 1)
                                             : val.originalPrice * (conversionRates[currency] || 1)).toFixed();
                                     
                                         const convertedDiscountPrice = (val.chainPrice > 0 

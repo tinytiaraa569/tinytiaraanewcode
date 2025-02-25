@@ -48,7 +48,7 @@ function ShopProductDetails({ product }) {
                     <p className="text-lg text-gray-700"><strong>Subcategory:</strong> {product?.subcategory}</p>
 
                     <p className="text-lg font-semibold text-gray-800 mt-6">Total Stock Summary:</p>
-        <table className="w-full border-collapse mt-2">
+        <table className="border-collapse mt-2">
             <thead>
                 <tr className="bg-gray-200">
                     <th className="px-4 py-2 text-left border border-black">Stock Type</th>
@@ -128,7 +128,7 @@ function ShopProductDetails({ product }) {
                         </div>
                     </div>
                     {showMetalStock && (
-                        <table className="w-full mt-3 border-collapse">
+                        <table className=" mt-3 border-collapse">
                             <thead>
                                 <tr className="bg-gray-200">
                                     <th className="px-4 py-2 text-left border border-black w-1/2">Metal Color</th>
@@ -166,7 +166,7 @@ function ShopProductDetails({ product }) {
                             {Object.entries(product.Enamelcolorstock || {}).map(([key, value]) => (
                                 <div key={key} className="mb-3">
                                     <h4 className="text-lg font-semibold capitalize mb-2">{key}</h4>
-                                    <table className="w-full border-collapse">
+                                    <table className=" border-collapse">
                                         <thead>
                                             <tr className="bg-gray-200">
                                                 <th className="px-4 py-2 text-left border border-black">Metal Color</th>
@@ -201,7 +201,7 @@ function ShopProductDetails({ product }) {
                         </div>
                     </div>
                     {showCombinationStock && (
-                        <table className="w-full mt-3 border-collapse">
+                        <table className=" mt-3 border-collapse">
                             <thead>
                                 <tr className="bg-gray-200">
                                     <th className="px-4 py-2 text-left border border-black">Combination</th>
