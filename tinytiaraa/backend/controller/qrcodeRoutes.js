@@ -43,22 +43,18 @@ router.get("/qrcode/:id", async (req, res) => {
   try {
     const { id } = req.params;
 
-    if (!ObjectId.isValid(id)) {
-      console.log("Invalid ObjectId received:", id);
-      return res.status(400).send("Invalid QR Code ID");
-    }
+    console.log("Received QR Code categoryId:", id);
 
-    console.log("Searching QR Code with ID:", id);
-
-    const qrCode = await QRCode.findOne({ categoryId: new ObjectId(id) });
-
+    // No need to check if id is a valid ObjectId because categoryId is a string
+    const qrCode = await QRCode.findOne({ categoryId: id });
 
     if (!qrCode) {
-      console.log("QR Code not found in database");
+      console.log("QR Code not found for categoryId:", id);
       return res.status(404).send("QR Code not found");
     }
 
-    console.log("Redirecting to:", qrCode.redirectUrl);
+    console.log("Found QR Code:", qrCode);
+
     res.status(200).json({ redirectUrl: qrCode.redirectUrl });
 
   } catch (error) {
@@ -121,7 +117,7 @@ router.post("/save-qrcode", async (req, res) => {
     await newQRCode.save();
 
     // Generate the correct QR redirect URL using the QR Code's `_id`
-    const qrRedirectUrl = `${req.protocol}://${req.get("host")}/qrcode/${newQRCode._id}`;
+    const qrRedirectUrl = `https://tiny-tiaraanew.vercel.app/qrcode/${newQRCode._id}`;
 
     res.status(201).json({
       success: true,
