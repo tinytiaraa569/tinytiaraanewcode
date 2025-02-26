@@ -116,6 +116,7 @@ import ShopAllBlogs from './blogs/ShopallBlogs';
 import BlogDetails from './blogs/BlogDetails';
 import QrCode from './qrcode/QrCode';
 import ShopAllQrCode from './qrcode/ShopAllQrCode/ShopAllQrCode';
+import QrCodeRedirect from './qrcode/QrCodeRedirect';
 
 
 
@@ -231,7 +232,12 @@ function App() {
     location.pathname.startsWith('/dashboard-blogs') ||
 
     location.pathname.startsWith('/qr-code') ||
-    location.pathname.startsWith('/dashboard-qrcode') 
+    location.pathname.startsWith('/dashboard-qrcode') ||
+
+    location.pathname.startsWith('/qrcode') 
+
+
+    
 
     
 
@@ -657,7 +663,9 @@ function App() {
           <Route path='/order/success' element={<OrderSuccessPage />} />
           <Route path="/blog/:id" element={<BlogDetails />} />
 
-          <Route path='/qr-code' element={<QrCode/>} />
+
+           <Route path="/qrcode/:id" element={<QrCodeRedirect />} />
+           <Route path='/qr-code' element={<QrCode/>} />
 
 
 

@@ -10,6 +10,7 @@ import { Link, useSearchParams } from "react-router-dom";
 const LinksComponent = () => {
   const [categoriesData, setCategoriesData] = useState([]);
   const { products } = useSelector((state) => state.products);
+  const [isLoading, setIsLoading] = useState(true);
 
   const [searchParams] = useSearchParams();
   
@@ -21,6 +22,7 @@ const LinksComponent = () => {
       try {
         const response = await axios.get(`${server}/get-allcategories`);
         setCategoriesData(response.data.categories);
+        setIsLoading(false)
       } catch (error) {
         console.error("Error fetching categories:", error);
         alert("Failed to fetch categories");
@@ -38,13 +40,30 @@ const LinksComponent = () => {
     <div className="!mb-0 flex flex-col rounded-[10px] p-4">
       {/* Product Image List */}
       <div className="py-2 m-auto w-full overflow-hidden cursor-pointer">
-        <ul className="flex justify-center gap-4 md:gap-6">
-          {filteredProducts.length > 0 ? (
+        <ul className="flex justify-center gap-4 md:gap-6  md:flex-nowrap flex-wrap">
+          
+          
+          {isLoading ? (
+            // Skeleton Loader
+            Array(3)
+              .fill(null)
+              .map((_, index) => (
+                <div
+                  key={index}
+                  className="animate-pulse flex flex-col items-center overflow-hidden rounded-[18px] bg-gray-200 px-3 py-2 shadow-sm md:w-[170px] md:px-3 md:py-3 w-[110px]"
+                >
+                  <div className="w-full h-[120px] md:h-[160px] bg-gray-300 rounded-[18px]"></div>
+                  <div className="mt-2 h-4 w-3/4 bg-gray-300 rounded"></div>
+                  <div className="mt-1 h-4 w-1/2 bg-gray-300 rounded"></div>
+                </div>
+              ))
+          )
+          : filteredProducts.length > 0 ? (
             filteredProducts.map((product, index) => (
               <div
                 key={index}
                 className="group flex flex-col items-center overflow-hidden rounded-[18px] bg-white px-3 py-2 shadow-sm transition-transform duration-300 hover:scale-105 hover:shadow-md 
-                md:w-[170px] md:px-3 md:py-3 w-[140px] px-2 py-2" // Adjust for large and small screens
+                md:w-[170px] md:px-3 md:py-3 w-[110px] " // Adjust for large and small screens
               >
                 {/* Product Image */}
                 <li className="relative w-full flex justify-center overflow-hidden rounded-[18px]">

@@ -6,6 +6,8 @@ const ErrorHandler = require('../utils/Errorhandler');
 const crypto = require('crypto');
 const catchAsyncErrors = require('../middleware/catchAsyncErrors');
 const QRCode = require('../model/qrcodeModel');
+const mongoose = require("mongoose");
+const ObjectId = mongoose.Types.ObjectId;
 
 const generateRandomString = (length) => {
   return crypto.randomBytes(length).toString('hex').slice(0, length);
@@ -37,31 +39,100 @@ const processBase64Image = (base64Image) => {
 };
 
 
-// Save QR Code URL
-router.post("/save-qrcode", async (req, res) => {
-  console.log(req.body,"requested data from body")
+router.get("/qrcode/:id", async (req, res) => {
   try {
-    const { categoryId, url, qrImageBase64 } = req.body;
+    const { id } = req.params;
 
-    if (!categoryId || !url || !qrImageBase64) {
-        return res.status(400).json({ success: false, message: 'Missing required fields' });
+    if (!ObjectId.isValid(id)) {
+      console.log("Invalid ObjectId received:", id);
+      return res.status(400).send("Invalid QR Code ID");
+    }
+
+    console.log("Searching QR Code with ID:", id);
+
+    const qrCode = await QRCode.findOne({ categoryId: new ObjectId(id) });
+
+
+    if (!qrCode) {
+      console.log("QR Code not found in database");
+      return res.status(404).send("QR Code not found");
+    }
+
+    console.log("Redirecting to:", qrCode.redirectUrl);
+    res.status(200).json({ redirectUrl: qrCode.redirectUrl });
+
+  } catch (error) {
+    console.error("Server error:", error);
+    res.status(500).send("Server error");
+  }
+});
+
+
+// Save QR Code URL
+// router.post("/save-qrcode", async (req, res) => {
+//   try {
+//     const { categoryId, url, qrImageBase64 } = req.body;
+
+//     if (!categoryId || !url || !qrImageBase64) {
+//         return res.status(400).json({ success: false, message: 'Missing required fields' });
+//     }
+
+//     const processedQRImage = processBase64Image(qrImageBase64);
+
+//     // Create a new QR Code entry with a unique ID
+//     const newQRCode = new QRCode({
+//         categoryId,
+//         url, // This is the dynamic URL that can be updated later
+//         qrImage: processedQRImage
+//     });
+
+//     await newQRCode.save();
+
+//     // Instead of returning the actual URL, return the dynamic URL
+//     const qrRedirectUrl = `${req.protocol}://${req.get("host")}/qrcode/${newQRCode._id}`;
+
+//     res.status(201).json({ 
+//       success: true, 
+//       message: 'QR Code saved successfully', 
+//       data: { ...newQRCode.toObject(), qrRedirectUrl }
+//     });
+//   } catch (error) {
+//     res.status(500).json({ success: false, message: error.message });
+//   }
+// });
+router.post("/save-qrcode", async (req, res) => {
+  try {
+    const { categoryId, url, redirectUrl, qrImageBase64 } = req.body;
+
+    if (!categoryId || !url || !redirectUrl || !qrImageBase64) {
+      return res.status(400).json({ success: false, message: "Missing required fields" });
     }
 
     const processedQRImage = processBase64Image(qrImageBase64);
 
+    // Create and save the QR Code entry
     const newQRCode = new QRCode({
-        categoryId,
-        url,
-        qrImage: processedQRImage
+      categoryId,
+      url,
+      redirectUrl,
+      qrImage: processedQRImage,
     });
 
     await newQRCode.save();
 
-    res.status(201).json({ success: true, message: 'QR Code saved successfully', data: newQRCode });
-} catch (error) {
+    // Generate the correct QR redirect URL using the QR Code's `_id`
+    const qrRedirectUrl = `${req.protocol}://${req.get("host")}/qrcode/${newQRCode._id}`;
+
+    res.status(201).json({
+      success: true,
+      message: "QR Code saved successfully",
+      data: { ...newQRCode.toObject(), qrRedirectUrl },
+    });
+  } catch (error) {
     res.status(500).json({ success: false, message: error.message });
-}
-  });
+  }
+});
+
   
   // Get all QR Codes
   router.get("/get-all-qrcodes", async (req, res) => {
@@ -77,7 +148,7 @@ router.post("/save-qrcode", async (req, res) => {
   router.put("/update-qrcode/:id", async (req, res) => {
     try {
       const { id } = req.params;
-      const { categoryId, url, qrImageBase64 } = req.body;
+      const { categoryId, url, redirectUrl } = req.body; // Added redirectUrl
   
       // Find the existing QR Code entry
       const qrCode = await QRCode.findById(id);
@@ -85,14 +156,10 @@ router.post("/save-qrcode", async (req, res) => {
         return res.status(404).json({ success: false, message: "QR Code not found" });
       }
   
-      // Prevent updating the QR Code image
-      if (qrImageBase64) {
-        return res.status(400).json({ success: false, message: "QR Code image cannot be changed" });
-      }
-  
-      // Update only the categoryId and URL
+      // Update the fields
       qrCode.categoryId = categoryId || qrCode.categoryId;
       qrCode.url = url || qrCode.url;
+      qrCode.redirectUrl = redirectUrl || qrCode.redirectUrl; // Allow updating redirectUrl
   
       await qrCode.save();
   

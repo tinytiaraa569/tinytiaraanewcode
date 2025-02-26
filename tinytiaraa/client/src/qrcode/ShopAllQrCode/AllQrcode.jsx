@@ -41,6 +41,7 @@ const AllQrcode = () => {
   const [editMode, setEditMode] = useState(false);
   const [editingCategoryId, setEditingCategoryId] = useState(null);
   const [qrCodeId, setQrCodeId] = useState(null); // Store the QR Code ID for updating
+  const [redirectUrl, setRedirectUrl] = useState("");
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -65,76 +66,173 @@ const AllQrcode = () => {
     fetchQrCodes();
   }, []);
 
-  const generateQRCodeImage = async (url) => {
-    const qrCode = new QRCodeStyling({ ...qrCodeOptions, data: url, image: logo });
+  // const generateQRCodeImage = async (url) => {
+  //   const qrCode = new QRCodeStyling({ ...qrCodeOptions, data: url, image: logo });
+  //   return await qrCode.getRawData("svg");
+  // };
+
+  const generateQRCodeImage = async (categoryId, qrUrl) => {
+    const fullUrl = `https://tiny-tiaraanew.vercel.app/qrcode/${categoryId}`;
+    
+    const qrCode = new QRCodeStyling({ ...qrCodeOptions, data: qrUrl, image: logo });
     return await qrCode.getRawData("svg");
   };
 
-  const handleSaveOrUpdateQRCode = async () => {
-    if (!selectedCategory || !qrUrl) return;
+  // const handleSaveOrUpdateQRCode = async () => {
+  //   if (!selectedCategory || !qrUrl) return;
 
-    const svgBlob = await generateQRCodeImage(qrUrl);
+  //   const svgBlob = await generateQRCodeImage(qrUrl);
+  //   const reader = new FileReader();
+  //   reader.readAsDataURL(svgBlob);
+  //   reader.onloadend = async () => {
+  //     const qrBase64 = reader.result;
+
+  //     try {
+  //       if (editMode) {
+  //         // Update existing QR Code
+  //         await axios.put(`${server}/update-qrcode/${qrCodeId}`, {
+  //           categoryId: editingCategoryId,
+  //           url: qrUrl,
+  //         });
+
+  //         setQrData((prevData) =>
+  //           prevData.map((item) =>
+  //             item.categoryId._id === editingCategoryId ? { ...item, url: qrUrl, qrImage: { url: qrBase64 } } : item
+  //           )
+  //         );
+  //       } else {
+  //         // Save new QR Code
+  //         await axios.post(`${server}/save-qrcode`, {
+  //           categoryId: selectedCategory,
+  //           url: qrUrl,
+  //           qrImageBase64: qrBase64,
+  //         });
+
+  //         setQrData([...qrData, { categoryId: { _id: selectedCategory, title: categories.find(c => c._id === selectedCategory)?.title }, url: qrUrl, qrImage: { url: qrBase64 } }]);
+  //       }
+  //     } catch (error) {
+  //       console.error("Error saving QR code:", error);
+  //     }
+  //   };
+
+  //   setOpenDialog(false);
+  //   setEditMode(false);
+  // };
+
+
+  const handleSaveOrUpdateQRCode = async () => {
+    if (!selectedCategory || !redirectUrl) return;
+  
+    const fullUrl = `https://tiny-tiaraanew.vercel.app/qrcode/${selectedCategory}`;
+    setQrUrl(fullUrl);
+  
+    const svgBlob = await generateQRCodeImage(selectedCategory, qrUrl);
     const reader = new FileReader();
     reader.readAsDataURL(svgBlob);
     reader.onloadend = async () => {
       const qrBase64 = reader.result;
-
+  
       try {
         if (editMode) {
-          // Update existing QR Code
           await axios.put(`${server}/update-qrcode/${qrCodeId}`, {
             categoryId: editingCategoryId,
-            url: qrUrl,
+            url: fullUrl,
+            redirectUrl, // Save the user-provided redirect URL
           });
-
+  
           setQrData((prevData) =>
             prevData.map((item) =>
-              item.categoryId._id === editingCategoryId ? { ...item, url: qrUrl, qrImage: { url: qrBase64 } } : item
+              item.categoryId._id === editingCategoryId
+                ? { ...item, url: fullUrl, redirectUrl, qrImage: { url: qrBase64 } }
+                : item
             )
           );
         } else {
-          // Save new QR Code
           await axios.post(`${server}/save-qrcode`, {
             categoryId: selectedCategory,
-            url: qrUrl,
+            url: fullUrl,
+            redirectUrl, // Save user input redirect URL
             qrImageBase64: qrBase64,
           });
-
-          setQrData([...qrData, { categoryId: { _id: selectedCategory, title: categories.find(c => c._id === selectedCategory)?.title }, url: qrUrl, qrImage: { url: qrBase64 } }]);
+  
+          setQrData([
+            ...qrData,
+            {
+              categoryId: {
+                _id: selectedCategory,
+                title: categories.find((c) => c._id === selectedCategory)?.title,
+              },
+              url: fullUrl,
+              redirectUrl, // Store user-provided redirect URL
+              qrImage: { url: qrBase64 },
+            },
+          ]);
         }
       } catch (error) {
         console.error("Error saving QR code:", error);
       }
     };
-
+  
     setOpenDialog(false);
     setEditMode(false);
   };
 
-  const handleEditQRCode = (categoryId, id, url) => {
+
+  // const handleEditQRCode = (categoryId, id, url) => {
+  //   setSelectedCategory(categoryId);
+  //   setQrCodeId(id);
+  //   setQrUrl(url);
+  //   setEditingCategoryId(categoryId);
+  //   setEditMode(true);
+  //   setOpenDialog(true);
+  // };
+
+  const handleEditQRCode = (categoryId, id, existingRedirectUrl) => {
+    const fullUrl = `https://tiny-tiaraanew.vercel.app/qrcode/${categoryId}`;
+  
     setSelectedCategory(categoryId);
     setQrCodeId(id);
-    setQrUrl(url);
+    setQrUrl(fullUrl);
+    setRedirectUrl(existingRedirectUrl || ""); // Pre-fill redirect URL field
     setEditingCategoryId(categoryId);
     setEditMode(true);
     setOpenDialog(true);
   };
+  
+
+  // const downloadQRCode = async (categoryId) => {
+  //   const qrItem = qrData.find(item => item.categoryId._id === categoryId);
+  //   if (!qrItem || !qrItem.qrImage?.url) return;
+
+  //   const response = await fetch(qrItem.qrImage.url);
+  //   const blob = await response.blob();
+
+  //   const link = document.createElement("a");
+  //   link.href = URL.createObjectURL(blob);
+  //   link.download = `qrcode-${categoryId}.svg`;
+
+  //   document.body.appendChild(link);
+  //   link.click();
+  //   document.body.removeChild(link);
+  // };
+
 
   const downloadQRCode = async (categoryId) => {
     const qrItem = qrData.find(item => item.categoryId._id === categoryId);
     if (!qrItem || !qrItem.qrImage?.url) return;
-
+  
     const response = await fetch(qrItem.qrImage.url);
     const blob = await response.blob();
-
+  
     const link = document.createElement("a");
     link.href = URL.createObjectURL(blob);
     link.download = `qrcode-${categoryId}.svg`;
-
+  
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
   };
+
 
   return (
     <Box p={4} bgcolor="#f9f9f9">
@@ -144,6 +242,8 @@ const AllQrcode = () => {
 
       <Button variant="contained" color="primary" onClick={() => {
         setEditMode(false);
+        setSelectedCategory("");
+        setRedirectUrl("");
         setOpenDialog(true);
       }}>
         Add QR Code
@@ -168,13 +268,24 @@ const AllQrcode = () => {
               </MenuItem>
             ))}
           </Select>
-          <TextField
+
+          {/* Redirect URL Input */}
+    <TextField
+      fullWidth
+      label="Redirect URL"
+      variant="outlined"
+      size="small"
+      value={redirectUrl}
+      onChange={(e) => setRedirectUrl(e.target.value)}
+      sx={{ mt: 2 }}
+    />
+           <TextField
             fullWidth
-            label="QR Code URL"
+            label="QR Code URL (Auto-Generated)"
             variant="outlined"
             size="small"
             value={qrUrl}
-            onChange={(e) => setQrUrl(e.target.value)}
+            disabled
             sx={{ mt: 2 }}
           />
         </DialogContent>
@@ -196,7 +307,7 @@ const AllQrcode = () => {
             <TableRow>
               <TableCell sx={{ color: "#fff", fontWeight: 600 }}>Category</TableCell>
               <TableCell sx={{ color: "#fff", fontWeight: 600 }}>QR Code</TableCell>
-              <TableCell sx={{ color: "#fff", fontWeight: 600 }}>QR Code URL</TableCell>
+              <TableCell sx={{ color: "#fff", fontWeight: 600 }}>QR redirect URL</TableCell>
               <TableCell sx={{ color: "#fff", fontWeight: 600 }}>Actions</TableCell>
             </TableRow>
           </TableHead>
@@ -205,10 +316,10 @@ const AllQrcode = () => {
               <TableRow key={qr.categoryId._id}>
                 <TableCell>{qr.categoryId.title}</TableCell>
                 <TableCell><img src={`${imgdburl}${qr.qrImage?.url}`} alt="QR Code" width={100} /></TableCell>
-                <TableCell>{qr.url}</TableCell>
+                <TableCell>{qr.redirectUrl}</TableCell> 
                 <TableCell>
                   <Button variant="contained" color="secondary" size="small" onClick={() => downloadQRCode(qr.categoryId._id)}>Download</Button>
-                  <Button variant="contained" color="primary" size="small" sx={{ ml: 1 }} onClick={() => handleEditQRCode(qr.categoryId._id,qr._id, qr.url)}>Edit</Button>
+                  <Button variant="contained" color="primary" size="small" sx={{ ml: 1 }} onClick={() => handleEditQRCode(qr.categoryId._id,qr._id, qr.redirectUrl)}>Edit</Button>
                 </TableCell>
               </TableRow>
             ))}
