@@ -5,7 +5,7 @@ import { imgdburl, server } from "@/server";
 import { FaFacebookF, FaInstagram, FaLinkedinIn, FaPinterestP } from "react-icons/fa";
 import { MdEmail } from "react-icons/md";
 import { LuGlobe } from "react-icons/lu";
-import { Link, useSearchParams } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 
 const LinksComponent = () => {
   const [categoriesData, setCategoriesData] = useState([]);
@@ -32,9 +32,13 @@ const LinksComponent = () => {
     fetchCategories();
   }, []);
 
-  const filteredProducts = products
+  const filteredProductslength = products
     .filter((product) => product.category === categoryname)
-    .slice(0, 3); // Show only first 3 products
+     // Show only first 3 products
+
+     const filteredProducts =   filteredProductslength.slice(0, 3);
+
+    const navigate = useNavigate()
 
   return (
     <div className="!mb-0 flex flex-col rounded-[10px] p-4">
@@ -50,7 +54,7 @@ const LinksComponent = () => {
               .map((_, index) => (
                 <div
                   key={index}
-                  className="animate-pulse flex flex-col items-center overflow-hidden rounded-[18px] bg-gray-200 px-3 py-2 shadow-sm md:w-[170px] md:px-3 md:py-3 w-[110px]"
+                  className="animate-pulse flex flex-col items-center overflow-hidden rounded-[18px] bg-gray-200 px-3 py-2 shadow-sm md:w-[170px] md:px-3 md:py-3 w-[140px]"
                 >
                   <div className="w-full h-[120px] md:h-[160px] bg-gray-300 rounded-[18px]"></div>
                   <div className="mt-2 h-4 w-3/4 bg-gray-300 rounded"></div>
@@ -63,8 +67,14 @@ const LinksComponent = () => {
               <div
                 key={index}
                 className="group flex flex-col items-center overflow-hidden rounded-[18px] bg-white px-3 py-2 shadow-sm transition-transform duration-300 hover:scale-105 hover:shadow-md 
-                md:w-[170px] md:px-3 md:py-3 w-[110px] " // Adjust for large and small screens
+                md:w-[170px] md:px-3 md:py-3 w-[140px] " // Adjust for large and small screens
+                onClick={() => {
+                  let pname = product.name;
+                  let productname = pname.replace(/\s+/g, "-");
+                  window.location.href = `/product/${productname}`;
+                }}
               >
+                
                 {/* Product Image */}
                 <li className="relative w-full flex justify-center overflow-hidden rounded-[18px]">
                   <img
@@ -104,10 +114,14 @@ const LinksComponent = () => {
 
       {/* Footer Section */}
       <div className="flex w-full flex-col items-center justify-center pt-[1.1rem] text-center">
-        <div className="relative flex flex-col pb-2 text-center text-linkText font-semibold">
+        <div className="relative flex flex-col pb-2 text-center text-linkText font-semibold cursor-pointer" 
+        onClick={()=>{
+          const url = `/products?category=${categoryname}`;
+          window.location.href = url;
+        }}>
           See Full Shop
-          <span className="font-normal text-sm opacity-50">
-            {filteredProducts.length} Products
+          <span className="font-normal text-xs opacity-50">
+            {filteredProductslength.length} Products
           </span>
         </div>
       </div>
