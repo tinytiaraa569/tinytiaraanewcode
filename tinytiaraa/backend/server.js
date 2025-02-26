@@ -19,15 +19,15 @@ if(process.env.NODE_ENV !== "PRODUCTION"){
 }
 
 //connection db
-// connectDatabase()   
+connectDatabase()   
 // --- previous
 
 // for dummy data base 
 
-const databaseName = process.env.NODE_ENV === "DEVELOPMENT" ? "dummy" : "test";
+// const databaseName = process.env.NODE_ENV === "DEVELOPMENT" ? "dummy" : "test";
 
-// Connect to the database
-connectDatabase(databaseName);
+// // Connect to the database
+// connectDatabase(databaseName);
 
 cloudinary.config({
     cloud_name: process.env.CLOUDINARY_NAME,

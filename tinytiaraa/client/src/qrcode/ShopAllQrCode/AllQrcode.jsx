@@ -66,10 +66,6 @@ const AllQrcode = () => {
     fetchQrCodes();
   }, []);
 
-  // const generateQRCodeImage = async (url) => {
-  //   const qrCode = new QRCodeStyling({ ...qrCodeOptions, data: url, image: logo });
-  //   return await qrCode.getRawData("svg");
-  // };
 
   const generateQRCodeImage = async (categoryId, qrUrl) => {
     const fullUrl = `https://tiny-tiaraanew.vercel.app/qrcode/${categoryId}`;
@@ -77,47 +73,6 @@ const AllQrcode = () => {
     const qrCode = new QRCodeStyling({ ...qrCodeOptions, data: qrUrl, image: logo });
     return await qrCode.getRawData("svg");
   };
-
-  // const handleSaveOrUpdateQRCode = async () => {
-  //   if (!selectedCategory || !qrUrl) return;
-
-  //   const svgBlob = await generateQRCodeImage(qrUrl);
-  //   const reader = new FileReader();
-  //   reader.readAsDataURL(svgBlob);
-  //   reader.onloadend = async () => {
-  //     const qrBase64 = reader.result;
-
-  //     try {
-  //       if (editMode) {
-  //         // Update existing QR Code
-  //         await axios.put(`${server}/update-qrcode/${qrCodeId}`, {
-  //           categoryId: editingCategoryId,
-  //           url: qrUrl,
-  //         });
-
-  //         setQrData((prevData) =>
-  //           prevData.map((item) =>
-  //             item.categoryId._id === editingCategoryId ? { ...item, url: qrUrl, qrImage: { url: qrBase64 } } : item
-  //           )
-  //         );
-  //       } else {
-  //         // Save new QR Code
-  //         await axios.post(`${server}/save-qrcode`, {
-  //           categoryId: selectedCategory,
-  //           url: qrUrl,
-  //           qrImageBase64: qrBase64,
-  //         });
-
-  //         setQrData([...qrData, { categoryId: { _id: selectedCategory, title: categories.find(c => c._id === selectedCategory)?.title }, url: qrUrl, qrImage: { url: qrBase64 } }]);
-  //       }
-  //     } catch (error) {
-  //       console.error("Error saving QR code:", error);
-  //     }
-  //   };
-
-  //   setOpenDialog(false);
-  //   setEditMode(false);
-  // };
 
 
   const handleSaveOrUpdateQRCode = async () => {
@@ -178,15 +133,7 @@ const AllQrcode = () => {
   };
 
 
-  // const handleEditQRCode = (categoryId, id, url) => {
-  //   setSelectedCategory(categoryId);
-  //   setQrCodeId(id);
-  //   setQrUrl(url);
-  //   setEditingCategoryId(categoryId);
-  //   setEditMode(true);
-  //   setOpenDialog(true);
-  // };
-
+ 
   const handleEditQRCode = (categoryId, id, existingRedirectUrl) => {
     const fullUrl = `https://tiny-tiaraanew.vercel.app/qrcode/${categoryId}`;
   
@@ -199,22 +146,6 @@ const AllQrcode = () => {
     setOpenDialog(true);
   };
   
-
-  // const downloadQRCode = async (categoryId) => {
-  //   const qrItem = qrData.find(item => item.categoryId._id === categoryId);
-  //   if (!qrItem || !qrItem.qrImage?.url) return;
-
-  //   const response = await fetch(qrItem.qrImage.url);
-  //   const blob = await response.blob();
-
-  //   const link = document.createElement("a");
-  //   link.href = URL.createObjectURL(blob);
-  //   link.download = `qrcode-${categoryId}.svg`;
-
-  //   document.body.appendChild(link);
-  //   link.click();
-  //   document.body.removeChild(link);
-  // };
 
 
   const downloadQRCode = async (categoryId) => {
