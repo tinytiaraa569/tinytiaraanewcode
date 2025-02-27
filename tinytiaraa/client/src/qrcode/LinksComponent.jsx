@@ -67,51 +67,56 @@ const LinksComponent = () => {
 
   return (
     <div className="!mb-0 flex flex-col rounded-[10px] p-4">
-      <div className=" flex justify-center border-b border-gray-300 pb-4"> 
-      {productDetails && (
-          <div
-            key={productDetails._id}
-            className="group flex flex-col !items-center justify-center overflow-hidden rounded-[18px] bg-white px-3 py-2 shadow-sm transition-transform duration-300 hover:scale-105 hover:shadow-md 
-            md:w-[170px] md:px-3 md:py-3 w-[140px]"
-            onClick={() => {
-              let pname = productDetails.name;
-              let productname = pname?.replace(/\s+/g, "-");
-              window.location.href = `/product/${productname}`;
-            }}
-          >
-            {/* Product Image */}
-            <li className="relative w-full flex justify-center overflow-hidden rounded-[18px]">
-              <img
-                alt={productDetails.name}
-                src={
-                  productDetails.images &&
-                  productDetails.images[1]?.url?.match(
-                    /https:\/\/res\.cloudinary\.com\/ddaef5aw1\/image\/upload\/v[0-9]+/
-                  )
-                    ? productDetails.images[1].url.replace(
-                        /https:\/\/res\.cloudinary\.com\/ddaef5aw1\/image\/upload\/v[0-9]+/,
-                        `${imgdburl}/uploads/images`
+      {
+        productDetails && (
+          <div className=" flex justify-center border-b border-gray-300 pb-4"> 
+          {productDetails && (
+              <div
+                key={productDetails._id}
+                className="group flex flex-col !items-center justify-center overflow-hidden rounded-[18px] bg-white px-3 py-2 shadow-sm transition-transform duration-300 hover:scale-105 hover:shadow-md 
+                md:w-[170px] md:px-3 md:py-3 w-[140px]"
+                onClick={() => {
+                  let pname = productDetails.name;
+                  let productname = pname?.replace(/\s+/g, "-");
+                  window.location.href = `/product/${productname}`;
+                }}
+              >
+                {/* Product Image */}
+                <li className="relative w-full flex justify-center overflow-hidden rounded-[18px]">
+                  <img
+                    alt={productDetails.name}
+                    src={
+                      productDetails.images &&
+                      productDetails.images[1]?.url?.match(
+                        /https:\/\/res\.cloudinary\.com\/ddaef5aw1\/image\/upload\/v[0-9]+/
                       )
-                    : `${imgdburl}${productDetails.images && productDetails.images[1]?.url}` ||
-                      "/placeholder.jpg"
-                }
-                loading="lazy"
-                className="object-cover transition-transform duration-300 group-hover:scale-110   
-                md:h-[160px] h-[120px]" // Responsive image size
-              />
-            </li>
-
-            {/* Product Details */}
-            <h1 className="text-sm font-medium text-gray-700 md:text-base">
-              {productDetails.skuid}
-            </h1>
-            <p className="text-sm font-[600] text-gray-600 md:text-sm">
-              ₹{productDetails?.discountPrice.toLocaleString("en-IN")}
-            </p>
+                        ? productDetails.images[1].url.replace(
+                            /https:\/\/res\.cloudinary\.com\/ddaef5aw1\/image\/upload\/v[0-9]+/,
+                            `${imgdburl}/uploads/images`
+                          )
+                        : `${imgdburl}${productDetails.images && productDetails.images[1]?.url}` ||
+                          "/placeholder.jpg"
+                    }
+                    loading="lazy"
+                    className="object-cover transition-transform duration-300 group-hover:scale-110   
+                    md:h-[160px] h-[120px]" // Responsive image size
+                  />
+                </li>
+    
+                {/* Product Details */}
+                <h1 className="text-sm font-medium text-gray-700 md:text-base">
+                  {productDetails.skuid}
+                </h1>
+                <p className="text-sm font-[600] text-gray-600 md:text-sm">
+                  ₹{productDetails?.discountPrice.toLocaleString("en-IN")}
+                </p>
+              </div>
+            )}
+    
           </div>
-        )}
-
-      </div>
+        )
+      }
+     
       
 
       {/* Product Image List */}
