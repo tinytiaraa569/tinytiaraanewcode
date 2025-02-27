@@ -5543,7 +5543,7 @@ function ShopEditProductPage() {
                                 onClick={() => {
                                     if (selectedProduct?.name) {
                                         const productName = selectedProduct.name.replace(/\s+/g, "-");
-                                        setRedirectUrl(`https://tiny-tiaraanew.vercel.app/product/${productName}`);
+                                        setRedirectUrl(`https://tiny-tiaraanew.vercel.app/qr-code?product=${productName}`);
                                     }
                                 }}
                             >
