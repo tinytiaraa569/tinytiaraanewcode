@@ -5542,7 +5542,7 @@ function ShopEditProductPage() {
                                 sx={{ mt: 2 }} 
                                 onClick={() => {
                                     if (selectedProduct?.name) {
-                                        const productName = selectedProduct.name.replace(/\s+/g, "-");
+                                        const productName = encodeURIComponent(selectedProduct.name.replace(/\s+/g, "-"));
                                         setRedirectUrl(`https://tiny-tiaraanew.vercel.app/qr-code?product=${productName}`);
                                     }
                                 }}

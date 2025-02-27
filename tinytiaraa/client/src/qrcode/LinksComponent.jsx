@@ -17,7 +17,9 @@ const LinksComponent = () => {
   console.log(searchParams,"cearch params")
   
   const categoryname = searchParams.get("category"); 
-  const productName = searchParams.get("product")?.replace(/-/g, " ");
+  const productName = searchParams.get("product") 
+  ? decodeURIComponent(searchParams.get("product").replace(/-/g, " ")) 
+  : null;
   // let categoryname = "Tabeez Collection"; // Category name to match
 
   useEffect(() => {
