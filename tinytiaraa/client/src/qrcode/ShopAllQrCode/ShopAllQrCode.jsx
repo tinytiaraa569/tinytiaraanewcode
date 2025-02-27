@@ -9,7 +9,7 @@ function ShopAllQrCode() {
     <DashboardHeader />
     <div className="w-full flex ">
       <div >
-          <DashboardSideBar active={21} />
+          <DashboardSideBar active={22} />
       </div>
 
       <AllQrcode />

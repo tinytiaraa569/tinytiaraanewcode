@@ -594,6 +594,16 @@ const productSchema = new mongoose.Schema({
       },
 
       isLive: { type: Boolean, default: true },
+
+      qrCode: {
+        productId:String,
+        url: String,
+        redirectUrl: String,
+        qrImage: {
+            public_id: String,
+            url: String
+        }
+    },
     CreatedAt: {
         type: Date,
         default: Date.now()

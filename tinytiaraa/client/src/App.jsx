@@ -664,7 +664,9 @@ function App() {
           <Route path="/blog/:id" element={<BlogDetails />} />
 
 
-           <Route path="/qrcode/:id" element={<QrCodeRedirect />} />
+          <Route path="/qrcode/:id" element={<QrCodeRedirect type="qrcode" />} />
+          <Route path="/qrcode/product/:productId" element={<QrCodeRedirect type="product" />} />
+          
            <Route path='/qr-code' element={<QrCode/>} />
 
 

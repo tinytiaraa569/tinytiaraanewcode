@@ -22,6 +22,7 @@ import QRCodeStyling from "qr-code-styling";
 import axios from "axios";
 import { imgdburl, server } from "@/server";
 import logo from "./logo.png";
+import { Link, useLocation } from "react-router-dom";
 
 const qrCodeOptions = {
   width: 150,
@@ -164,12 +165,33 @@ const AllQrcode = () => {
     document.body.removeChild(link);
   };
 
-
+      const location = useLocation();
+  
+      // Get the last segment of the URL (e.g., "dashboard" or "overview")
+      const pathSegments = location.pathname.split('/').filter(Boolean);
+      const currentPage = pathSegments[pathSegments.length - 1];
+    
+      // You can map the path segment to a more readable name
+      const breadcrumbText = currentPage.charAt(0).toUpperCase() + currentPage.slice(1); // Capitalize first letter
+  
   return (
+    <div className="bg-[#f9f9f9] w-full flex justify-center !font-poppins">
+
+   
     <Box p={4} bgcolor="#f9f9f9">
-      <Typography variant="h4" mb={3} fontWeight={600} textAlign="center">
-        QR Code Management
-      </Typography>
+    
+       <h2 className='text-[24px] font-[500]'>Manage QrCodes</h2>
+          <nav aria-label="Breadcrumb" className="text-sm text-gray-600 mb-4 mt-1">
+            <ol className="flex space-x-2">
+              <li>
+                <Link to={"/dashboard"} className="hover:text-blue-500">Home</Link>
+              </li>
+              <li>&gt;</li> 
+              <li>
+                <span className="text-gray-400">{breadcrumbText}</span>
+              </li>
+            </ol>
+          </nav>
 
       <Button variant="contained" color="primary" onClick={() => {
         setEditMode(false);
@@ -258,6 +280,7 @@ const AllQrcode = () => {
         </Table>
       </TableContainer>
     </Box>
+    </div>
   );
 };
 

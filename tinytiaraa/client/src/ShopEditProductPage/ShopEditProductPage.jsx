@@ -19,6 +19,9 @@ import DashboardHeader from '@/ShopDashboardPage/DashboardHeader'
 import { IoArrowBack } from 'react-icons/io5'
 import { imgdburl, server } from '@/server'
 import axios from 'axios'
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField, Typography } from '@mui/material'
+import QRCodeStyling from "qr-code-styling";
+import logo from './logo.png'
 
 function ShopEditProductPage() {
     const { seller } = useSelector((state) => state.seller)
@@ -2630,8 +2633,146 @@ function ShopEditProductPage() {
 
     //     dispatch(updateProduct(updatedForm));  // Call the update action
     // };
+    const [openDialog, setOpenDialog] = useState(false);
+    const [redirectUrl, setRedirectUrl] = useState("");
+    const [qrUrl, setQrUrl] = useState("");
+    const [editMode, setEditMode] = useState(false);
+    const [qrCodeId, setQrCodeId] = useState(null);
+    const [qrData, setQrData] = useState(null); // Stores the generated QR code details
 
+    const qrCodeOptions = {
+        width: 150,
+        height: 150,
+        type: "svg",
+        dotsOptions: { color: "#000", type: "rounded" },
+        backgroundOptions: { color: "#fff" },
+        imageOptions: {
+          crossOrigin: "anonymous",
+          margin: 0,
+          hideBackgroundDots: true,
+          imageSize: 0.5, // Adjust size if needed
+        },
+      };
+      
+      const generateQRCodeImage = async (productId, qrUrl) => {
+        const fullUrl = `https://tiny-tiaraanew.vercel.app/qrcode/product/${productId}`;
+      
+        const qrCode = new QRCodeStyling({
+          ...qrCodeOptions,
+          data: qrUrl, // URL for redirection
+          image: logo, // Embedding the logo inside the QR code
+        });
+      
+        return await qrCode.getRawData("svg");
+      };
 
+    const handleOpenDialog = async () => {
+        setOpenDialog(true);
+    
+        try {
+            const { data } = await axios.get(`${server}/product/product/qrcode/${selectedProduct._id}`);
+            console.log(data, "data from modal");
+    
+            if (data.qrCode && data.qrCode.url) {
+                // QR Code exists -> Set edit mode
+                setEditMode(true);
+                setQrData(data.qrCode);
+                setRedirectUrl(data.qrCode.redirectUrl);
+                setQrUrl(data.qrCode.url);
+                setQrCodeId(data.qrCode._id);
+            } else {
+                // No QR Code -> Set add mode
+                setEditMode(false);
+                setQrData(null);
+                setRedirectUrl("");
+                setQrUrl(`https://tiny-tiaraanew.vercel.app/qrcode/product/${selectedProduct._id}`);
+            }
+        } catch (error) {
+            console.error("Error fetching QR code:", error);
+            setEditMode(false); // Ensure it's in "Add QR Code" mode on error
+            setQrData(null);
+            setRedirectUrl("");
+            setQrUrl(`https://tiny-tiaraanew.vercel.app/qrcode/product/${selectedProduct._id}`);
+        }
+    };
+    
+    useEffect(() => {
+        if (selectedProduct?._id) {
+            fetchQRCode();
+        }
+    }, [selectedProduct]);
+    const fetchQRCode = async () => {
+        try {
+            const { data } = await axios.get(`${server}/product/product/qrcode/${selectedProduct._id}`);
+            console.log(data, "data from API");
+
+            if (data.qrCode) {
+                let datains = data.qrCode;
+                setEditMode(true);
+                setQrData(datains);
+                setRedirectUrl(datains.redirectUrl);
+                setQrUrl(datains.url);
+                setQrCodeId(datains._id);
+            } else {
+                setEditMode(false);
+                setRedirectUrl("");
+                setQrUrl(`https://tiny-tiaraanew.vercel.app/qrcode/product/${selectedProduct._id}`);
+            }
+        } catch (error) {
+            console.error("Error fetching QR code:", error);
+        }
+    };
+
+    const handleSaveOrUpdateQRCode = async () => {
+        if (!redirectUrl) return; // Ensure redirectUrl is not empty
+    
+        const fullRedirectUrl = redirectUrl; // Use latest text field value
+    
+        const svgBlob = await generateQRCodeImage(selectedProduct._id, qrUrl);
+        const reader = new FileReader();
+        reader.readAsDataURL(svgBlob);
+        reader.onloadend = async () => {
+            const qrBase64 = reader.result;
+    
+            try {
+                if (editMode) {
+                    await axios.put(`${server}/product/product/update-qrcode/${selectedProduct._id}`, {
+                        productId: selectedProduct._id,
+                        url: qrUrl,
+                        redirectUrl: fullRedirectUrl, // Use latest user input
+                    });
+    
+                    setQrData({ ...qrData, url: qrUrl, redirectUrl: fullRedirectUrl });
+                } else {
+                    const response = await axios.post(`${server}/product/product/save-qrcode`, {
+                        productId: selectedProduct._id,
+                        url: qrUrl,
+                        redirectUrl: fullRedirectUrl, // Use latest user input
+                        qrImageBase64: qrBase64
+                    });
+    
+                    setQrData({
+                        ...qrData,
+                        url: qrUrl,
+                        redirectUrl: fullRedirectUrl, // Store user-provided redirect URL
+                        qrImage: { url: qrBase64 },
+                    });
+                }
+            } catch (error) {
+                console.error("Error saving QR code:", error);
+            }
+        };
+    
+        setOpenDialog(false);
+    };
+    
+
+    const handleDownloadQRCode = () => {
+        const link = document.createElement("a");
+        link.href = qrData.qrImage?.url;
+        link.download = `QR_Code_${selectedProduct.name}.svg`;
+        link.click();
+    };
 
     return (
 
@@ -5363,6 +5504,78 @@ function ShopEditProductPage() {
                                 <label htmlFor="mom" className="ml-2">Mom</label>
                             </div>
                         </div>
+                    </div>
+
+                    {/* generateqr code*/}
+                    <div  className='font-Poppins mt-4'>
+                        <div>
+                    <label htmlFor="" className='pb-2 font-[600] mb-4'>Qr Code <span className='text-sm text-gray-400'>(generate the qrcode) </span></label>
+                        </div>
+
+                    <>
+                    <Button variant="contained" color="primary" onClick={handleOpenDialog} className='!mt-2 mb-3'>
+                        {qrData?.qrImage?.url ? "Edit QR Code" : "Add QR Code"}
+                    </Button>
+
+                    {qrData?.qrImage?.url && (
+                            <div className='mt-3 text-red-400'>
+                                QR Code already generated. Click "Edit QR Code" to update or download it.
+                            </div>
+                        )}
+
+
+                    <Dialog open={openDialog} onClose={() => setOpenDialog(false)}>
+                        <DialogTitle>{editMode ? "Edit QR Code" : "Add QR Code"}</DialogTitle>
+                        <DialogContent>
+                            <TextField
+                                fullWidth
+                                label="Redirect URL"
+                                variant="outlined"
+                                size="small"
+                                value={redirectUrl}
+                                onChange={(e) => setRedirectUrl(e.target.value)}
+                                sx={{ mt: 2 }}
+                            />
+                              <Button 
+                                variant="contained" 
+                                size="small" 
+                                sx={{ mt: 2 }} 
+                                onClick={() => {
+                                    if (selectedProduct?.name) {
+                                        const productName = selectedProduct.name.replace(/\s+/g, "-");
+                                        setRedirectUrl(`https://tiny-tiaraanew.vercel.app/product/${productName}`);
+                                    }
+                                }}
+                            >
+                                Generate
+                            </Button>
+                            <TextField
+                                fullWidth
+                                label="QR Code URL (Auto-Generated)"
+                                variant="outlined"
+                                size="small"
+                                value={qrUrl}
+                                disabled
+                                sx={{ mt: 2 }}
+                            />
+                            {qrData?.qrImage?.url && (
+                                <img src={`${imgdburl}${qrData.qrImage.url}`} alt="QR Code" style={{ width: "150px", marginTop: "10px" }} />
+                            )}
+                        </DialogContent>
+                        <DialogActions>
+                            <Button onClick={() => setOpenDialog(false)}>Cancel</Button>
+                            {qrData?.qrImage?.url && (
+                                <Button variant="outlined" color="secondary" onClick={handleDownloadQRCode}>
+                                    Download QR Code
+                                </Button>
+                            )}
+                            <Button variant="contained" color="primary" onClick={handleSaveOrUpdateQRCode}>
+                                {editMode ? "Update QR Code" : "Generate QR Code"}
+                            </Button>
+                        </DialogActions>
+                    </Dialog>
+                </>
+
                     </div>
 
 

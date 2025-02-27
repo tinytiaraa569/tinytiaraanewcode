@@ -64,38 +64,7 @@ router.get("/qrcode/:id", async (req, res) => {
 });
 
 
-// Save QR Code URL
-// router.post("/save-qrcode", async (req, res) => {
-//   try {
-//     const { categoryId, url, qrImageBase64 } = req.body;
 
-//     if (!categoryId || !url || !qrImageBase64) {
-//         return res.status(400).json({ success: false, message: 'Missing required fields' });
-//     }
-
-//     const processedQRImage = processBase64Image(qrImageBase64);
-
-//     // Create a new QR Code entry with a unique ID
-//     const newQRCode = new QRCode({
-//         categoryId,
-//         url, // This is the dynamic URL that can be updated later
-//         qrImage: processedQRImage
-//     });
-
-//     await newQRCode.save();
-
-//     // Instead of returning the actual URL, return the dynamic URL
-//     const qrRedirectUrl = `${req.protocol}://${req.get("host")}/qrcode/${newQRCode._id}`;
-
-//     res.status(201).json({ 
-//       success: true, 
-//       message: 'QR Code saved successfully', 
-//       data: { ...newQRCode.toObject(), qrRedirectUrl }
-//     });
-//   } catch (error) {
-//     res.status(500).json({ success: false, message: error.message });
-//   }
-// });
 router.post("/save-qrcode", async (req, res) => {
   try {
     const { categoryId, url, redirectUrl, qrImageBase64 } = req.body;

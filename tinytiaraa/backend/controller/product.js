@@ -3407,5 +3407,159 @@ router.put('/status/:id', async (req, res) => {
 
 
 
+const generateRandomStringforqrcode = (length) => {
+    return crypto.randomBytes(length).toString("hex").slice(0, length);
+  };
+  
+  const processBase64Imageforqrcode = (base64Image) => {
+    if (typeof base64Image === "string" && base64Image.startsWith("data:image")) {
+      const matches = base64Image.match(/^data:(.+);base64,(.+)$/);
+      if (!matches) return null;
+  
+      let mimeType = matches[1];
+      const base64Data = matches[2];
+      let extension = mimeType === "image/svg+xml" ? "svg" : mimeType.split("/")[1];
+      const uniqueId = generateRandomStringforqrcode(20);
+      const localImagePath = path.join(__dirname, "../uploads/images/products", `${uniqueId}.${extension}`);
+  
+      fs.writeFileSync(localImagePath, Buffer.from(base64Data, "base64"));
+  
+      return {
+        public_id: `products/${uniqueId}`,
+        url: `/uploads/images/products/${uniqueId}.${extension}`,
+      };
+    }
+    return { url: base64Image };
+  };
+  
+ // Save QR Code for a Product
+router.post("/product/save-qrcode", async (req, res) => {
+    try {
+        const { productId, url, redirectUrl, qrImageBase64 } = req.body;
+
+        if (!productId || !url || !redirectUrl || !qrImageBase64) {
+            return res.status(400).json({ success: false, message: "Missing required fields" });
+        }
+
+        const processedQRImage = processBase64Imageforqrcode(qrImageBase64);
+
+        // Update product by adding a new 'qrCode' field
+        const updatedProduct = await Product.findByIdAndUpdate(
+            productId,
+            {
+                $set: {
+                    qrCode: {
+                        url,
+                        redirectUrl,
+                        qrImage: processedQRImage,
+                    },
+                },
+            },
+            { new: true, runValidators: true, upsert: true } // Ensures the field is added if missing
+        );
+
+        if (!updatedProduct) {
+            return res.status(404).json({ success: false, message: "Product not found" });
+        }
+
+        const qrRedirectUrl = `https://tiny-tiaraanew.vercel.app/qrcode/product/${updatedProduct._id}`;
+
+        res.status(200).json({
+            success: true,
+            message: "QR Code saved successfully",
+            data: { ...updatedProduct.qrCode.toObject(), qrRedirectUrl },
+        });
+    } catch (error) {
+        res.status(500).json({ success: false, message: error.message });
+    }
+});
+
+// Get QR Code details for a Product
+router.get("/product/qrcode/:id", async (req, res) => {
+    try {
+        const { id } = req.params;
+        const product = await Product.findById(id).select("qrCode");
+
+        if (!product || !product.qrCode) {
+            return res.status(404).json({ success: false, message: "QR Code not found" });
+        }
+
+        res.status(200).json({ success: true, qrCode: product.qrCode });
+    } catch (error) {
+        res.status(500).json({ success: false, message: "Server error" });
+    }
+});
+
+
+router.put("/product/update-qrcode/:id", async (req, res) => {
+    try {
+        const { id } = req.params; // Get product ID from URL
+        const { redirectUrl } = req.body; // Get redirectUrl from request body
+
+        if (!id || id === "undefined") {
+            return res.status(400).json({ success: false, message: "Invalid Product ID" });
+        }
+
+        if (!redirectUrl) {
+            return res.status(400).json({ success: false, message: "Redirect URL is required" });
+        }
+
+        // Update only the redirectUrl field inside the product's QR code
+        const updatedProduct = await Product.findByIdAndUpdate(
+            id,
+            {
+                $set: {
+                    "qrCode.redirectUrl": redirectUrl,
+                },
+            },
+            { new: true, runValidators: true }
+        );
+
+        if (!updatedProduct) {
+            return res.status(404).json({ success: false, message: "Product not found" });
+        }
+
+        res.status(200).json({
+            success: true,
+            message: "Redirect URL updated successfully",
+            data: updatedProduct.qrCode,
+        });
+    } catch (error) {
+        res.status(500).json({ success: false, message: error.message });
+    }
+});
+
+
+router.get("/qrcode/product/:id", async (req, res) => {
+    try {
+      const { id } = req.params;
+  
+      console.log("Received Product QR Code ID:", id);
+  
+      // Find product by ID
+      const product = await Product.findById(id);
+  
+      if (!product || !product.qrCode) {
+        console.log("QR Code not found for product:", id);
+        return res.status(404).json({ success: false, message: "QR Code not found for product" });
+      }
+  
+      console.log("Found Product QR Code:", product.qrCode);
+  
+      res.status(200).json({ success: true, redirectUrl: product.qrCode.redirectUrl });
+  
+    } catch (error) {
+      console.error("Server error:", error);
+      res.status(500).json({ success: false, message: "Server error" });
+    }
+  });
+
+
+
+
+
+
+
+
 
 module.exports = router
