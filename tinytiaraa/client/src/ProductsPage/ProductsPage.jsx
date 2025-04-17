@@ -62,7 +62,7 @@ function ProductsPage() {
     fetchCategories();
     }, []);
 
-    console.log(categoriesData,"from product page ")
+    // console.log(categoriesData,"from product page ")
 
   const categoryData = searchParams.get("category");
   const subcategoryData = searchParams.get("subcategory");
@@ -134,7 +134,6 @@ function ProductsPage() {
   //     console.log(productsInSubcategory,"check sub cate")
   //   }
   // }, [location.search]);
-  console.log(filteredData, "filtered products checking");
 
   // Handle loading and error states
   const [error, setError] = useState(null);
@@ -536,25 +535,52 @@ function ProductsPage() {
       //   });
       // }
 
-      if (selectedAgeGroup) {
-        filteredProducts = filteredProducts.filter((product) => {
-            // Check if `ageGroup` is defined and is an object
-            if (product.ageGroup && typeof product.ageGroup === "object") {
-                if (selectedAgeGroup === "momandme") {
-                    // Check if `infants`, `kids`, and `mom` are true for "momandme"
-                    return (
-                        product.ageGroup.infants === true &&
-                        product.ageGroup.kids === true &&
-                        product.ageGroup.mom === true
-                    );
-                } else {
-                    // Check if `selectedAgeGroup` exists in `ageGroup`
-                    return product.ageGroup[selectedAgeGroup] === true;
-                }
+    //   if (selectedAgeGroup) {
+    //     filteredProducts = filteredProducts.filter((product) => {
+    //         // Check if `ageGroup` is defined and is an object
+    //         if (product.ageGroup && typeof product.ageGroup === "object") {
+    //             if (selectedAgeGroup === "momandme") {
+    //                 // Check if `infants`, `kids`, and `mom` are true for "momandme"
+    //                 return (
+    //                     product.ageGroup.infants === true &&
+    //                     product.ageGroup.kids === true &&
+    //                     product.ageGroup.mom === true
+    //                 );
+    //             } else {
+    //                 // Check if `selectedAgeGroup` exists in `ageGroup`
+    //                 return product.ageGroup[selectedAgeGroup] === true;
+    //             }
+    //         }
+    //         return false; // Exclude products with undefined or invalid `ageGroup`
+    //     });
+    // }
+
+    if (selectedAgeGroup) {
+    filteredProducts = filteredProducts.filter((product) => {
+        // Ensure `ageGroup` is a valid object
+        if (product.ageGroup && typeof product.ageGroup === "object") {
+            if (selectedAgeGroup === "momandme") {
+                // Include products if:
+                // - `mom` is true (even if infants, kids, and teens are false)
+                // - OR all four (`infants`, `kids`, `teens`, and `mom`) are true
+                return (
+                    product.ageGroup.mom === true || 
+                    (product.ageGroup.infants === true && 
+                     product.ageGroup.kids === true && 
+                     product.ageGroup.teens === true &&
+                     product.ageGroup.mom === true)
+                );
+            } else {
+                // Filter for specific age group
+                return product.ageGroup[selectedAgeGroup] === true;
             }
-            return false; // Exclude products with undefined or invalid `ageGroup`
-        });
-    }
+        }
+        return false; // Exclude products with invalid `ageGroup`
+    });
+}
+
+  
+  
 
 
 
@@ -584,7 +610,6 @@ function ProductsPage() {
         default:
           break;
       }
-      console.log("Final filtered products:", filteredProducts);
       setFilteredData(filteredProducts);
       setLoading(false)
       setError(null);
@@ -595,7 +620,6 @@ function ProductsPage() {
     }
   };
 
-  console.log(filteredData,"filtering products --------")
 
   const handleSearch = (e) => {
     setSearchQuery(e.target.value);
@@ -797,7 +821,6 @@ function ProductsPage() {
   const handleSubcatClick = (subcat) => {
     setSelectedSubcat(subcat); // Update the selected subcategory
   };
-  console.log(selectedCategory,'selectedCategory')
 
   // useEffect(() => {
   //   if (metalType) {
@@ -851,19 +874,34 @@ function ProductsPage() {
 
   // if(!categoryData){
     const sortedData = filteredData.sort((a, b) => {
+      // Find category details for each product
+      const categoryA = categoriesData.find(cat => cat.title === a.category);
+      const categoryB = categoriesData.find(cat => cat.title === b.category);
+  
       // Check if the product belongs to "Religious Collections"
       const isReligiousA = a.category === "Religious Collections";
       const isReligiousB = b.category === "Religious Collections";
-    
+  
       // Prioritize "Religious Collections"
-      if (isReligiousA && !isReligiousB) return -1; // A is religious, B is not
-      if (!isReligiousA && isReligiousB) return 1; // B is religious, A is not
-    
-      // Secondary sorting by CreatedAt (newest first)
+      if (isReligiousA && !isReligiousB) return -1;
+      if (!isReligiousA && isReligiousB) return 1;
+  
+      // Determine Gold or Silver type (default to Silver if undefined)
+      const isGoldA = categoryA?.type === "gold";
+      const isGoldB = categoryB?.type === "gold";
+  
+      // Prioritize Gold over Silver
+      if (isGoldA && !isGoldB) return -1;
+      if (!isGoldA && isGoldB) return 1;
+  
+      // Sort by CreatedAt (newest first)
       return new Date(b.CreatedAt) - new Date(a.CreatedAt);
-    });
+  });
+  
 
   // }
+
+  console.log(categoriesData,"categoriesData")
   
   
   
@@ -1190,9 +1228,9 @@ function ProductsPage() {
               {filteredCategories.length === 0 ? (
                 <p className="text-gray-600 text-sm">No categories available.</p>
               ) : (
-                filteredCategories.map((category) => (
+                filteredCategories.map((category , i) => (
                   <div
-                    key={category.id}
+                    key={i}
                     onClick={() => {
                       handleViewProducts(category.title);
                       window.scrollTo({ top: 0, behavior: "smooth" });

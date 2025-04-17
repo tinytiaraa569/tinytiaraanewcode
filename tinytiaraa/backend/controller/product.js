@@ -3462,7 +3462,7 @@ router.post("/product/save-qrcode", async (req, res) => {
             return res.status(404).json({ success: false, message: "Product not found" });
         }
 
-        const qrRedirectUrl = `https://tiny-tiaraanew.vercel.app/qrcode/product/${updatedProduct._id}`;
+        const qrRedirectUrl = `https://www.tinytiaraa.com/qrcode/product/${updatedProduct._id}`;
 
         res.status(200).json({
             success: true,
@@ -3557,8 +3557,231 @@ router.get("/qrcode/product/:id", async (req, res) => {
 
 
 
+  //fake reviews
+
+  router.post("/create-fake-review", isSeller, catchAsyncErrors(async (req, res, next) => {
+    try {
+       
+
+        // Extract fake review data from the request body
+        const { comment, date, images, rating, user, productId } = req.body;
+
+        console.log(req.body,"request body")
+
+        // If no date is provided, use today's date
+        const reviewDate = date ? new Date(date) : new Date();  // Use the provided date or current date
+
+        let imagesLinks = [];
+        let avatarlink=[];
+
+        const processBase64Images = (imageArray, imageLinksArray) => {
+            for (let i = 0; i < imageArray.length; i++) {
+                const base64Image = imageArray[i].url;
+                const matches = base64Image.match(/^data:(.+);base64,(.+)$/);
+                if (!matches) {
+                    console.error('Invalid image format:', base64Image);
+                    continue; 
+                }
+
+                const mimeType = matches[1]; 
+                const base64Data = matches[2]; 
+
+                const extension = mimeType.split('/')[1]; // e.g., 'png', 'jpeg', etc.
+                const imageBuffer = Buffer.from(base64Data, 'base64');
+
+                const uniqueId = generateRandomString(20); // Adjust length as needed
+                const publicId = `products/${uniqueId}`; // Create the public_id
+
+                const imagePath = path.join(__dirname, '../uploads/images/products', `${uniqueId}.${extension}`);
+                fs.writeFileSync(imagePath, imageBuffer); // Save the image to the file system
+
+                imageLinksArray.push({
+                    public_id: publicId,
+                    url: `/uploads/images/products/${uniqueId}.${extension}`
+                });
+            }
+        };
+
+        processBase64Images(images, imagesLinks);
+         // Process user avatar - can be string or array
+         if (typeof user?.avatar === 'string') {
+            processBase64Images([{ url: user.avatar }], avatarlink);
+        } else if (Array.isArray(user.avatar)) {
+            processBase64Images(user.avatar, avatarlink);
+        }
 
 
+        const review = {
+            user: {
+                ...user,
+                avatar: avatarlink[0]?.url || user.avatar, // Use uploaded or original
+            },
+            rating,
+            comment,
+            productId,
+            CreatedAt: reviewDate,
+            images: imagesLinks,
+        };
+
+        // Fetch the product and add the fake review
+        const product = await Product.findById(productId);
+
+        // Add the review to the product's reviews array
+        product.reviews.push(review);
+
+        // Recalculate the average rating
+        let avg = 0;
+        product.reviews.forEach((rev) => {
+            avg += rev.rating;
+        });
+
+        product.ratings = avg / product.reviews.length;
+
+        // Save the product with the new review
+        await product.save({ validateBeforeSave: false });
+
+        res.status(200).json({
+            success: true,
+            message: "Fake review successfully posted!",
+        });
+
+    } catch (error) {
+        return next(new ErrorHandler(error, 400));
+    }
+}));
+
+
+
+router.put("/edit-fake-review/:productId/:reviewId", isSeller, catchAsyncErrors(async (req, res, next) => {
+    try {
+      const { productId, reviewId } = req.params;
+      const { comment, date, images, rating, user } = req.body;
+  
+      const product = await Product.findById(productId);
+      if (!product) return next(new ErrorHandler("Product not found", 404));
+  
+      const review = product.reviews.id(reviewId);
+      if (!review) return next(new ErrorHandler("Review not found", 404));
+  
+      // Update basic fields
+      if (comment) review.comment = comment;
+      if (rating !== undefined) review.rating = rating;
+      if (date) review.CreatedAt = new Date(date);
+  
+      // Update user info
+      if (user) {
+        review.user.name = user.name || review.user.name;
+        review.user.email = user.email || review.user.email;
+  
+        if (user.avatar) {
+          const matches = user.avatar.match(/^data:(.+);base64,(.+)$/);
+          if (matches) {
+            const mimeType = matches[1];
+            const base64Data = matches[2];
+            const extension = mimeType.split("/")[1];
+            const imageBuffer = Buffer.from(base64Data, "base64");
+            const uniqueId = generateRandomString(20);
+            const publicId = `products/${uniqueId}`;
+            const imagePath = path.join(__dirname, "../uploads/images/products", `${uniqueId}.${extension}`);
+            fs.writeFileSync(imagePath, imageBuffer);
+            review.user.avatar = `/uploads/images/products/${uniqueId}.${extension}`;
+          }
+        }
+      }
+  
+      // Handle review images (retain if not updated)
+      if (Array.isArray(images) && images.length > 0) {
+        const newImageLinks = [];
+  
+        for (let i = 0; i < images.length; i++) {
+          const base64Image = images[i].url;
+          const matches = base64Image.match(/^data:(.+);base64,(.+)$/);
+  
+          // If it's a base64 image, upload it
+          if (matches) {
+            const mimeType = matches[1];
+            const base64Data = matches[2];
+            const extension = mimeType.split("/")[1];
+            const imageBuffer = Buffer.from(base64Data, "base64");
+  
+            const uniqueId = generateRandomString(20);
+            const publicId = `products/${uniqueId}`;
+            const imagePath = path.join(__dirname, "../uploads/images/products", `${uniqueId}.${extension}`);
+            fs.writeFileSync(imagePath, imageBuffer);
+  
+            newImageLinks.push({
+              public_id: publicId,
+              url: `/uploads/images/products/${uniqueId}.${extension}`,
+            });
+          } else {
+            // If it's not base64 (already uploaded image), retain it
+            newImageLinks.push(images[i]);
+          }
+        }
+  
+        review.images = newImageLinks;
+      }
+  
+      // Recalculate average rating
+      let avg = 0;
+      product.reviews.forEach((rev) => {
+        avg += rev.rating;
+      });
+  
+      product.ratings = avg / product.reviews.length;
+  
+      await product.save({ validateBeforeSave: false });
+  
+      res.status(200).json({
+        success: true,
+        message: "Review successfully updated!",
+      });
+  
+    } catch (error) {
+      return next(new ErrorHandler(error.message, 400));
+    }
+  }));
+
+
+  //delete fake review
+
+  router.delete("/delete-fake-review/:productId/:reviewId", isSeller, catchAsyncErrors(async (req, res, next) => {
+    try {
+      const { productId, reviewId } = req.params;
+  
+      const product = await Product.findById(productId);
+      if (!product) return next(new ErrorHandler("Product not found", 404));
+  
+      const reviewIndex = product.reviews.findIndex(
+        (rev) => rev._id.toString() === reviewId
+      );
+  
+      if (reviewIndex === -1) {
+        return next(new ErrorHandler("Review not found", 404));
+      }
+  
+      // Remove the review
+      product.reviews.splice(reviewIndex, 1);
+  
+      // Recalculate average rating
+      let avg = 0;
+      product.reviews.forEach((rev) => {
+        avg += rev.rating;
+      });
+  
+      product.ratings = product.reviews.length > 0 ? avg / product.reviews.length : 0;
+  
+      await product.save({ validateBeforeSave: false });
+  
+      res.status(200).json({
+        success: true,
+        message: "Review deleted successfully!",
+      });
+    } catch (error) {
+      return next(new ErrorHandler(error.message, 500));
+    }
+  }));
+  
 
 
 

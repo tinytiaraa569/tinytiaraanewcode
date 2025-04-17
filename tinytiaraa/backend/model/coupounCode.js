@@ -55,7 +55,7 @@ const coupounCodeSchema = new mongoose.Schema({
 
       CreatedAt:{
         type:Date,
-        default:Date.now()
+        default:Date.now
     },
     
 })

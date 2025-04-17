@@ -128,10 +128,10 @@ function Categories() {
             // </div>
           ))
         ) : categories.length > 0 ? (
-            categories.slice(0, visibleCount).map((category) => (
+            categories.slice(0, visibleCount).map((category,index) => (
             <div
               className="categoriescard"
-              key={category.id}
+              key={index}
               onClick={() => handleViewProducts(category.title)}
             >
               <div className="categoriesimg">

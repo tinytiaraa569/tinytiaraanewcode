@@ -3162,61 +3162,169 @@ router.put("/update-order-status/:id", isSeller, catchAsyncErrors(async (req, re
             order,
         });
 
+        // async function updateOrder(cartItem) {
+        //     const product = await Product.findById(cartItem._id);
+
+        //     // Log the cart item being processed
+        //     console.log("Processing cart item:", cartItem);
+        //     const metalColors = {
+        //         0: "YellowGold",
+        //         1: "RoseGold",
+        //         2: "WhiteGold",
+        //     };
+
+        //     // Check if the product has enamel and metal color options
+        //     const selectedMetalColor = metalColors[cartItem.selectedColor];
+        //     const selectedEnamelColor = cartItem.selectedEnamelColor;
+
+        //     if (selectedEnamelColor) {
+        //         // Clean the selectedEnamelColor key to match the data format
+        //         const cleanedEnamelColor = selectedEnamelColor.toLowerCase().replace(/_/g, '');
+
+        //         // Construct the key to access the specific enamel color stock
+        //         const enamelKey = `${cleanedEnamelColor}${selectedMetalColor.replace(/ /g, '')}clrStock`;
+
+        //         // Decrement stock for the specific enamel color and metal color
+        //         product.Enamelcolorstock[cleanedEnamelColor][enamelKey] -= cartItem.qty;
+
+        //         // Log which stocks are being updated
+        //         // console.log(`Decrementing stock for ${selectedEnamelColor} with ${selectedMetalColor}: -${cartItem.qty}`);
+        //     } else if (selectedMetalColor) {
+        //         // Construct the key to access the specific metal color stock
+        //         const metalKey = `${selectedMetalColor}clrStock`;
+
+        //         // Decrement stock for the specific metal color
+        //         product.Metalcolorstock[metalKey] -= cartItem.qty;
+
+        //         // Log which metal color stock is being updated
+        //         // console.log(`Decrementing stock for ${selectedMetalColor}: -${cartItem.qty}`);
+
+        //         // console.log(`Decrementing stock for ${ product.Metalcolorstock[metalKey]}: -${cartItem.qty}`);
+
+        //     } else {
+        //         // Decrement general stock
+        //         product.stock -= cartItem.qty;
+
+        //         // Log which general stock is being updated
+        //         // console.log(`Decrementing general stock: -${cartItem.qty}`);
+        //     }
+
+        //     // Increment sold_out based on the quantity ordered
+        //     product.sold_out += cartItem.qty;
+
+        //     // Log the updated product state
+        //     // console.log("Updated product state:", product);
+
+        //     await product.save({ validateBeforeSave: false });
+        // }
+
         async function updateOrder(cartItem) {
-            const product = await Product.findById(cartItem._id);
-
-            // Log the cart item being processed
-            console.log("Processing cart item:", cartItem);
-            const metalColors = {
-                0: "YellowGold",
-                1: "RoseGold",
-                2: "WhiteGold",
-            };
-
-            // Check if the product has enamel and metal color options
-            const selectedMetalColor = metalColors[cartItem.selectedColor];
-            const selectedEnamelColor = cartItem.selectedEnamelColor;
-
-            if (selectedEnamelColor) {
-                // Clean the selectedEnamelColor key to match the data format
-                const cleanedEnamelColor = selectedEnamelColor.toLowerCase().replace(/_/g, '');
-
-                // Construct the key to access the specific enamel color stock
-                const enamelKey = `${cleanedEnamelColor}${selectedMetalColor.replace(/ /g, '')}clrStock`;
-
-                // Decrement stock for the specific enamel color and metal color
-                product.Enamelcolorstock[cleanedEnamelColor][enamelKey] -= cartItem.qty;
-
-                // Log which stocks are being updated
-                // console.log(`Decrementing stock for ${selectedEnamelColor} with ${selectedMetalColor}: -${cartItem.qty}`);
-            } else if (selectedMetalColor) {
-                // Construct the key to access the specific metal color stock
-                const metalKey = `${selectedMetalColor}clrStock`;
-
-                // Decrement stock for the specific metal color
-                product.Metalcolorstock[metalKey] -= cartItem.qty;
-
-                // Log which metal color stock is being updated
-                // console.log(`Decrementing stock for ${selectedMetalColor}: -${cartItem.qty}`);
-
-                // console.log(`Decrementing stock for ${ product.Metalcolorstock[metalKey]}: -${cartItem.qty}`);
-
-            } else {
-                // Decrement general stock
-                product.stock -= cartItem.qty;
-
-                // Log which general stock is being updated
-                // console.log(`Decrementing general stock: -${cartItem.qty}`);
+              const metalColors = {
+                  0: "Yellow Gold",
+                  1: "Rose Gold",
+                  2: "White Gold",
+              };
+          
+              const product = await Product.findById(cartItem._id);
+              if (!product) {
+                  console.error(`Product with ID ${cartItem._id} not found.`);
+                  return;
+              }
+          
+              const selectedMetalColor = metalColors[cartItem.selectedColor];
+              const selectedEnamelColor = cartItem.selectedEnamelColor;
+              const combinationKey = cartItem.selectedCombination;
+              
+              let updatedFields = {};  
+          
+              // Normalize Metal Color Key
+              const rawMetalColor = selectedMetalColor?.replace(/ /g, '');
+              const metalKey = `${rawMetalColor}clrStock`;
+          
+              // Normalize Enamel Color Key
+              const enamelColorKey = selectedEnamelColor?.toLowerCase()?.replace(/_/g, '');
+              const enamelStockKey = enamelColorKey ? `${enamelColorKey}${metalKey}` : null;
+          
+              // Normalize Combination Stock Key
+              const formattedCombinationKey = combinationKey?.toLowerCase()?.replace(/\s/g, '');
+              console.log(formattedCombinationKey, 'formattedCombinationKey');
+              const metalColorMap = {
+                "Yellow Gold": "yellowGold",
+                "Rose Gold": "roseGold",
+                "White Gold": "whiteGold"
+              };
+            const combinationMetalColor = metalColorMap[selectedMetalColor] ;
+              
+              // Get Stock Values
+              if (!(product.combinationStocks instanceof Map)) {
+                console.error("❌ product.combinationStocks is not a Map:", product.combinationStocks);
+              }
+            
+            // Retrieve data from the Map
+            const combinationStockData = product.combinationStocks?.get(formattedCombinationKey);
+            
+            
+            // Ensure combinationStockData exists before accessing properties
+            const combinationStock = combinationStockData ? combinationStockData[combinationMetalColor] : undefined;
+            
+        
+              const normalStock = product.stock;
+              const metalStock = product.Metalcolorstock?.[metalKey];
+              const enamelStock = selectedEnamelColor
+                  ? product.Enamelcolorstock?.[enamelColorKey]?.[enamelStockKey]
+                  : null;
+        
+        
+             
+          
+              // Deduct stock in the correct priority order
+              if (combinationStock !== undefined && combinationStock >= cartItem.qty) {
+               
+                if (!product.combinationStocks || !product.combinationStocks.has(formattedCombinationKey)) {
+                    return;
+                }
+            
+                const stockEntry = product.combinationStocks.get(formattedCombinationKey);
+            
+                
+                if (!stockEntry || !(combinationMetalColor in stockEntry)) {
+                    return;
+                }
+            
+               
+                stockEntry[combinationMetalColor] = Math.max(0, stockEntry[combinationMetalColor] - cartItem.qty);
+            
+                
+                updatedFields[`combinationStocks.${formattedCombinationKey}.${combinationMetalColor}`] = stockEntry[combinationMetalColor];
+            
             }
-
-            // Increment sold_out based on the quantity ordered
-            product.sold_out += cartItem.qty;
-
-            // Log the updated product state
-            // console.log("Updated product state:", product);
-
-            await product.save({ validateBeforeSave: false });
-        }
+            
+              else if (selectedEnamelColor && enamelStock !== undefined && enamelStock >= cartItem.qty) {
+                  product.Enamelcolorstock[enamelColorKey][enamelStockKey] -= cartItem.qty;
+                  updatedFields[`Enamelcolorstock.${enamelColorKey}.${enamelStockKey}`] = product.Enamelcolorstock[enamelColorKey][enamelStockKey];
+              } 
+              else if (metalStock !== undefined && metalStock >= cartItem.qty) {
+                  product.Metalcolorstock[metalKey] -= cartItem.qty;
+                  updatedFields[`Metalcolorstock.${metalKey}`] = product.Metalcolorstock[metalKey];
+              } 
+              else if (normalStock !== undefined && normalStock >= cartItem.qty) {
+                  product.stock -= cartItem.qty;
+                  updatedFields.stock = product.stock;
+              } 
+              else {
+                  console.warn(`Insufficient stock for product ${cartItem._id}.`);
+                  return;
+              }
+          
+              // Increment sold_out count
+              product.sold_out += cartItem.qty;
+              updatedFields.sold_out = product.sold_out;
+          
+              // Update in database
+              await Product.findByIdAndUpdate(cartItem._id, { $set: updatedFields }, { new: true, validateBeforeSave: false });
+          
+              console.log(`Stock successfully updated for product ${cartItem._id}`);
+          }
 
     } catch (error) {
         return next(new ErrorHandler(error.message, 500));

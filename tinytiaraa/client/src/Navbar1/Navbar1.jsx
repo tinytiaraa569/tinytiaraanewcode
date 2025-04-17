@@ -185,12 +185,13 @@ function Navbar1() {
         let filteredProducts = [];
     
         if (ageGroupKey === "momandme") {
-            // Filter products where infants, kids, and mom are true
+            // Include products where:
+            // - `mom` is true (even if `infants` and `kids` are false)
+            // - OR both `infants` and `kids` are true
             filteredProducts = products.filter(product =>
                 product.ageGroup &&
-                product.ageGroup.infants === true &&
-                product.ageGroup.kids === true &&
-                product.ageGroup.mom === true
+                (product.ageGroup.mom === true || 
+                (product.ageGroup.infants === true && product.ageGroup.kids === true))
             );
         } else {
             // Filter for specific age group key
@@ -199,22 +200,22 @@ function Navbar1() {
             );
         }
     
-        // Debugging outputs
         console.log("Filtered Products:", filteredProducts);
     
         // Navigate to filtered products
         navigate(`/products?ageGroup=${ageGroupKey}`, { state: { filteredProducts } });
     
         // Close the dropdown
-        setShopDropdownOpen(false);
+        // setShopDropdownOpen(false);
     };
+    
 
     const [isCurrencySelectorOpen, setIsCurrencySelectorOpen] = useState(false);
 
     const toggleCurrencySelector = () => {
         setIsCurrencySelectorOpen(!isCurrencySelectorOpen);
     };
-    const [selectedCurrency, setSelectedCurrency] = useState('USD'); // Default currency
+    const [selectedCurrency, setSelectedCurrency] = useState('INR'); // Default currency
 
     const currencyData = {
         USD: { country: "United States", flag: "https://flagcdn.com/us.svg" },
@@ -273,7 +274,7 @@ function Navbar1() {
       // Fetch user's geolocation
   const fetchUserCountry = async () => {
     try {
-      const response = await fetch("https://ipapi.co/json/test");
+      const response = await fetch("https://ipapi.co/json");
       const data = await response.json();
       console.log(data,"data to show")
       return data.currency; // ISO 3166-1 alpha-2 country code
@@ -468,7 +469,7 @@ function Navbar1() {
                             </div>
                             <div className='text-center'>
 
-                                <span>Use coupon code <b>NewYear500</b>  at checkout for an additional ₹500 Off!</span>
+                                <span>Shop for silver Jewelry Worth <b>₹5000</b> & above to get a <b>Free Silver chain</b></span>
                             </div>
 
                         </Slider>
@@ -745,7 +746,7 @@ function Navbar1() {
                                                     <h6 className='pb-2 collectionnav1' onClick={() => { submitHandleagegroup("infants") }}>Infants (0-3 Yrs)</h6>
                                                     <h6 className='pb-2 collectionnav1' onClick={() => { submitHandleagegroup("kids") }}>Kids (3-10 Yrs)</h6>
                                                     <h6 className='pb-2 collectionnav1' onClick={() => submitHandleagegroup("teens")}>Teens </h6>
-                                                    <h6 className='pb-2 collectionnav1' onClick={() => submitHandleagegroup("mom")}>Mom  </h6>
+                                                    {/* <h6 className='pb-2 collectionnav1' onClick={() => submitHandleagegroup("mom")}>Mom  </h6> */}
                                                     <h6 className='pb-2 collectionnav1' onClick={() => submitHandleagegroup("momandme")}>Mom & Me </h6>
 
                                                     {/* <h6 className='pb-2 collectionnav1' onClick={() => { navigate("/personalised-prosperity") }}>Customization </h6> */}

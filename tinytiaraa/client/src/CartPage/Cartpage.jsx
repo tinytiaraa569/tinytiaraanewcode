@@ -280,7 +280,14 @@ function Cartpage() {
       setCouponCode("");
     } catch (error) {
       console.error("Error applying coupon:", error);
+      console.error("Error applying coupon:", error);
+
+    // Extract and show the error message from the server response
+    if (error.response && error.response.data && error.response.data.message) {
+      toast.error(error.response.data.message);
+    } else {
       toast.error("Failed to apply coupon code. Please try again later.");
+    }
     }
   };
   const totalPrice = (subTotalPrice - discountPrice).toFixed(2);
@@ -521,26 +528,26 @@ const convertedFinalPrice = (finalPrice * (conversionRates[currency] || 1)).toFi
                   </div>
 
                   <div className="available-coupons mt-2">
-  <h3 className="!text-[12px] mt-2 mb-1 ">Available Coupons</h3>
-  {isLoading ? (
-    <p className="text-gray-500">Loading coupons...</p>
-  ) : availableCoupons.length > 0 ? (
-    <div className="flex flex-wrap gap-3">
-      {availableCoupons?.slice(0, 2).map((coupon) => (
-        <div 
-          key={coupon._id} 
-          className="bg-green-200 text-green-800 px-3 py-2 rounded-full text-[14px]  shadow-sm hover:bg-green-300 transition cursor-pointer"
-          // onClick={() => handleCouponClick(coupon.name)} // Added onClick handler
-          onClick={() => coupon.live && handleCouponClick(coupon.name)}
-        >
-          <strong className='!text-[12px]'>{coupon.name}</strong>
-        </div>
-      ))}
-    </div>
-  ) : (
-    <p className="text-gray-500">No coupons available</p>
-  )}
-</div>
+                  <h3 className="!text-[12px] mt-2 mb-1 ">Available Coupons</h3>
+                  {isLoading ? (
+                    <p className="text-gray-500">Loading coupons...</p>
+                  ) : availableCoupons.length > 0 ? (
+                    <div className="flex flex-wrap gap-3">
+                      {availableCoupons?.slice(0, 2).map((coupon) => (
+                        <div 
+                          key={coupon._id} 
+                          className="bg-green-200 text-green-800 px-3 py-2 rounded-full text-[14px]  shadow-sm hover:bg-green-300 transition cursor-pointer"
+                          // onClick={() => handleCouponClick(coupon.name)} // Added onClick handler
+                          onClick={() => coupon.live && handleCouponClick(coupon.name)}
+                        >
+                          <strong className='!text-[12px]'>{coupon.name}</strong>
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <p className="text-gray-500">No coupons available</p>
+                  )}
+                </div>
 
 </form>
 
@@ -724,15 +731,45 @@ const CartSingle = ({ data, quantityChangeHandler, removeFromCartHandler }) => {
   // const totalPrice = data.chainPrice > 0 ? data.discountPrice + data.chainPrice : data.discountPrice * value;
   const totalPrice = data.chainPrice > 0 ? (parseFloat(convertedDiscountPrice) + parseFloat(convertedChainPrice)) : (parseFloat(convertedDiscountPrice) * value);
 
-  const enamelColor = data.selectedEnamelColor?.toLowerCase();
+  const enamelColor = data?.selectedEnamelColor?.toLowerCase().replace(/_/g, '');
+  
   const metalColor = metalColors[data.selectedColor]?.replace(" ", "") + "clrStock";
+  console.log(metalColor,"metal color")
 
-  const enamelStock = data.Enamelcolorstock?.[enamelColor]?.[`${enamelColor}${metalColor}`];
+  const metalColorstock = data?.Metalcolorstock?.[metalColor]
+
+
+  const enamelStock = data?.Enamelcolorstock?.[enamelColor]?.[`${enamelColor}${metalColor}`];
+  console.log(enamelStock ,"enamel color stock")
+
+  const normalStock = data?.stock ; 
+  console.log(normalStock,"mormal stock")
+
+  const combinationkey = data?.selectedCombination 
+  console.log(combinationkey,'combinationkey')
+
+  const rawMetalColor = metalColors[data.selectedColor]?.replace(" ", "");
+  const combinationMetalColor = rawMetalColor
+    ? rawMetalColor.charAt(0).toLowerCase() + rawMetalColor.slice(1) // Convert first letter to lowercase
+    : "";
+  
+  console.log(combinationMetalColor, "combinationMetalColor");
+
+
+  const combinationStock = data?.combinationStocks?.[combinationkey]?.[combinationMetalColor];
+  console.log(combinationStock,"combinationStock stock")
+
+
   const d = data.name
   const product_name = d.replace(/\s+/g, "-")
 
   const increment = () => {
-    if (enamelStock === undefined || enamelStock === null || value >= enamelStock) {
+    if (
+      (enamelStock !== undefined && enamelStock !== null && value >= enamelStock) ||
+      (metalColorstock !== undefined && metalColorstock !== null && value >= metalColorstock) ||
+      (normalStock !== undefined && normalStock !== null && value >= normalStock) || 
+      (combinationStock !== undefined && combinationStock !== null && value >= combinationStock)
+    ) {
       toast.error("Product Stock limit for this Variant");
       return;
     }
@@ -740,13 +777,18 @@ const CartSingle = ({ data, quantityChangeHandler, removeFromCartHandler }) => {
     const updateCartData = { ...data, qty: value + 1 };
     quantityChangeHandler(updateCartData);
   };
+  
 
   const decrement = () => {
-    if (value > 1) {
-      setValue(value - 1);
-      const updateCartData = { ...data, qty: value - 1 };
-      quantityChangeHandler(updateCartData);
+    if (value === 1) {
+      removeFromCartHandler(data); // Call your existing function to remove item
+      toast.success("Item removed from cart");
+      return;
     }
+  
+    setValue(value - 1);
+    const updateCartData = { ...data, qty: value - 1 };
+    quantityChangeHandler(updateCartData);
   };
 
 
@@ -925,19 +967,21 @@ const CartSingle = ({ data, quantityChangeHandler, removeFromCartHandler }) => {
             </div>
 
           </div>
-          <div className="flex gap-2 mt-2">
-            <div
-              className={`bg-[#e44343] border border-[#e4434373] rounded-full w-[25px] h-[25px] flex justify-center cursor-pointer`}
-              onClick={increment}
-            >
-              <HiPlus size={18} color="#fff" />
-            </div>
-            <span>{value}</span>
-            <div
-              className={`bg-[#a7abb14f] border border-[#a7abb14f] text-[#000] rounded-full w-[25px] h-[25px] flex justify-center cursor-pointer`}
+          <div className="flex gap-2.5 mt-2">
+          <div
+              className={`bg-[#a7abb14f] border border-[#a7abb14f] text-[#000] rounded-full w-[25px] h-[25px] flex justify-center items-center cursor-pointer`}
               onClick={decrement}
             >
-              <HiOutlineMinus size={18} color="#000" />
+              <HiOutlineMinus size={14} color="#000" />
+            </div>
+            
+            <span>{value}</span>
+            
+            <div
+              className={`bg-[#e44343] border border-[#e4434373] rounded-full w-[25px] h-[25px] flex justify-center items-center cursor-pointer`}
+              onClick={increment}
+            >
+              <HiPlus size={14} color="#fff" />
             </div>
           </div>
           <div className="checkoutsectionprice mt-1 mb-0.5">

@@ -86,7 +86,7 @@ router.post("/save-qrcode", async (req, res) => {
     await newQRCode.save();
 
     // Generate the correct QR redirect URL using the QR Code's `_id`
-    const qrRedirectUrl = `https://tiny-tiaraanew.vercel.app/qrcode/${newQRCode._id}`;
+    const qrRedirectUrl = `https://www.tinytiaraa.com/qrcode/${newQRCode._id}`;
 
     res.status(201).json({
       success: true,
@@ -133,6 +133,29 @@ router.post("/save-qrcode", async (req, res) => {
       res.status(500).json({ success: false, message: error.message });
     }
   });
+
+
+
+  // delete qr code 
+
+  router.delete("/delete-qrcode/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    // Find and delete the QR code
+    const qrCode = await QRCode.findByIdAndDelete(id);
+
+    if (!qrCode) {
+      return res.status(404).json({ message: "QR Code not found" });
+    }
+
+    res.status(200).json({ message: "QR Code deleted successfully" });
+  } catch (error) {
+    console.error("Error deleting QR code:", error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+
+});
 
 
 module.exports = router;

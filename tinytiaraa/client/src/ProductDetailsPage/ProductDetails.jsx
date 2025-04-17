@@ -269,16 +269,26 @@ function ProductDetails({ data }) {
                     .replace(/[_+\s]/g, ''); // Normalize combination name
                 console.log('Formatted Combination:', formattedCombination);
             
+                console.log("Available combination keys:", Object.keys(data?.combinationStocks || {}));
+                
                 const combinationStock = data?.combinationStocks?.[formattedCombination];
+            
+                if (!combinationStock) {
+                    console.warn(`No stock found for combination: ${formattedCombination}`);
+                    return;
+                }
+            
                 console.log('Resolved Combination Stock:', combinationStock);
             
-                if (combinationStock) {
+                // Check if selectedMetalColor exists
+                if (selectedMetalColor) {
                     const selectedMetalKey = selectedMetalColor.toLowerCase().replace(/\s/g, ''); // Normalize metal key
                     console.log('Selected Metal Key:', selectedMetalKey);
+                    console.log("Available metal keys:", Object.keys(combinationStock || {}));
             
-                    const yellowGoldStock = combinationStock?.yellowGold || 0;
-                    const roseGoldStock = combinationStock?.roseGold || 0;
-                    const whiteGoldStock = combinationStock?.whiteGold || 0;
+                    const yellowGoldStock = combinationStock?.yellowGold ?? 0;
+                    const roseGoldStock = combinationStock?.roseGold ?? 0;
+                    const whiteGoldStock = combinationStock?.whiteGold ?? 0;
             
                     console.log('Yellow Gold Stock:', yellowGoldStock);
                     console.log('Rose Gold Stock:', roseGoldStock);
@@ -291,20 +301,21 @@ function ProductDetails({ data }) {
                     } else if (selectedMetalKey === 'whitegold') {
                         availableStock = whiteGoldStock;
                     }
-            
-                    // Check if stock is available
-                    if (availableStock === 0 || availableStock === null) {
-                        availableStock = 0;
-                        stockMessage = `Stock for ${formattedCombination} with ${selectedMetalKey}: ${availableStock}`;
-                        console.warn(stockMessage);
-                        return;
-                    }
                 } else {
-                    console.warn(`Combination not found: ${formattedCombination}`);
-                    availableStock = 0;
+                    // No selected metal color, use total available stock from combination
+                    availableStock = (combinationStock?.yellowGold ?? 0) +
+                                     (combinationStock?.roseGold ?? 0) +
+                                     (combinationStock?.whiteGold ?? 0);
                 }
             
+                // Check if stock is available
+                if (!availableStock) {
+                    availableStock = 0;
+                    stockMessage = `Stock for ${formattedCombination}: ${availableStock}`;
+                    console.warn(stockMessage);
+                }
             }
+            
             
             else if (selectedMetalColor) {
                 // Construct the key to access the specific metal color stock
@@ -2016,6 +2027,8 @@ function ProductDetails({ data }) {
                             <path d="M1 1L12 10M12 1L1 10" stroke="#FF0000" strokeWidth="2" />;
                             }
 
+                            //old code chaning to new
+
                             if (selectedCombination !== null && selectedCombination !== undefined && selectedColor !== null && shouldShowEnamel === false) {
                                 console.warn("Product combination stock is working");
 
@@ -2114,6 +2127,7 @@ function ProductDetails({ data }) {
                                 }
                             }
                            
+                            
 
                             return  <path d="M13 1.1566L4.08571 11L0 6.48844L1.04743 5.33184L4.08571 8.6786L11.9526 0L13 1.1566Z" fill="#0B8D08" /> ; // Default fallback
                         })()}
@@ -2182,7 +2196,7 @@ function ProductDetails({ data }) {
                             if (data?.stock !== null && data?.stock !== undefined) {
                                 return data.stock > 0 ? '#0B8D08' : '#FF0000'; // Green if in stock, red if out of stock
                             }
-
+                            // old wokrinf code 
                             if (selectedCombination !== null && selectedCombination !== undefined && selectedColor !== null && shouldShowEnamel === false) {
                                 console.warn("Product combination stock is working");
                             
@@ -3491,9 +3505,13 @@ const ProductDetailsInfo = ({ data ,shouldShowChainOptions }) => {
             {
                 active === 2
                     ?
-                    <div className='w-full  min-h-[40vh] flex flex-col items-center py-3 overflow-y-scroll'>
+                         <div className="w-full h-[50vh] py-3 flex flex-col items-center">
+                         <div className="w-full h-full overflow-y-auto px-4 space-y-4">
                         {
-                            data && data.reviews.map((item, index) => (
+                            data &&
+                            [...data.reviews]
+                              .sort((a, b) => new Date(b.CreatedAt) - new Date(a.CreatedAt))
+                              .map((item, index) => (
                                 <div key={index} className='w-full flex my-1'>
                                     {/* <img src={`${backend_url}/${item.user.avatar}`} className='w-[60px] h-[60px] rounded-full' alt="" /> */}
                                     {/* <img 
@@ -3516,27 +3534,41 @@ const ProductDetailsInfo = ({ data ,shouldShowChainOptions }) => {
                                             )
                                             } */}
 
-                                        {item?.user.avatar?.url && item?.user.avatar.url.match(/https:\/\/res\.cloudinary\.com\/ddaef5aw1\/image\/upload\/v[0-9]+/) ? (
-                                        <img 
-                                            src={item?.user.avatar.url
-                                            .replace(/https:\/\/res\.cloudinary\.com\/ddaef5aw1\/image\/upload\/v[0-9]+/, `${imgdburl}/uploads/images`)
-                                            .replace("/avatars/", "/products/")}
-                                            className="w-[60px] h-[60px] rounded-full"
-                                            alt="User Avatar"
-                                        />
-                                        ) : item?.user.avatar?.url ? (
-                                        <img 
-                                            src={`${imgdburl}${user.avatar.url}`.replace("/avatars/", "/products/")}
-                                            className="w-[60px] h-[60px] rounded-full"
-                                            alt="User Avatar"
-                                        />
-                                        ) : (
-                                            <FaUserAlt className="w-[50px] h-[50px] text-gray-500 border-2 border-gray-500 rounded-full p-1" />
-                                        )}
+                                                        {item?.user.avatar && item?.user.avatar.match(/https:\/\/res\.cloudinary\.com\/ddaef5aw1\/image\/upload\/v[0-9]+/) ? (
+                                                        <img 
+                                                            src={item?.user.avatar
+                                                            .replace(/https:\/\/res\.cloudinary\.com\/ddaef5aw1\/image\/upload\/v[0-9]+/, `${imgdburl}/uploads/images`)
+                                                            .replace("/avatars/", "/products/")
+                                                            }
+                                                            className="w-[50px] h-[50px] rounded-full object-cover border"
+                                                            alt="User Avatar"
+                                                        />
+                                                        ) : item?.user.avatar ? (
+                                                        <img 
+                                                            src={`${imgdburl}${item?.user.avatar}`.replace("/avatars/", "/products/")}
+                                                            className="w-[50px] h-[50px] rounded-full object-cover border"
+                                                            alt="User Avatar"
+                                                        />
+                                                        ) : (
+                                                        <div className="w-[60px] h-[60px] rounded-full bg-gray-300 flex items-center justify-center text-gray-700 font-semibold text-lg border">
+                                                            {item?.user?.name
+                                                            ? item.user.name
+                                                                .split(" ")
+                                                                .map((n) => n[0])
+                                                                .slice(0, 2)
+                                                                .join("")
+                                                                .toUpperCase()
+                                                            : "NA"}
+                                                        </div>
+                                                        )}
+
 
                                     <div className='pl-3'>
                                         <h1 className='font-[500] capitalize'>{item.user.name}</h1>
-                                        <Ratings rating={data?.ratings} />
+                                        <p className="text-gray-500 text-xs">
+                                            {new Date(item.CreatedAt).toLocaleDateString('en-GB')}
+                                            </p>
+                                        <Ratings rating={item.rating} />
                                         {/* <div className='w-full flex mt-2 gap-4'>
 
                                             <img src={review1img} alt="" className='w-[200px] h-[200px] border object-fill shadow rounded-[5px]' />
@@ -3546,12 +3578,20 @@ const ProductDetailsInfo = ({ data ,shouldShowChainOptions }) => {
                             {item?.images?.length > 0 && (
                                                 <div className='w-full flex mt-2 gap-4 flex-wrap'>
                                                     {item.images.map((img, i) => (
+                                                         <Zoom
+                                                         key={i}
+                                                         zoomMargin={40}
+                                                         defaultStyles={{ overlay: { zIndex: 1000 } }}
+                                                         onZoom={() => setIsZoomed(true)}
+                                                         onUnzoom={() => setIsZoomed(false)}
+                                                       >
                                                         <img 
                                                             key={i} 
                                                             src={`${imgdburl}${img.url}`} 
                                                             alt={`Review Image ${i + 1}`} 
-                                                            className='w-[150px] h-[150px] border object-cover shadow rounded-[5px]' 
+                                                            className='!cursor-pointer w-[150px] h-[150px] border object-cover shadow rounded-[5px]' 
                                                         />
+                                                        </Zoom>
                                                     ))}
                                                 </div>
                                             )}
@@ -3574,6 +3614,8 @@ const ProductDetailsInfo = ({ data ,shouldShowChainOptions }) => {
 
                         </div>
                     </div>
+                    </div>
+
                     :
                     null
             }

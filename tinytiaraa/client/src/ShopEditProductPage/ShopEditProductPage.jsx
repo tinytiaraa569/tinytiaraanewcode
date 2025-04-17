@@ -32,7 +32,6 @@ function ShopEditProductPage() {
     const { success, error, isLoading } = useSelector((state) => state.products)
 
     const { id } = useParams(); // Get the product ID from the URL
-    console.log(id, "id");
     const { products } = useSelector((state) => state.products);
 
     const [selectedProduct, setSelectedProduct] = useState(null);
@@ -2655,7 +2654,7 @@ function ShopEditProductPage() {
       };
       
       const generateQRCodeImage = async (productId, qrUrl) => {
-        const fullUrl = `https://tiny-tiaraanew.vercel.app/qrcode/product/${productId}`;
+        const fullUrl = `https://www.tinytiaraa.com/qrcode/product/${productId}`;
       
         const qrCode = new QRCodeStyling({
           ...qrCodeOptions,
@@ -2685,14 +2684,14 @@ function ShopEditProductPage() {
                 setEditMode(false);
                 setQrData(null);
                 setRedirectUrl("");
-                setQrUrl(`https://tiny-tiaraanew.vercel.app/qrcode/product/${selectedProduct._id}`);
+                setQrUrl(`https://www.tinytiaraa.com/qrcode/product/${selectedProduct._id}`);
             }
         } catch (error) {
             console.error("Error fetching QR code:", error);
             setEditMode(false); // Ensure it's in "Add QR Code" mode on error
             setQrData(null);
             setRedirectUrl("");
-            setQrUrl(`https://tiny-tiaraanew.vercel.app/qrcode/product/${selectedProduct._id}`);
+            setQrUrl(`https://www.tinytiaraa.com/qrcode/product/${selectedProduct._id}`);
         }
     };
     
@@ -2716,7 +2715,7 @@ function ShopEditProductPage() {
             } else {
                 setEditMode(false);
                 setRedirectUrl("");
-                setQrUrl(`https://tiny-tiaraanew.vercel.app/qrcode/product/${selectedProduct._id}`);
+                setQrUrl(`https://www.tinytiaraa.com/qrcode/product/${selectedProduct._id}`);
             }
         } catch (error) {
             console.error("Error fetching QR code:", error);
@@ -2767,12 +2766,47 @@ function ShopEditProductPage() {
     };
     
 
-    const handleDownloadQRCode = () => {
-        const link = document.createElement("a");
-        link.href = qrData.qrImage?.url;
-        link.download = `QR_Code_${selectedProduct.name}.svg`;
-        link.click();
+    const handleDownloadQRCode = async () => {
+        if (!qrData?.qrImage?.url) {
+            console.error("QR code URL is missing!");
+            return;
+        }
+    
+        // Construct the exact URL displayed in the <img> tag
+        const fullUrl = `${imgdburl}${qrData.qrImage.url}`;
+    
+        try {
+            // Fetch the image as a Blob
+            const response = await fetch(fullUrl);
+            
+            if (!response.ok) {
+                console.error("Image not found:", fullUrl);
+                alert("QR Code image is not available for download.");
+                return;
+            }
+    
+            const blob = await response.blob();
+            const blobUrl = URL.createObjectURL(blob);
+    
+            // Create a hidden download link
+            const link = document.createElement("a");
+            link.href = blobUrl;
+            link.download = `QR_Code_${selectedProduct?.skuid || "unknown"}.svg`;
+    
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+    
+            // Revoke the object URL to free up memory
+            URL.revokeObjectURL(blobUrl);
+        } catch (error) {
+            console.error("Error downloading QR code:", error);
+            alert("Failed to download QR Code.");
+        }
     };
+    
+    
+    
 
     return (
 
@@ -5543,7 +5577,7 @@ function ShopEditProductPage() {
                                 onClick={() => {
                                     if (selectedProduct?.name) {
                                         const productName = selectedProduct.name;
-                                        setRedirectUrl(`https://tiny-tiaraanew.vercel.app/qr-code?product=${productName}`);
+                                        setRedirectUrl(`https://www.tinytiaraa.com/qr-code?product=${productName}`);
                                     }
                                 }}
                             >

@@ -117,6 +117,10 @@ import BlogDetails from './blogs/BlogDetails';
 import QrCode from './qrcode/QrCode';
 import ShopAllQrCode from './qrcode/ShopAllQrCode/ShopAllQrCode';
 import QrCodeRedirect from './qrcode/QrCodeRedirect';
+import ShopSaleOrders from './ShopSaleOrders/ShopSaleOrders';
+import ShopAllSaleOrders from './ShopSaleOrders/ShopAllSaleOrders';
+import ShopSalesOrderDetails from './ShopSaleOrders/ShopSalesOrderDetails';
+import ShopReview from './shopreview/ShopReview';
 
 
 
@@ -228,20 +232,30 @@ function App() {
     location.pathname.startsWith('/dashboard/contactbanner/create') ||
 
     location.pathname.startsWith('/shopproduct') ||
-    location.pathname.startsWith('/order') ||
     location.pathname.startsWith('/dashboard-blogs') ||
 
     location.pathname.startsWith('/qr-code') ||
     location.pathname.startsWith('/dashboard-qrcode') ||
 
-    location.pathname.startsWith('/qrcode') 
+    location.pathname.startsWith('/qrcode') ||
+    location.pathname.startsWith('/dashboard-salesorder') ||
+    location.pathname.startsWith('/dashboard-allsalesorder') || 
+    location.pathname.startsWith('/sales-order') ||
+    location.pathname.startsWith('/product-review') 
+
+    
 
 
     
 
+
+
+    
     
 
+    
 
+    
 
 
     
@@ -654,6 +668,42 @@ function App() {
               <ShopOrderDetails />
             </SellerProtectedRoute>
           } />
+
+
+          <Route path='/dashboard-salesorder' element={
+            <SellerProtectedRoute >
+              <ShopSaleOrders />
+            </SellerProtectedRoute>
+          } />
+
+
+          <Route path='/dashboard-allsalesorder' element={
+            <SellerProtectedRoute >
+              <ShopAllSaleOrders />
+            </SellerProtectedRoute>
+          } />
+
+
+          <Route path='/sales-order/:id' element={
+            <SellerProtectedRoute >
+              <ShopSalesOrderDetails />
+            </SellerProtectedRoute>
+          } />
+
+
+          <Route path='/product-review/:id' element={
+            <SellerProtectedRoute >
+              <ShopReview />
+            </SellerProtectedRoute>
+          } />
+
+
+
+
+
+
+
+
 
         <Route path="/payu/order/success" element={<PayUSuccess />} />
 

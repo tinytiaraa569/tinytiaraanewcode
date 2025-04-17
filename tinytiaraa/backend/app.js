@@ -92,6 +92,10 @@ const chatbot = require("./controller/chatbot")
 
 const blog = require("./controller/blog")
 const qrcode = require("./controller/qrcodeRoutes")
+const salesuser = require("./controller/salesAuthController")
+const salesorder = require("./controller/salesorder")
+
+
 
 
 
@@ -146,6 +150,11 @@ app.use("/api/v2", qrcode);
 
 
 app.use("/api/v2", chatbot);
+app.use("/api/v2", salesuser);
+app.use("/api/v2", salesorder);
+
+
+
 
 
 
@@ -680,7 +689,7 @@ const credentials = {
           startDate: startDateString, // 30 days ago
           endDate: endDateString,     // Today's date
           dimensions: ['query'],
-          rowLimit: 10,               // Number of rows to retrieve
+          rowLimit: 40,               // Number of rows to retrieve
         },
       });
   
@@ -939,7 +948,81 @@ app.get('/api/v2/live-active-users', async (req, res) => {
   }
 });
 
-  
+// new code 
+const getQrCodePageViews = async () => {
+  const analyticsData = google.analyticsdata('v1beta');
+  console.log(`Fetching QR Code page analytics...`);
+
+  try {
+      const response = await analyticsData.properties.runReport({
+          property: 'properties/461487720', // Replace with your GA4 Property ID
+          requestBody: {
+              dateRanges: [
+                  { startDate: '30daysAgo', endDate: 'today' } // ✅ Date Range Fixed
+              ],
+              dimensions: [
+                  { name: 'pagePath' },         
+                  { name: 'deviceCategory' },   
+                  { name: 'country' }           // ✅ Removed 'sourceMedium'
+              ],
+              metrics: [
+                  { name: 'screenPageViews' },        
+                  { name: 'activeUsers' },           
+                  { name: 'averageSessionDuration' } 
+              ],
+              dimensionFilter: {
+                  filter: {
+                      fieldName: 'pagePath',
+                      inListFilter: {
+                          values: ['/qr-code'],
+                      },
+                  },
+              },
+              orderBys: [
+                  {
+                      metric: { metricName: 'screenPageViews' },
+                      desc: true,
+                  },
+              ],
+          },
+          auth,
+      });
+
+      // Parse and return data
+      const parsedData = response.data.rows.map(row => ({
+          pagePath: row.dimensionValues[0].value,
+          device: row.dimensionValues[1].value, 
+          country: row.dimensionValues[2].value, // ✅ Adjusted index after removing sourceMedium
+          views: row.metricValues[0].value, 
+          uniqueUsers: row.metricValues[1].value, 
+          avgSessionDuration: row.metricValues[2].value, 
+      }));
+
+      console.log('QR Code Page Analytics:', parsedData);
+      return parsedData;
+
+  } catch (error) {
+      console.error('Error fetching QR Code page analytics:', error);
+      throw error;
+  }
+};
+
+
+
+// Express API Route
+app.get('/api/v2/qr-page-views', async (req, res) => {
+    console.log('Fetching all-time QR Code page analytics...');
+
+    try {
+        const data = await getQrCodePageViews();
+        console.log('All-Time QR Code page analytics sent:', data);
+        res.json(data);
+    } catch (error) {
+        console.error('Error fetching QR Code page analytics:', error);
+        res.status(500).send('Error fetching QR Code page analytics');
+    }
+});
+
 
 
 

@@ -11,6 +11,7 @@ import { orderReducer } from "./redux/reducers/order"
 // import { productReducer } from "./reducers/product"
 // import { eventReducer } from "./reducers/event"
 import currencyReducer from './redux/reducers/currencyReducer'
+import { salesReducer } from "./redux/reducers/salesReducer"
 
 
 const Store = configureStore({
@@ -24,6 +25,7 @@ const Store = configureStore({
         wishlist:wishlistReducer,
         order:orderReducer,
         currency: currencyReducer,
+        sales:salesReducer,
     }
 
 })

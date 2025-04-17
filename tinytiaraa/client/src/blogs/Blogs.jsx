@@ -90,13 +90,13 @@ const Blogs = () => {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-11">
             {currentBlogs.map((blog) => (
               <div key={blog._id} className="bg-white rounded-[8px] shadow-lg overflow-hidden cursor-pointer" onClick={() => navigate(`/blog/${blog._id}`)}>
-                <div className="w-full h-64">
-                  <img src={`${imgdburl}${blog.bannerimg?.url}`} alt={blog.title} className="w-full h-full object-cover" />
+                <div className="w-full aspect-[16/9]">
+                  <img src={`${imgdburl}${blog.bannerimg?.url}`} alt={blog.title} className="w-full h-full object-cover " />
                 </div>
                 <div className="px-5 pt-5">
                   <p className="text-gray-500 text-sm">{formatDate(blog.date)}</p>
                   <h2 className="text-lg font-semibold mt-1 hover:text-[#49a9dd]">{blog.title}</h2>
-                  <p className="text-gray-700 mt-1 line-clamp-3">{blog.desc}</p>
+                  <p className="text-gray-700 mt-1 line-clamp-3">{blog?.desc?.replace(/##([^#]+)##/g, "$1")}</p>
                 </div>
                 <div className="px-5 pt-3 pb-5">
                   <button

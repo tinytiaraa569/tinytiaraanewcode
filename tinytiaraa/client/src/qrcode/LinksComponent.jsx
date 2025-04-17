@@ -58,8 +58,9 @@ const LinksComponent = () => {
     .filter((product) => product.category === selectedCategory)
      // Show only first 3 products
 
-     const filteredProducts =   filteredProductslength.slice(0, 3);
-
+     const filteredProducts = [...filteredProductslength]
+     .sort(() => Math.random() - 0.5) // Shuffle the array
+     .slice(0, 3);
     const navigate = useNavigate()
 
 
@@ -67,6 +68,8 @@ const LinksComponent = () => {
 
   return (
     <div className="!mb-0 flex flex-col rounded-[10px] p-4">
+
+      
       {
         productDetails && (
           <div className=" flex justify-center border-b border-gray-300 pb-4"> 
@@ -116,11 +119,20 @@ const LinksComponent = () => {
           </div>
         )
       }
+
+{
+      productDetails && (
+        <div className="text-center p-2">
+          <h3 className="text-[#080c20] text-ellipsis text-balance text-center text-md font-[600] leading-[1.5]" >Related Products</h3>
+          <p className="text-gray-500 !text-xs px-6">See more of our charming gold and silver jewelry, specially designed for kids and infants</p>
+        </div>
+      )
+}
      
       
 
       {/* Product Image List */}
-      <div className="py-2 m-auto w-full overflow-hidden cursor-pointer pt-3">
+      <div className="py-2 m-auto w-full overflow-hidden cursor-pointer pt-2">
         <ul className="flex justify-center gap-4 md:gap-6  md:flex-nowrap flex-wrap">
           
           

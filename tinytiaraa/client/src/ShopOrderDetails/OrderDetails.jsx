@@ -554,6 +554,11 @@ function OrderDetails() {
                                 <span className='font-bold'>Enamel:</span> {item.selectedEnamelColor}
                             </h5>
                         )}
+                        {item.selectedCombination !== null && (
+                            <h5 className='text-sm text-[#0000008c]'>
+                                <span className='font-bold'>combination:</span> {item.selectedCombination}
+                            </h5>
+                        )}
                     </div>
                     <div className='mt-3'>
                         <h5 className='text-sm text-[#0000008c]'><span className='font-bold'>Weight:</span></h5>
@@ -938,7 +943,7 @@ function OrderDetails() {
     </div>
 
   {/* HUID & SGL No */}
-  <div className="my-1 p-3 border border-gray-200 grid grid-cols-2 gap-2">
+  {/* <div className="my-1 p-3 border border-gray-200 grid grid-cols-2 gap-2">
     <div>
       <h5 className="text-sm font-semibold text-gray-900 mb-1">HUID No</h5>
       {data?.cart.map((item, index) => (
@@ -957,7 +962,37 @@ function OrderDetails() {
         </div>
       ))}
     </div>
-  </div>
+  </div> */}
+
+    <div className="my-1 p-3 border border-gray-200 grid grid-cols-2 gap-2">
+    <div>
+        <h5 className="text-sm font-semibold text-gray-900 mb-1">HUID No</h5>
+        {data?.cart.map((item, index) => (
+        <div key={index}>
+            {Array.from({ length: item.qty }).map((_, i) => (
+            <div key={i} className="flex items-center text-xs">
+                <h5>{item.skuid} - </h5>
+                <h5>_________</h5>
+            </div>
+            ))}
+        </div>
+        ))}
+    </div>
+    <div>
+        <h5 className="text-sm font-semibold text-gray-900 mb-1">SGL No</h5>
+        {data?.cart.map((item, index) => (
+        <div key={index}>
+            {Array.from({ length: item.qty }).map((_, i) => (
+            <div key={i} className="flex items-center text-xs">
+                <h5>{item.skuid} - </h5>
+                <h5>_________</h5>
+            </div>
+            ))}
+        </div>
+        ))}
+    </div>
+    </div>
+
 
   {[
     "Inventory Stock Out",

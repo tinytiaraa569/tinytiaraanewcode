@@ -76,7 +76,7 @@ const orderSchema = new mongoose.Schema({
     },
     paidAt: {
         type: Date,
-        default: Date.now(),
+        default: Date.now,
     },
     docketno:{
         type: String,
@@ -92,7 +92,7 @@ const orderSchema = new mongoose.Schema({
     },
     createdAt: {
         type: Date,
-        default: Date.now()
+        default: Date.now
 
     }
 })

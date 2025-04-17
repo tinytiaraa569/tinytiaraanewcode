@@ -241,16 +241,18 @@ function AllBlogs() {
         sx={{ mb: 2 }}
       />
       <TextField
-        fullWidth
-        label="Blog Description"
-        name="desc"
-        value={BlogData.desc}
-        onChange={handleChange}
-        variant="outlined"
-        multiline
-        rows={3}
-        sx={{ mb: 2 }}
-      />
+      fullWidth
+      label="Blog Description"
+      name="desc"
+      value={BlogData.desc}
+      onChange={handleChange}
+      variant="outlined"
+      multiline
+      rows={5} // Increase rows for better writing
+      placeholder="Use ## for headings. Example: ## This is a heading"
+      sx={{ mb: 2 }}
+    />
+
       <TextField
         fullWidth
         label="Blog Link (use '/' before links e.g., /shop)"

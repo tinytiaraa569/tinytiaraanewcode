@@ -17,7 +17,6 @@ const CurrencySelector = ({ toggleCurrencySelector, onCurrencySelect , currencyD
 
   
   
-  console.log(currencyData);
 
   // const currencyData = {
   //   USD: { country: "United States", flag: "https://flagcdn.com/us.svg" },

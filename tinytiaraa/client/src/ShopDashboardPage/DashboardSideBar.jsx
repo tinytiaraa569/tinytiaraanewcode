@@ -270,7 +270,8 @@ import { MdCreateNewFolder } from "react-icons/md";
 import PollIcon from '@mui/icons-material/Poll';
 import './shopdashadjust.css'
 import { AiOutlineStock } from "react-icons/ai";
-import { FaBlogger } from "react-icons/fa";
+import { FaBlogger, FaStore } from "react-icons/fa";
+import { BsFileEarmarkBarGraphFill } from "react-icons/bs";
 
 
 const DashboardSideBar = ({active}) => {
@@ -310,6 +311,8 @@ const DashboardSideBar = ({active}) => {
        active:10 ,
        submenu: [
       { text: "All Orders", icon: <ShoppingCartCheckoutIcon />, path: "/dashboard-orders",active:10 },
+      { text: "All Sales Orders", icon: <FaStore />, path: "/dashboard-allsalesorder",active:10 },
+
       { text: "Refunds", icon: <UndoIcon />, path: "/dashboard-refunds",active:10 },
     ],},
 
@@ -364,6 +367,8 @@ const DashboardSideBar = ({active}) => {
     { text: "Popup Manager", icon: <ReferralIcon />, path: "/dashboard-popup" ,active:19},
     { text: "Blogs", icon: <FaBlogger />, path: "/dashboard-blogs" ,active:21},
     { text: "Qr Code", icon: <MdOutlineQrCodeScanner />, path: "/dashboard-qrcode" ,active:22},
+    { text: "Sales Orders", icon: <BsFileEarmarkBarGraphFill /> , path: "/dashboard-salesorder" ,active:23},
+
 
 
 
@@ -437,7 +442,7 @@ const DashboardSideBar = ({active}) => {
                     >
 
                     <ListItemIcon>{item.icon}</ListItemIcon>
-                    {isOpen && <ListItemText primary={item.text} />}
+                    {isOpen && <ListItemText primary={item.text} sx={{ fontSize: "0.875rem", fontWeight: 500 }}/>}
                     {item.submenu && isOpen && (
                         openSubmenus[item.text] ? <ExpandLess /> : <ExpandMore />
                     )}

@@ -23,6 +23,10 @@ import axios from "axios";
 import { imgdburl, server } from "@/server";
 import logo from "./logo.png";
 import { Link, useLocation } from "react-router-dom";
+import swal from "sweetalert"; // Import SweetAlert
+import QrDataAnalytics from "./QrDataAnalytics";
+
+
 
 const qrCodeOptions = {
   width: 150,
@@ -43,6 +47,7 @@ const AllQrcode = () => {
   const [editingCategoryId, setEditingCategoryId] = useState(null);
   const [qrCodeId, setQrCodeId] = useState(null); // Store the QR Code ID for updating
   const [redirectUrl, setRedirectUrl] = useState("");
+  
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -69,7 +74,7 @@ const AllQrcode = () => {
 
 
   const generateQRCodeImage = async (categoryId, qrUrl) => {
-    const fullUrl = `https://tiny-tiaraanew.vercel.app/qrcode/${categoryId}`;
+    const fullUrl = `https://www.tinytiaraa.com/qrcode/${categoryId}`;
     
     const qrCode = new QRCodeStyling({ ...qrCodeOptions, data: qrUrl, image: logo });
     return await qrCode.getRawData("svg");
@@ -79,7 +84,7 @@ const AllQrcode = () => {
   const handleSaveOrUpdateQRCode = async () => {
     if (!selectedCategory || !redirectUrl) return;
   
-    const fullUrl = `https://tiny-tiaraanew.vercel.app/qrcode/${selectedCategory}`;
+    const fullUrl = `https://www.tinytiaraa.com/qrcode/${selectedCategory}`;
     setQrUrl(fullUrl);
   
     const svgBlob = await generateQRCodeImage(selectedCategory, qrUrl);
@@ -136,7 +141,7 @@ const AllQrcode = () => {
 
  
   const handleEditQRCode = (categoryId, id, existingRedirectUrl) => {
-    const fullUrl = `https://tiny-tiaraanew.vercel.app/qrcode/${categoryId}`;
+    const fullUrl = `https://www.tinytiaraa.com/qrcode/${categoryId}`;
   
     setSelectedCategory(categoryId);
     setQrCodeId(id);
@@ -149,21 +154,54 @@ const AllQrcode = () => {
   
 
 
-  const downloadQRCode = async (categoryId) => {
-    const qrItem = qrData.find(item => item.categoryId._id === categoryId);
-    if (!qrItem || !qrItem.qrImage?.url) return;
+  // const downloadQRCode = async (categoryId ,categoryName) => {
+  //   const qrItem = qrData.find(item => item.categoryId._id === categoryId);
+  //   if (!qrItem || !qrItem.qrImage?.url) return;
   
-    const response = await fetch(qrItem.qrImage.url);
-    const blob = await response.blob();
+  //   const response = await fetch(qrItem.qrImage.url);
+  //   const blob = await response.blob();
   
-    const link = document.createElement("a");
-    link.href = URL.createObjectURL(blob);
-    link.download = `qrcode-${categoryId}.svg`;
+  //   const link = document.createElement("a");
+  //   link.href = URL.createObjectURL(blob);
+  //   link.download = `qrcode-${categoryName.replace(/\s+/g, "_")}.svg`;
   
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+  //   document.body.appendChild(link);
+  //   link.click();
+  //   document.body.removeChild(link);
+  // };
+
+    const downloadQRCode = async (categoryId, categoryName) => {
+      const qrItem = qrData.find(item => item.categoryId._id === categoryId);
+      if (!qrItem || !qrItem.qrImage?.url) {
+          console.error("Error: QR code URL not found");
+          return;
+      }
+
+      const imageUrl = `${imgdburl}${qrItem.qrImage.url}`; // Ensure a full URL
+      console.log("Downloading from:", imageUrl); // Debugging
+
+      try {
+          const response = await fetch(imageUrl);
+          if (!response.ok) {
+              console.error("Error fetching QR code:", response.statusText);
+              return;
+          }
+
+          const blob = await response.blob();
+          const fileName = `qrcode-${categoryName.replace(/\s+/g, "_")}.svg`;
+
+          const link = document.createElement("a");
+          link.href = URL.createObjectURL(blob);
+          link.download = fileName;
+
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+      } catch (error) {
+          console.error("Error downloading QR code:", error);
+      }
   };
+
 
       const location = useLocation();
   
@@ -173,6 +211,41 @@ const AllQrcode = () => {
     
       // You can map the path segment to a more readable name
       const breadcrumbText = currentPage.charAt(0).toUpperCase() + currentPage.slice(1); // Capitalize first letter
+
+
+
+const deleteQRCode = async (qrId) => {
+  swal({
+    title: "Are you sure?",
+    text: "Once deleted, you won't be able to recover this QR code!",
+    icon: "warning",
+    buttons: true,
+    dangerMode: true,
+  }).then(async (willDelete) => {
+    if (willDelete) {
+      try {
+        const response = await fetch(`${server}/delete-qrcode/${qrId}`, {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+
+        if (!response.ok) throw new Error("Failed to delete QR code");
+
+        swal("Deleted!", "Your QR code has been deleted.", "success");
+
+        // Remove from state (Assuming you're using React state)
+        setQrData(qrData.filter((qr) => qr._id !== qrId));
+
+      } catch (error) {
+        console.error("Error deleting QR code:", error);
+        swal("Error!", "Failed to delete QR code.", "error");
+      }
+    }
+  });
+};
+
   
   return (
     <div className="bg-[#f9f9f9] w-full flex justify-center !font-poppins">
@@ -201,6 +274,11 @@ const AllQrcode = () => {
       }}>
         Add QR Code
       </Button>
+
+
+     
+     
+
 
       {/* Add/Edit QR Code Dialog */}
       <Dialog open={openDialog} onClose={() => setOpenDialog(false)}>
@@ -271,15 +349,33 @@ const AllQrcode = () => {
                 <TableCell><img src={`${imgdburl}${qr.qrImage?.url}`} alt="QR Code" width={100} /></TableCell>
                 <TableCell>{qr.redirectUrl}</TableCell> 
                 <TableCell>
-                  <Button variant="contained" color="secondary" size="small" onClick={() => downloadQRCode(qr.categoryId._id)}>Download</Button>
+                  <Button variant="contained" color="secondary" size="small" onClick={() => downloadQRCode(qr.categoryId._id,qr.categoryId.title)}>Download</Button>
                   <Button variant="contained" color="primary" size="small" sx={{ ml: 1 }} onClick={() => handleEditQRCode(qr.categoryId._id,qr._id, qr.redirectUrl)}>Edit</Button>
+                  <Button 
+                  variant="contained" 
+                  color="error" 
+                  size="small" 
+                  sx={{ ml: 1 }} 
+                  onClick={() => deleteQRCode(qr._id)}
+                >
+                  Delete
+                </Button>
                 </TableCell>
               </TableRow>
             ))}
           </TableBody>
         </Table>
       </TableContainer>
+
+      <div className="my-8 shadow-lg ">
+
+      <QrDataAnalytics />
+      </div>
+    
     </Box>
+
+
+    
     </div>
   );
 };

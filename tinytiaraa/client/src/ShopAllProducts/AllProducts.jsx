@@ -1,13 +1,13 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { deleteProduct, getAllProductShop } from '../redux/actions/product';
-import { AiOutlineDelete, AiOutlineEdit, AiOutlineEye, AiOutlineWarning } from 'react-icons/ai';
+import { AiOutlineDelete, AiOutlineEdit, AiOutlineEye, AiOutlineStar, AiOutlineWarning } from 'react-icons/ai';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import Loader from '../Loader/Loader';
 import { DataGrid } from '@mui/x-data-grid';
 import * as XLSX from 'xlsx'; // Import XLSX library
 import { FaFileExcel } from 'react-icons/fa';
-import { MdUpload } from 'react-icons/md';
+import { MdRateReview, MdUpload } from 'react-icons/md';
 import axios from 'axios';
 import { server } from '@/server';
 import swal from 'sweetalert';
@@ -53,9 +53,7 @@ function AllProducts() {
             } catch (error) {
                 console.error("Error fetching categories:", error);
                 alert("Failed to fetch categories");
-            } finally {
-                setLoading(false);
-            }
+            } 
         };
     
         fetchCategories();
@@ -209,10 +207,10 @@ function AllProducts() {
     });
 
     const columns = [
-        { field: 'id', headerName: 'Product Id', minWidth: 150, flex: 0.7 },
-        { field: 'skuid', headerName: 'Sku Id', minWidth: 150, flex: 0.7 },
+        // { field: 'id', headerName: 'Product Id', minWidth: 150, flex: 0.7 },
+        { field: 'skuid', headerName: 'Sku Id', minWidth: 120, flex: 0.7 },
         { field: 'name', headerName: 'Name', minWidth: 180, flex: 1.4 },
-        { field: 'sold', headerName: 'Sold out', type: 'number', minWidth: 130, flex: 0.6 },
+        { field: 'sold', headerName: 'Sold out', type: 'number', minWidth: 100, flex: 0.6 },
         { field: 'price', headerName: 'Price', minWidth: 100, flex: 0.6 },
         { field: 'Stock', headerName: 'Stock', type: 'number', minWidth: 80, flex: 0.5 },
 
@@ -220,7 +218,7 @@ function AllProducts() {
             field: 'LowStock',
             headerName: 'Low Stock',
             flex: 0.8,
-            minWidth: 120,
+            minWidth: 100,
             sortable: false,
             renderCell: (params) => (
                 params.row.isLowStock ? <AiOutlineWarning size={20} color="red" /> : null
@@ -276,6 +274,20 @@ function AllProducts() {
                 </button>
             ),
         },
+        {
+            field: 'Review',
+            headerName: 'Review',
+            flex: 0.4,
+            minWidth: 70,
+            sortable: false,
+            renderCell: (params) => (
+                <Link to={`/product-review/${params.row.id}`}>
+                    <button>
+                        <MdRateReview  size={18}  />
+                    </button>
+                </Link>
+            ),
+        },
         // {
         //     field: 'Delete',
         //     headerName: 'Delete',
@@ -319,6 +331,7 @@ function AllProducts() {
                 </button>
             ),
         },
+
     ];
 
     const fileInputRef = useRef(null);

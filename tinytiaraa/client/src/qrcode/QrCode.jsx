@@ -186,6 +186,7 @@ const QrCode = () => {
                     </div>
                      
                 </div>
+                
                 )}
 
 

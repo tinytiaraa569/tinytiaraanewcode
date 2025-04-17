@@ -75,8 +75,8 @@ router.post("/create-coupon-code", isSeller, catchAsyncErrors(async (req, res, n
       maxAmount: maxAmount || null,
       selectedProducts: selectedProducts || null,
       shop,
-      startDate: startDate ? new Date(startDate) : null, // Convert startDate to Date object
-      endDate: endDate ? new Date(endDate) : null,
+      startDate: startDate ? new Date(startDate).toISOString() : null, // Convert startDate to Date object
+      endDate: endDate ? new Date(endDate).toISOString() : null,
     };
 
     const couponCode = await CoupounCode.create(couponCodeData);
@@ -335,20 +335,34 @@ router.post(
       // startdate end date logic
 
       const currentDate = new Date();
-      const isValidStartDate = couponCode.startDate ? new Date(couponCode.startDate) <= currentDate : true;
-      const isValidEndDate = couponCode.endDate ? new Date(couponCode.endDate) >= currentDate : true;
+      const startDate = new Date(couponCode.startDate);
+      const endDate = new Date(couponCode.endDate);
 
-      if (!isValidStartDate) {
+      // console.log("Current Date (Server Time):", currentDate.toISOString());
+      // console.log("Coupon Start Date (UTC):", startDate.toISOString());
+      // console.log("Coupon End Date (UTC):", endDate.toISOString());
+
+      // console.log("isValidStartDate:", startDate <= currentDate);
+      // console.log("isValidEndDate:", endDate >= currentDate);
+      const currentDateUTC = new Date(); // Ensure it's in UTC
+      const startDateUTC = new Date(couponCode.startDate);
+      let endDateUTC = null;
+
+if (couponCode.endDate) {
+  endDateUTC = new Date(couponCode.endDate);
+}
+      
+      if (startDateUTC > currentDateUTC) {
         return res.status(400).json({
           success: false,
-          message: `Coupon code is not valid yet. It starts on ${new Date(couponCode.startDate).toLocaleDateString()}.`
+          message: `Coupon code is not valid yet. It starts on ${startDateUTC.toLocaleString("en-IN", { timeZone: "Asia/Kolkata" })}.`,
         });
       }
-
-      if (!isValidEndDate) {
+      
+      if (endDateUTC && endDateUTC < currentDateUTC) {
         return res.status(400).json({
           success: false,
-          message: `Coupon code has expired. It expired on ${new Date(couponCode.endDate).toLocaleDateString()}.`
+          message: `Coupon code has expired. It expired on ${endDateUTC.toLocaleString("en-IN", { timeZone: "Asia/Kolkata" })}.`,
         });
       }
 

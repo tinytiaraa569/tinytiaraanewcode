@@ -12,8 +12,8 @@ const BlogDetails = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetchBlogDetails();
     window.scrollTo(0, 0);
+    fetchBlogDetails();
   }, []);
 
   const fetchBlogDetails = async () => {
@@ -75,15 +75,15 @@ const BlogDetails = () => {
 
         {/* Blog Image */}
         <div
-  className={`w-full h-[400px] mt-5 overflow-hidden rounded-lg shadow-md ${
-    blog.link && blog.link.trim() !== "" && blog.link !== "/" ? "cursor-pointer" : "cursor-default"
-  }`}
-  onClick={() => {
-    if (blog.link && blog.link.trim() !== "" && blog.link !== "/") {
-      navigate(blog.link); // Navigate only if link is NOT "/"
-    }
-  }}
->
+          className={`w-full h-[400px] mt-5 overflow-hidden rounded-lg shadow-md ${
+            blog.link && blog.link.trim() !== "" && blog.link !== "/" ? "cursor-pointer" : "cursor-default"
+          }`}
+          onClick={() => {
+            if (blog.link && blog.link.trim() !== "" && blog.link !== "/") {
+              navigate(blog.link); // Navigate only if link is NOT "/"
+            }
+          }}
+        >
           <img
             src={`${imgdburl}${blog.bannerimg?.url}`}
             alt={blog.title}
@@ -92,7 +92,27 @@ const BlogDetails = () => {
         </div>
 
         {/* Blog Description */}
-        <p className="text-gray-700 leading-relaxed text-lg mt-6 text-justify">{blog.desc}</p>
+        <div className="text-gray-700 leading-relaxed text-[18px] mt-6 text-justify space-y-4">
+        {blog.desc.split("\n").map((paragraph, index) => {
+          if (!paragraph.trim()) return null; // Skip empty lines
+
+          return (
+            <p key={index} className="mt-2">
+              {paragraph.split(/(##[^#]+##)/g).map((part, i) =>
+                part.startsWith("##") && part.endsWith("##") ? (
+                  <strong key={i} className="font-bold">{part.slice(2, -2)}</strong>
+                ) : (
+                  part
+                )
+              )}
+            </p>
+          );
+        })}
+      </div>
+
+
+
+
 
         {/* Share Buttons */}
         <div className="mt-6 flex items-center gap-4">

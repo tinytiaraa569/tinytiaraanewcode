@@ -22,7 +22,7 @@ export const cartReducer = createReducer(initialState, (builder) => {
 
       if (existingItemIndex > -1) {
         // Update quantity of the existing item
-        state.cart[existingItemIndex].qty += item.qty;
+        state.cart[existingItemIndex].qty = item.qty;
       } else {
         // Add new item to the cart
         state.cart.push(item);

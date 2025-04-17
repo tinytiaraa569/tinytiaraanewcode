@@ -194,6 +194,7 @@ import SearchConsoleData from '@/shopsales/SearchConsoleData';
 import PerformanceDashboard from '@/shopsales/PerformanceData';
 import PageViewsTable from '@/shopsales/PageViewsTable';
 import LiveActiveUsers from '@/shopsales/RealTimeActiveUsers';
+import QrDataAnalytics from '@/qrcode/ShopAllQrCode/QrDataAnalytics';
 
 
 function DashboardHero() {
@@ -320,7 +321,7 @@ function DashboardHero() {
                 </h3>
             </div>
             <h5 className="pt-2 pl-[36px] text-[22px] font-[500] text-white">
-                ₹ {totalEarning}
+            ₹ {totalEarning.toLocaleString("en-IN")}
             </h5>
             <Link to="">
                 <h5 className="pt-4 ml-2 text-[#f0f8ff] inline-block border-b border-[#f0f8ff92]">View Transactions</h5>
@@ -406,6 +407,10 @@ function DashboardHero() {
         <div className="w-[48%]">
             <LiveActiveUsers />
         </div>
+    </div>
+
+    <div className='shadow-2xl rounded-[10px]'>
+    <QrDataAnalytics />
     </div>
 </div>
 

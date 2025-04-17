@@ -21,6 +21,10 @@ function PaymentPage() {
     const { user } = useSelector((state) => state.user)
     const { currency, conversionRates } = useSelector((state) => state.currency); // Accessing currency and conversion rates
 
+    const {isSeller} = useSelector((state) => state.seller)
+
+   
+
     const navigate = useNavigate()
     const dispatch = useDispatch()
 
@@ -1249,8 +1253,9 @@ function PaymentPage() {
 
 
                                     {/* cod method */}
-                                
-                                <div className='flex items-center gap-8 mt-3'>
+                                    {
+                                        isSeller && (
+                                            <div className='flex items-center gap-8 mt-3'>
                                     <div className='flex items-center gap-2'>
                                         <input
                                             id="cod"
@@ -1268,7 +1273,12 @@ function PaymentPage() {
                                             </label>
                                         </div>
                                     </div>
-                                </div>
+                                            </div>
+
+                                        )
+                                    }
+                                
+                                
 
 
                             </div>
