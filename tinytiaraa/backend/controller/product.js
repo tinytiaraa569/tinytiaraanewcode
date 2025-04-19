@@ -3784,5 +3784,98 @@ router.put("/edit-fake-review/:productId/:reviewId", isSeller, catchAsyncErrors(
   
 
 
+  router.post("/create-customer-review-offline", catchAsyncErrors(async (req, res, next) => {
+    try {
+       
+
+        // Extract fake review data from the request body
+        const { comment, date, images, rating, user, productId } = req.body;
+
+        console.log(req.body,"request body")
+
+        // If no date is provided, use today's date
+        const reviewDate = date ? new Date(date) : new Date();  // Use the provided date or current date
+
+        let imagesLinks = [];
+        let avatarlink=[];
+
+        const processBase64Images = (imageArray, imageLinksArray) => {
+            for (let i = 0; i < imageArray.length; i++) {
+                const base64Image = imageArray[i].url;
+                const matches = base64Image.match(/^data:(.+);base64,(.+)$/);
+                if (!matches) {
+                    console.error('Invalid image format:', base64Image);
+                    continue; 
+                }
+
+                const mimeType = matches[1]; 
+                const base64Data = matches[2]; 
+
+                const extension = mimeType.split('/')[1]; // e.g., 'png', 'jpeg', etc.
+                const imageBuffer = Buffer.from(base64Data, 'base64');
+
+                const uniqueId = generateRandomString(20); // Adjust length as needed
+                const publicId = `products/${uniqueId}`; // Create the public_id
+
+                const imagePath = path.join(__dirname, '../uploads/images/products', `${uniqueId}.${extension}`);
+                fs.writeFileSync(imagePath, imageBuffer); // Save the image to the file system
+
+                imageLinksArray.push({
+                    public_id: publicId,
+                    url: `/uploads/images/products/${uniqueId}.${extension}`
+                });
+            }
+        };
+
+        processBase64Images(images, imagesLinks);
+         // Process user avatar - can be string or array
+         if (typeof user?.avatar === 'string') {
+            processBase64Images([{ url: user.avatar }], avatarlink);
+        } else if (Array.isArray(user.avatar)) {
+            processBase64Images(user.avatar, avatarlink);
+        }
+
+
+        const review = {
+            user: {
+                ...user,
+                avatar: avatarlink[0]?.url || user.avatar, // Use uploaded or original
+            },
+            rating,
+            comment,
+            productId,
+            CreatedAt: reviewDate,
+            images: imagesLinks,
+        };
+
+        // Fetch the product and add the fake review
+        const product = await Product.findById(productId);
+
+        // Add the review to the product's reviews array
+        product.reviews.push(review);
+
+        // Recalculate the average rating
+        let avg = 0;
+        product.reviews.forEach((rev) => {
+            avg += rev.rating;
+        });
+
+        product.ratings = avg / product.reviews.length;
+
+        // Save the product with the new review
+        await product.save({ validateBeforeSave: false });
+
+        res.status(200).json({
+            success: true,
+            message: "Review successfully posted!",
+        });
+
+    } catch (error) {
+        console.log(error)
+        return next(new ErrorHandler(error, 400));
+    }
+}));
+
+
 
 module.exports = router

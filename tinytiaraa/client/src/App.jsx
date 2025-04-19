@@ -121,6 +121,7 @@ import ShopSaleOrders from './ShopSaleOrders/ShopSaleOrders';
 import ShopAllSaleOrders from './ShopSaleOrders/ShopAllSaleOrders';
 import ShopSalesOrderDetails from './ShopSaleOrders/ShopSalesOrderDetails';
 import ShopReview from './shopreview/ShopReview';
+import CustomerReview from './CustomerReview/CustomerReview';
 
 
 
@@ -268,7 +269,7 @@ function App() {
 
       dispatch(getAllProducts(20, 0)); // Fetch the first 40 products
 
-      dispatch(getAllProducts(640, 20));
+      dispatch(getAllProducts(840, 20));
        // Fetch the next 200 products
        Store.dispatch(loadUser())
        Store.dispatch(loadSeller())
@@ -745,6 +746,14 @@ function App() {
           {/* custom banners  */}
           <Route path='/dashboard/contactbanner/edit/:id' element={<ContactNewBanner />} /> 
           <Route path='/dashboard/contactbanner/create' element={<ContactNewBanner />} />
+
+
+
+          <Route path='/customer-review/:id' element={<CustomerReview />} />
+
+
+
+          
 
 
         </Routes>

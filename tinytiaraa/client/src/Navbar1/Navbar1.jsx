@@ -274,7 +274,7 @@ function Navbar1() {
       // Fetch user's geolocation
   const fetchUserCountry = async () => {
     try {
-      const response = await fetch("https://ipapi.co/json");
+      const response = await fetch("https://ipapi.co/json/test");
       const data = await response.json();
       console.log(data,"data to show")
       return data.currency; // ISO 3166-1 alpha-2 country code

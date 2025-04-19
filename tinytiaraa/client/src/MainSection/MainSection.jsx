@@ -13,6 +13,7 @@ import NewArrivals from './newarrivals/NewArrivals'
 import FollowUS from './FollowUS/FollowUS'
 import { FaGift } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
+import Review from './Review/Review'
 
 function MainSection() {
   const navigate = useNavigate();
@@ -44,6 +45,7 @@ function MainSection() {
       <Safety />
       <Slidertext />
       <CustomizedAccordions />
+      <Review />
       <FollowUS />
       <Ttclub />
 
@@ -59,33 +61,34 @@ function MainSection() {
 
 
     <div
-      className="fixed bottom-3 left-4 flex flex-col items-center cursor-pointer "
+      className="fixed bottom-3 left-4 flex flex-col items-center cursor-pointer"
       onClick={handleGiftClick}
       title="Spin and Win"
     >
       {/* "Spin and Win" Text */}
       {showText && (
-       <span
-       className="text-sm font-bold text-white px-4 py-1 bg-gradient-to-r from-pink-500 to-red-500 rounded-full shadow-lg mb-3 animate-slide-bounce-fade"
-       style={{
-         fontFamily: "Arial, sans-serif",
-         letterSpacing: "0.5px",
-       }}
-     >
-       Spin and Win
-     </span>
+        <span
+          className="text-xs font-semibold text-white px-3 py-1 bg-gradient-to-r from-pink-500 to-red-500 rounded-full shadow-lg mb-2 animate-slide-bounce-fade"
+          style={{
+            fontFamily: "Arial, sans-serif",
+            letterSpacing: "0.5px",
+          }}
+        >
+          Spin and Win
+        </span>
       )}
 
       {/* Icon Circle */}
       <div
-        className="bg-gradient-to-r from-pink-500 to-red-500 text-white p-4 rounded-full shadow-lg hover:scale-110 transition-transform transform"
+        className="bg-gradient-to-r from-pink-500 to-red-500 text-white p-3 rounded-full shadow-lg hover:scale-105 transition-transform transform"
         style={{
           animation: "float 2s ease-in-out infinite",
         }}
       >
-        <FaGift size={32} />
+        <FaGift size={22} />
       </div>
     </div>
+
     </div>
   )
 }

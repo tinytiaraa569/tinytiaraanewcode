@@ -7,6 +7,7 @@ import { RiCloseFill, RiDeleteBin6Line } from 'react-icons/ri';
 import { imgdburl, server } from '@/server';
 import axios from 'axios';
 import { FiEdit2 } from 'react-icons/fi';
+import swal from 'sweetalert';
 
 const AllReviews = () => {
   const { id } = useParams();
@@ -220,6 +221,62 @@ const AllReviews = () => {
       });
   };
   
+  const createShareContent = (shareUrl, closeSwal) => {
+    const container = document.createElement("div");
+  
+    container.innerHTML = `
+      <p style="margin-bottom: 8px; font-size: 14px;">${shareUrl}</p>
+      <div style="display: flex; gap: 8px; justify-content: center; flex-wrap: wrap;">
+      
+        <a href="https://api.whatsapp.com/send?text=${encodeURIComponent(
+          `Check this out: ${shareUrl}`
+        )}" target="_blank" rel="noopener noreferrer"
+          id="share-whatsapp"
+          style="display: flex; align-items: center; gap: 6px; background-color: #25D366; color: white; padding: 6px 12px; border-radius: 5px; text-decoration: none; font-size: 13px;">
+          <svg width="16" height="16" fill="white" viewBox="0 0 24 24">
+            <path d="M17.472 14.382c-.297-.149-1.758-.867-2.031-.967-.273-.099-.472-.148-.672.15s-.773.966-.948 1.164c-.173.198-.347.223-.644.075-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.447-.52.15-.173.2-.298.3-.497.099-.198.05-.372-.025-.521-.075-.149-.672-1.611-.922-2.209-.242-.579-.487-.501-.672-.51-.173-.007-.372-.009-.571-.009-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414-.074-.124-.272-.198-.57-.347zM12.004 2C6.477 2 2 6.484 2 12.021c0 1.916.504 3.767 1.46 5.399L2 22l4.678-1.441A9.935 9.935 0 0 0 12.004 22c5.523 0 10-4.484 10-9.979C22.004 6.484 17.527 2 12.004 2z"/>
+          </svg>
+          WhatsApp
+        </a>
+  
+        <a href="https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(
+          shareUrl
+        )}" target="_blank" rel="noopener noreferrer"
+          id="share-facebook"
+          style="display: flex; align-items: center; gap: 6px; background-color: #1877F2; color: white; padding: 6px 12px; border-radius: 5px; text-decoration: none; font-size: 13px;">
+          <svg width="16" height="16" fill="white" viewBox="0 0 24 24">
+            <path d="M22.676 0H1.326C.593 0 0 .593 0 1.326v21.348C0 23.407.593 24 1.326 24h11.494v-9.294H9.692v-3.622h3.128V8.413c0-3.1 1.894-4.788 4.659-4.788 1.325 0 2.464.099 2.795.143v3.24l-1.918.001c-1.504 0-1.796.715-1.796 1.763v2.312h3.588l-.467 3.622h-3.121V24h6.116C23.407 24 24 23.407 24 22.674V1.326C24 .593 23.407 0 22.676 0"/>
+          </svg>
+          Facebook
+        </a>
+  
+        <a href="sms:?&body=${encodeURIComponent(
+          `Hey, check this out: ${shareUrl}`
+        )}" id="share-sms"
+          style="display: flex; align-items: center; gap: 6px; background-color: #333; color: white; padding: 6px 12px; border-radius: 5px; text-decoration: none; font-size: 13px;">
+          <svg width="16" height="16" fill="white" viewBox="0 0 24 24">
+            <path d="M22 2H2C.89 2 0 2.89 0 4v20l4-4h18c1.11 0 2-.89 2-2V4c0-1.11-.89-2-2-2zm-4 9H6V9h12v2zm0-3H6V6h12v2z"/>
+          </svg>
+          Text Message
+        </a>
+  
+      </div>
+    `;
+  
+    setTimeout(() => {
+      const buttons = container.querySelectorAll("a");
+      buttons.forEach((btn) =>
+        btn.addEventListener("click", () => {
+          if (closeSwal) closeSwal();
+        })
+      );
+    }, 100);
+  
+    return container;
+  };
+  
+  
+  
 
 
   return (
@@ -253,6 +310,24 @@ const AllReviews = () => {
           >
             Write a Review
           </button>
+
+                <button
+                onClick={() => {
+                  const shareUrl = `${window.location.origin}/customer-review/${id}`;
+                  navigator.clipboard.writeText(shareUrl).then(() => {
+                    swal({
+                      title: "Link Copied!",
+                      content: createShareContent(shareUrl, swal.close),
+                      icon: "success",
+                      button: "OK",
+                    });
+                  });
+                }}
+                className="mx-2 mt-4 px-5 py-2 bg-black text-white text-xs rounded hover:bg-gray-800 transition"
+              >
+                Share Review Link
+              </button>
+
         </div>
       </div>
 

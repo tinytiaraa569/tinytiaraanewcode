@@ -1,13 +1,13 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import styles from '../Styles/styles'
-import { AiFillHeart, AiOutlineHeart, AiOutlineMessage, AiOutlineShoppingCart } from 'react-icons/ai';
+import { AiFillHeart, AiFillStar, AiOutlineHeart, AiOutlineMessage, AiOutlineShoppingCart, AiOutlineStar  } from 'react-icons/ai';
 import { MdOutlineEmail, MdOutlineVerified } from "react-icons/md";
 import { RiRefund2Line } from "react-icons/ri";
 import { RiExchangeFundsLine } from "react-icons/ri";
 import { CiCalendarDate, CiFacebook } from "react-icons/ci";
 import { AiOutlineGold } from "react-icons/ai";
-import { IoChevronBackOutline, IoChevronForwardOutline, IoDiamondOutline } from "react-icons/io5";
+import { IoChevronBackOutline, IoChevronForwardOutline, IoDiamondOutline, IoStarHalfSharp, IoStarOutline, IoStarSharp } from "react-icons/io5";
 import { RxDimensions } from "react-icons/rx";
 import { MdFeaturedPlayList } from "react-icons/md";
 import { MdHealthAndSafety } from "react-icons/md";
@@ -47,6 +47,7 @@ import { EmailShareButton, FacebookShareButton, WhatsappShareButton, } from "rea
 import { Helmet } from 'react-helmet-async';
 
 
+
 Modal.setAppElement('#root'); // Replace '#root' with the ID of your root element
 
 function ProductDetails({ data }) {
@@ -54,6 +55,7 @@ function ProductDetails({ data }) {
     const { wishlist } = useSelector((state) => state.wishlist)
     const { cart } = useSelector((state) => state.cart)
     const { user, isAuthenticated } = useSelector((state) => state.user)
+    const [active, setActive] = useState(1)
 
 
 
@@ -987,6 +989,39 @@ function ProductDetails({ data }) {
     const [finalPrice, setFinalPrice] = useState(data.discountPrice);
     const [finalOriginalPrice, setFinalOriginalPrice] = useState(data.originalPrice);
 
+    const reviewSectionRef = useRef(null);
+    const totalReviews = data.reviews?.length || 0;
+
+    console.log(totalReviews,'total review---------')
+
+        const averageRating = totalReviews
+        ? data.reviews.reduce((acc, curr) => acc + curr.rating, 0) / totalReviews
+        : 0;
+        
+
+        const fullStars = Math.floor(averageRating);
+        const hasHalfStar = averageRating % 1 >= 0.5;
+        const emptyStars = 5 - fullStars - (hasHalfStar ? 1 : 0);
+
+        // ⭐ Star stats (for tooltip)
+        const starStats = [5, 4, 3, 2, 1].map((star) => {
+            const count = data.reviews?.filter((review) => review.rating === star).length || 0;
+            const percentage = totalReviews > 0 ? (count / totalReviews) * 100 : 0;
+        
+            return {
+            star,
+            count,
+            percentage: parseFloat(percentage.toFixed(1)),
+            };
+        });
+
+
+        const handleScrollToReviews = () => {
+            setActive(2); // If `active` is controlled with a setter
+            setTimeout(() => {
+              reviewSectionRef.current?.scrollIntoView({ behavior: "smooth" });
+            }, 200); // Wait for the content to mount
+          };
 
 
     console.log(categoriesData,"categoriesData-------------------")
@@ -1623,6 +1658,94 @@ function ProductDetails({ data }) {
                                      <p className='text-[#727386] pt-1 text-[14px]'>Design Application No. {data.designno}</p>
 
                                     <h3 className={`text-[#727386] text-left  text-[14px] font-Poppins pt-1 productpageproskuid`}>{data.skuid}</h3>
+
+                                    {
+                                        totalReviews > 0 && (
+                                    <div className="flex items-center gap-2">
+                                    {/* Stars */}
+                                    <div className="flex text-yellow-500">
+                                        {Array(fullStars).fill().map((_, i) => (
+                                        <IoStarSharp key={`full-${i}`} className="w-4 h-4" />
+                                        ))}
+                                        {hasHalfStar && <IoStarHalfSharp className="w-4 h-4" />}
+                                        {Array(emptyStars).fill().map((_, i) => (
+                                        <IoStarOutline key={`empty-${i}`} className="w-4 h-4" />
+                                        ))}
+                                    </div>
+
+                                    <div className="relative group flex items-center gap-2">
+                                    {/* Average Rating and Review Count */}
+                                    <p className="text-sm text-muted-foreground flex flex-wrap items-center gap-1">
+                                    <span className="text-sm">{averageRating.toFixed(1)} / 5</span>
+                                    <span className="text-gray-400">•</span>
+                                    <span
+                                        className="text-blue-500 hover:underline cursor-pointer font-medium"
+                                        title="View all reviews"
+                                        onClick={handleScrollToReviews}
+                                    >
+                                        {totalReviews} review{totalReviews !== 1 && 's'}
+                                    </span>
+                                    </p>
+                                    <div className="absolute top-2.5 left-0 mt-2 z-10 bg-white shadow-lg p-4 rounded-lg w-72 opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none group-hover:pointer-events-auto">
+                                        {/* Display average rating inside the tooltip */}
+                                        <div className=" text-sm font-medium flex itmes-center gap-2">
+                                            <div className="flex text-yellow-500">
+                                            {Array(fullStars).fill().map((_, i) => (
+                                            <IoStarSharp key={`full-${i}`} className="w-4 h-4" />
+                                            ))}
+                                            {hasHalfStar && <IoStarHalfSharp className="w-4 h-4" />}
+                                            {Array(emptyStars).fill().map((_, i) => (
+                                            <IoStarOutline key={`empty-${i}`} className="w-4 h-4" />
+                                            ))}
+                                            </div>
+                                        <div>
+                                            {averageRating.toFixed(1)} / 5
+                                        </div>
+                                        </div>
+                                        <p  
+                                        className="!mb-4 text-xs  hover:underline cursor-pointer"
+                                        title="View all reviews" 
+                                        onClick={handleScrollToReviews}> 
+                                        {totalReviews}  review{totalReviews !== 1 && 's'}
+                                        </p>
+
+
+                                        {starStats.map(({ star, count, percentage }) => (
+                                        <div key={star} className="flex items-center gap-2 mb-2">
+                                            <span className="w-6 text-sm font-medium">{star}★</span>
+                                            <div className="flex-1 bg-gray-200 h-3 rounded">
+                                            <div
+                                                className="bg-yellow-500 h-3 rounded"
+                                                style={{ width: `${percentage}%` }}
+                                            ></div>
+                                            </div>
+                                            <span className="text-sm text-gray-600 w-8 text-right">{count}</span>
+                                        </div>
+                                        ))}
+
+                                    <div className="border-t pt-3 mt-3 text-center">
+                                        <p
+                                        onClick={handleScrollToReviews}
+                                        className="text-xs text-blue-600 hover:underline cursor-pointer"
+                                        >
+                                        See customer reviews
+                                        </p>
+                                    </div>
+
+                                    </div>
+
+                                    </div>
+
+
+                                     {/* Tooltip with Star Stats */}
+                                    
+                                    </div>
+                                        )
+                                    }
+
+                                    
+
+
                                     <p 
                                      className={`font-Poppins pt-1 text-[14px] productpageprodesc ${isExpanded ? '' : 'line-clamp'}`} 
                                       onClick={toggleReadMore}
@@ -3137,7 +3260,7 @@ function ProductDetails({ data }) {
 
                         </div>
 
-                        <ProductDetailsInfo data={data} shouldShowChainOptions={shouldShowChainOptions} />
+                        <ProductDetailsInfo data={data} shouldShowChainOptions={shouldShowChainOptions} active={active} setActive={setActive} reviewSectionRef={reviewSectionRef}/>
 
 
                     </div>
@@ -3151,8 +3274,7 @@ function ProductDetails({ data }) {
 }
 
 
-const ProductDetailsInfo = ({ data ,shouldShowChainOptions }) => {
-    const [active, setActive] = useState(1)
+const ProductDetailsInfo = ({ data ,shouldShowChainOptions,active,setActive,reviewSectionRef }) => {
     console.log(data, "see the data")
     const [expanded, setExpanded] = useState(true);
 
@@ -3505,7 +3627,7 @@ const ProductDetailsInfo = ({ data ,shouldShowChainOptions }) => {
             {
                 active === 2
                     ?
-                         <div className="w-full h-[50vh] py-3 flex flex-col items-center">
+                         <div ref={reviewSectionRef} className="w-full h-[50vh] py-3 flex flex-col items-center">
                          <div className="w-full h-full overflow-y-auto px-4 space-y-4">
                         {
                             data &&
