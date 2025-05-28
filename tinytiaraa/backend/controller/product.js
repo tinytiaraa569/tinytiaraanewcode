@@ -1663,14 +1663,21 @@ router.get("/get-all-products", catchAsyncErrors(async (req, res, next) => {
     const offset = parseInt(req.query.offset) || 0; // Default offset for pagination
 
     console.log(`Incoming request with Limit: ${limit}, Offset: ${offset}`);
+    const label = `FetchProducts-${limit}-${offset}`;
+        console.time(label);
+
 
     try {
         const products = await Product.find()
-            .sort({ createdAt: -1 }) // Sort by 'createdAt' field in descending order
+            // .sort({ createdAt: -1 }) // Sort by 'createdAt' field in descending order
             .limit(limit) // Limit the number of products returned
-            .skip(offset); // Skip the first 'offset' number of products
-
+            .skip(offset) // Skip the first 'offset' number of products
+            .lean();
         console.log(`Fetched ${products.length} products`); // Log the number of products fetched
+
+        console.timeEnd(label);
+
+
 
         res.status(200).json({
             success: true,
@@ -1681,6 +1688,56 @@ router.get("/get-all-products", catchAsyncErrors(async (req, res, next) => {
         return next(new ErrorHandler(error, 400));
     }
 }));
+
+// Route: GET /product/get-product-previews
+// router.get("/get-product-previews", catchAsyncErrors(async (req, res, next) => {
+//     const limit = parseInt(req.query.limit) || 80;
+//     const offset = parseInt(req.query.offset) || 0;
+
+//     console.log(`Incoming preview request with Limit: ${limit}, Offset: ${offset}`);
+//     console.time(`FetchPreviews-${limit}-${offset}`);
+
+//     try {
+//         const products = await Product.find()
+//             .sort({ createdAt: -1 })
+//             .limit(limit)
+//             .select('name skuid discountPrice originalPrice category description tags subcategory enamelColors images createdAt')
+//             .lean();
+//         console.log(`Fetched ${products.length} preview products`);
+//         console.timeEnd(`FetchPreviews-${limit}-${offset}`);
+
+//         res.status(200).json({
+//             success: true,
+//             products,
+//         });
+//     } catch (error) {
+//         console.error('Error fetching product previews:', error);
+//         return next(new ErrorHandler(error, 400));
+//     }
+// }));
+
+// router.get("/get-all-products-new", catchAsyncErrors(async (req, res, next) => {
+//     console.time("FetchAllProducts");
+
+//     try {
+//         const products = await Product.find()
+//         .select("name skuid category subcategory originalPrice discountPrice images enamelColors")  // only fetch these fields
+//         .lean();      // Fetch all products without limit, skip, or lean
+
+//         console.log(`Fetched ${products.length} products`);
+//         console.timeEnd("FetchAllProducts");
+
+//         res.status(200).json({
+//             success: true,
+//             products,
+//         });
+//     } catch (error) {
+//         console.error("Error fetching products:", error);
+//         return next(new ErrorHandler(error, 400));
+//     }
+// }));
+
+
 
 
 

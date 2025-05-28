@@ -1,0 +1,22 @@
+.bg{
+    background: linear-gradient(289.46deg, #F4E7E2 21.1%, #FFFFFF 24.74%);
+
+}
+/* Tiny Pagination Dots */
+.custom-bullet {
+  width: 7px;
+  height: 7px;
+  background: #d1d5db;
+  opacity: 0.8;
+  transition: all 0.2s ease;
+  border-radius: 50%;
+}
+
+.custom-bullet-active {
+  width: 8px;
+  height: 8px;
+  background: #6b7280;
+  opacity: 1;
+  border-radius: 50%;
+
+}

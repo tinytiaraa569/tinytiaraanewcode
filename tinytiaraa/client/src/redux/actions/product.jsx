@@ -250,6 +250,9 @@ export const getAllProducts = (limit = 20, offset = 0) => async (dispatch) => {
 
 
 
+
+
+
 // export const updateProduct = (
 //     { id, // Product ID to update
 //         name,

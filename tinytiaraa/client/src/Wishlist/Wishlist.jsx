@@ -11,9 +11,51 @@ import { addToCart } from '@/redux/actions/cart';
 import './wishlist.css'
 import { Link, useNavigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
+import { motion, AnimatePresence } from "framer-motion"
+import { Heart, ShoppingCart, Sparkles, Star, X } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { Card } from '@/components/ui/card';
+
+const SparkleEffect = () => {
+    return (
+      <div className="absolute inset-0 pointer-events-none overflow-hidden z-0">
+        {[...Array(20)].map((_, i) => {
+          const left = Math.random() * 100
+          const top = Math.random() * 100
+          return (
+            <motion.div
+              key={i}
+              className="absolute"
+              style={{
+                left: `${left}%`,
+                top: `${top}%`,
+              }}
+              initial={{
+                opacity: 0,
+                scale: 0,
+              }}
+              animate={{
+                opacity: [0, 1, 0],
+                scale: [0, 1, 0],
+              }}
+              transition={{
+                duration: Math.random() * 2 + 1,
+                repeat: Number.POSITIVE_INFINITY,
+                repeatType: "loop",
+                delay: Math.random() * 5,
+              }}
+            >
+              <Sparkles className="text-amber-300 w-4 h-4" />
+            </motion.div>
+          )
+        })}
+      </div>
+    )
+  }
 
 
-function Wishlist({ setOpenWishlist }) {
+function Wishlist({ setOpenWishlist , isOpen = true  }) {
   <Helmet>
   <title>Safe, Certified and Registered Natural Diamond & Gold jewellery for infants and Kids</title>
   <meta name="description" content="Certified gold diamond & silver and CZ kid's jewellery at Tiny Tiaraa. Quality & safety-first pieces. Perfect fit for sensitive skin. Free shipping & 48-hour delivery*." />
@@ -39,39 +81,78 @@ function Wishlist({ setOpenWishlist }) {
 
 
   return (
-    <div className='fixed top-0 left-0 w-full bg-[#0000004b] h-screen z-10 overflow-y-scroll'>
-      <div className="wishlistwidth fixed top-0 right-0 min-h-full w-[28%] bg-white flex flex-col justify-between shadow-sm">
-
-        {
-          wishlist && wishlist.length === 0 ?
-            <div>
-              <div className='w-full h-screen flex justify-center items-center'>
-              <div className="flex w-full justify-end pt-5 pr-5 fixed top-3 right-3">
-              <RxCross1 size={25} className="cursor-pointer" onClick={() => { setOpenWishlist(false) }} />
-
-
+     <AnimatePresence>
+       <motion.div
+         initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.3 }}
+       className='fixed top-0 left-0 w-full  inset-0 bg-black/20 backdrop-blur-sm z-50 !min-h-screen overflow-y-scroll scrollbar-hide'
+       >
+       
+        {/* Wishlist Panel */}
+          <motion.div
+            initial={{ x: "100%" }}
+            animate={{ x: 0 }}
+            exit={{ x: "100%" }}
+            transition={{ type: "spring", damping: 25, stiffness: 200 }}
+            className="fixed top-0 right-0 h-full w-full max-w-md bg-gradient-to-t from-[#F4E7E2] via-[#F9F6F4] to-white shadow-2xl z-50 flex flex-col"
+          >
+             <SparkleEffect />
+            {/* Header */}
+            <motion.div
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2 }}
+              className="flex items-center justify-between p-6 border-b border-[#D8B4A0]/20"
+            >
+              <div className="flex items-center gap-3">
+                <Heart className="h-6 w-6 text-[#D7A295]" />
+                <h2 className="text-xl font-semibold text-[#B67F6D]">Your Wishlist</h2>
               </div>
-              <h5>Your Wishlist Is Empty ! </h5>
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => setOpenWishlist(false)}
+                className="hover:bg-[#D8B4A0]/10"
+              >
+                <X className="h-5 w-5" />
+              </Button>
+            </motion.div>
 
-            </div>
-
-
-            </div>
+            {/* Content */}
+            {wishlist.length === 0 ? (
+              <motion.div
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 0.3 }}
+                className="flex-1 flex flex-col items-center justify-center p-8"
+              >
+                <Heart className="h-16 w-16 text-[#D8B4A0] mb-4" />
+                <h3 className="text-lg font-medium text-slate-700 mb-2">Your wishlist is empty</h3>
+                <p className="text-slate-500 text-center">Save items you love to view them here later</p>
+              </motion.div>
+            )
             :
-            <div >
+             <motion.div
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2 }}
+              className="flex items-center justify-between px-6 border-b border-[#D8B4A0]/20"
+            > 
              
-              <div className='flex w-full justify-end pt-5 pr-5'>
-                <RxCross1 size={25} className="cursor-pointer" onClick={() => { setOpenWishlist(false) }} />
-
-              </div>
-              <div className='pt-2 text-[20px] font-[500] text-center'>
-                <h1>Your Wishlist</h1>
-              </div>
-
-              <div className={`${styles.noramlFlex} p-4`}>
-                <AiOutlineHeart size={23} />
-                <h5 className='pl-2 text-[18px] font-[500]'>{wishlist && wishlist.length} Items</h5>
-              </div>
+             
+              
+              <div className="flex-1 overflow-y-auto">
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 0.2 }}
+                  className="py-4"
+                >
+                  <Badge variant="secondary" className="mb-4 bg-[#D8B4A0]/20 text-[#8B4513]">
+                    {wishlist.length} {wishlist.length === 1 ? "Item" : "Items"}
+                  </Badge>
 
               <div className='w-full border-t'>
                 {
@@ -86,78 +167,129 @@ function Wishlist({ setOpenWishlist }) {
 
               </div>
 
+            </motion.div>
             </div>
+        </motion.div>
+
 
         }
 
-      </div>
-    </div>
+      </motion.div>
+    </motion.div>
+
+     </AnimatePresence>
+   
   )
 }
 
-const CartSingle = ({ data ,removeFromWishlistHandler ,addToCartHandler ,setOpenWishlist}) => {
-  const d = data.name
-  const product_name = d.replace(/\s+/g, "-")
-
+const CartSingle = ({ data, index, removeFromWishlistHandler, addToCartHandler, setOpenWishlist }) => {
   const navigate = useNavigate()
+  const product_name = data.name?.replace(/\s+/g, "-")
 
-
+  const imageUrl = data?.images?.[0]?.url?.match(/https:\/\/res\.cloudinary\.com\/ddaef5aw1\/image\/upload\/v[0-9]+/)
+    ? data.images[0].url.replace(
+        /https:\/\/res\.cloudinary\.com\/ddaef5aw1\/image\/upload\/v[0-9]+/,
+        `${imgdburl}/uploads/images`,
+      )
+    : `${imgdburl}${data?.images?.[0]?.url}`
 
   return (
-    <div className='border-b p-4'>
+    <motion.div
 
-      <div className='w-full flex  items-center cursor-pointer' >
-        <RxCross1 className='cursor-pointer' onClick={()=>removeFromWishlistHandler(data)}/>
-        
-        <img 
-        loading='lazy'
-        // src={`${data?.images[0]?.url}`} 
-        src={
-          data?.images[0]?.url?.match(/https:\/\/res\.cloudinary\.com\/ddaef5aw1\/image\/upload\/v[0-9]+/)
-              ? data.images[0].url.replace(
-                  /https:\/\/res\.cloudinary\.com\/ddaef5aw1\/image\/upload\/v[0-9]+/,
-                  `${imgdburl}/uploads/images`
-              )
-              : `${imgdburl}${data?.images[0]?.url}` // Prepend imgdburl if not a Cloudinary URL
-      }
-        alt="" className='w-[130px]  h-[140px] ml-2 self-center object-contain' onClick={()=>{
-        navigate(`/product/${product_name}`)
-        setOpenWishlist(false)
-      }} />
-        
-
-
-        <div className="w-[70%] pl-[5px] pr-[5px] font-Poppins" onClick={()=>{
-        navigate(`/product/${product_name}`)
-        setOpenWishlist(false)
-      }}>
-          <h1 className='text-[13px]' >{data.name}</h1>
-          <p className={`text-[#727386]  text-[12px] font-Poppins`}>{data.skuid}</p>
-          <div className="flex pt-2">
+      className='my-4 !overflow-hidden'
+    >
+      <Card className="p-4 bg-white/80 backdrop-blur-sm border-[#D8B4A0]/20 hover:shadow-xl transition-all duration-300 rounded-xl !overflow-hidden group">
+        <div className="flex gap-4">
+          {/* Image Section */}
+          <motion.div
+            className="relative cursor-pointer"
             
-            <h4 className={`${styles.price} line-through text-[15px]`}>
-              {data.originalPrice ? " ₹" + data.originalPrice : null}
-            </h4>
-            <h5 className={`${styles.productDiscountPrice} text-[15px]`}>
-              ₹
-              {data.originalPrice === 0
-                ? data.originalPrice
-                : data.discountPrice}
-            </h5>
+            onClick={() => {
+              navigate(`/product/${product_name}`)
+              setOpenWishlist(false)
+            }}
+          >
+            <div className="w-24 h-24 rounded-lg overflow-hidden bg-gradient-to-br from-[#F9F6F4] to-[#F4E7E2] p-1">
+              <img
+                loading="lazy"
+                src={imageUrl || "/placeholder.svg"}
+                alt={data.name}
+                className="w-full h-full object-cover rounded-md"
+              />
+            </div>
+            <motion.div
+              initial={{ scale: 0 }}
+              animate={{ scale: 1 }}
+              transition={{ delay: 0.2 * index }}
+              className="absolute -top-1 -right-1 w-5 h-5 bg-gradient-to-br from-[#D8B4A0] to-[#D7A295] rounded-full flex items-center justify-center"
+            >
+              <Sparkles className="w-3 h-3 text-white" />
+            </motion.div>
+          </motion.div>
+
+          {/* Content Section */}
+          <div
+            className="flex-1 cursor-pointer"
+            onClick={() => {
+              navigate(`/product/${product_name}`)
+              setOpenWishlist(false)
+            }}
+          >
+            <div className="flex justify-between items-start mb-1">
+              <h3 className="font-semibold text-slate-800 text-sm line-clamp-2 group-hover:text-[#8B4513] transition-colors">
+                {data.name}
+              </h3>
+              <motion.button
+                whileHover={{ scale: 1.1, rotate: 90 }}
+                whileTap={{ scale: 0.9 }}
+                onClick={(e) => {
+                  e.stopPropagation()
+                  removeFromWishlistHandler(data)
+                }}
+                className="p-1 hover:bg-red-50 rounded-full transition-colors"
+              >
+                <X className="h-3 w-3 text-slate-400 hover:text-red-500" />
+              </motion.button>
+            </div>
+
+            <p className="text-xs text-slate-500 mb-1">{data.skuid}</p>
+
+            <div className="flex items-center justify-between mb-3">
+              <div className="flex items-center gap-2">
+                {data.originalPrice && (
+                  <span className="text-xs text-slate-400 line-through">₹{data.originalPrice}</span>
+                )}
+                <span className="text-sm font-bold text-[#8B4513]">
+                  ₹{data.originalPrice === 0 ? data.originalPrice : data.discountPrice}
+                </span>
+              </div>
+              <div className="flex items-center gap-1">
+                <Star className="h-3 w-3 fill-yellow-400 text-yellow-400" />
+                <span className="text-xs text-slate-600">4.8</span>
+              </div>
+            </div>
+
+            <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
+              <Button
+                size="sm"
+                onClick={(e) => {
+                  e.stopPropagation()
+                  navigate(`/product/${product_name}`)
+                setOpenWishlist(false)
+                }}
+
+               
+                className="w-full bg-gradient-to-r from-[#D8B4A0] to-[#D7A295] hover:from-[#C9A491] hover:to-[#C89386] text-white shadow-lg text-xs"
+              >
+                <ShoppingCart className="h-3 w-3 mr-1" />
+                Add to Cart
+              </Button>
+            </motion.div>
           </div>
-
-
         </div>
-
-        <div className='' onClick={()=> addToCartHandler(data)}>
-          <BsCartPlus size={20} className="cursor-pointer" />
-        </div>
-
-
-      </div>
-    </div>
+      </Card>
+    </motion.div>
   )
-
 }
 
 export default Wishlist

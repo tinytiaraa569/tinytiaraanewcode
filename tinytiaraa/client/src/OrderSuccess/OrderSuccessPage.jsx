@@ -12,6 +12,8 @@ function OrderSuccessPage() {
     const [couponDiscount, setCouponDiscount] = useState(0);
     const { currency, conversionRates } = useSelector((state) => state.currency);
 
+    console.log(orderDetails,"order details------------")
+
 
     useEffect(() => {
         window.scrollTo(0, 0)
@@ -115,7 +117,22 @@ function OrderSuccessPage() {
                                         )}
                                     </div>
                                 </div>
-                                <p className='text-gray-700 font-medium'>₹{convertPrice(item.chainPrice > 0 ? item.discountPrice + item.chainPrice : item.discountPrice)}</p>
+                                {/* <p className='text-gray-700 font-medium'>₹{convertPrice(item.chainPrice > 0 ? item.discountPrice + item.chainPrice : item.discountPrice)}</p> */}
+
+                               <p className='text-gray-700 font-medium'>  {
+                                orderDetails?.paymentInfo?.currency
+                                ? `${ orderDetails?.paymentInfo?.currency || currency}${
+                                    item.chainPrice > 0
+                                        ? (Number(item?.discountPrice) + Number(item?.chainPrice)).toFixed(2)
+                                        : Number(item?.discountPrice).toFixed(2)
+                                    }`
+                                : `₹${convertPrice(
+                                    item.chainPrice > 0
+                                        ? Number(item?.discountPrice) + Number(item?.chainPrice)
+                                        : Number(item?.discountPrice)
+                                    )}`
+                            }
+                             </p>
                                 {/* <p className='text-gray-700 font-medium'>₹{item.chainPrice > 0 ? item.discountPrice + item.chainPrice : item.discountPrice}</p> */}
                             </div>
                         ))}
@@ -126,12 +143,27 @@ function OrderSuccessPage() {
                             <p className='text-gray-700 text-lg'>Coupon Discount: -₹{couponDiscount}</p>
                         )} */}
                          {couponDiscount > 0 && (
-                            <p className='text-gray-700 text-lg'>Coupon Discount: -₹{convertPrice(couponDiscount)}</p>
+                            <p className='text-gray-700 text-lg'>Coupon Discount: - { orderDetails?.paymentInfo?.currency || currency} {convertPrice(couponDiscount)}</p>
                         )}
                         {/* <p className='text-gray-700 text-lg'>GST (3%): ₹{gstAmount}</p>
                         <h3 className='text-xl font-semibold text-gray-700 mt-2'>Total Price: ₹{orderDetails?.totalPrice}</h3> */}
-                          <p className='text-gray-700 text-lg'>GST (3%): ₹{convertPrice(gstAmount)}</p>
-                          <h3 className='text-xl font-semibold text-gray-700 mt-2'>Total Price: ₹{convertPrice(orderDetails?.totalPrice)}</h3>
+                          {/* <p className='text-gray-700 text-lg'>GST (3%): ₹{convertPrice(gstAmount)}</p>
+                          <h3 className='text-xl font-semibold text-gray-700 mt-2'>Total Price: ₹{convertPrice(orderDetails?.totalPrice)}</h3> */}
+                          <p className="text-gray-700 text-lg">
+                            GST (3%): {
+                                orderDetails?.paymentInfo?.currency
+                                ? `${orderDetails?.paymentInfo?.currency || currency}${Number(gstAmount).toFixed(2)}`
+                                : `₹${convertPrice(Number(gstAmount))}`
+                            }
+                            </p>
+
+                            <h3 className="text-xl font-semibold text-gray-700 mt-2">
+                            Total Price: {
+                                orderDetails?.paymentInfo?.currency
+                                ? `${orderDetails?.paymentInfo?.currency || currency}${Number(orderDetails?.totalPrice).toFixed(2)}`
+                                : `₹${convertPrice(Number(orderDetails?.totalPrice))}`
+                            }
+                            </h3>
                     </div>
 
                     <div className='flex justify-center mt-4'>

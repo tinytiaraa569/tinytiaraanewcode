@@ -9,6 +9,10 @@ import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import CryptoJS from 'crypto-js';
 import { placeOrder } from '@/redux/actions/order';
+import paypalimg from './images/paypal.png'
+import { PayPalScriptProvider, PayPalButtons } from '@paypal/react-paypal-js';
+
+
 
 function PaymentPage() {
     const [orderData, setOrderData] = useState([])
@@ -20,6 +24,8 @@ function PaymentPage() {
 
     const { user } = useSelector((state) => state.user)
     const { currency, conversionRates } = useSelector((state) => state.currency); // Accessing currency and conversion rates
+
+    console.log({currency, conversionRates},'conversio rates')
 
     const {isSeller} = useSelector((state) => state.seller)
 
@@ -1113,6 +1119,141 @@ function PaymentPage() {
     const gstAmount = (orderData?.subTotalPrice || 0) * 0.03;
 
 
+    const handlePayPalPaymentSuccess = async (paymentDetails) => {
+  console.log('PayPal Payment successful. Details:', paymentDetails);
+  setIsLoading(true);
+
+  const referralCode = sessionStorage.getItem('referralCode');
+  console.log('Captured referral code:', referralCode);
+
+  const latestOrderData = localStorage.getItem("latestOrder");
+
+  if (!latestOrderData) {
+    console.error("No latest order data found.");
+    return;
+  }
+
+  const latestOrder = JSON.parse(latestOrderData);
+  const referralBalanceUsed = latestOrder?.appliedReferral || 0;
+  const user = latestOrder?.user;
+
+  const convertedCart = latestOrder?.cart.map((item) => ({
+  ...item,
+    chainPrice: convertPrice(item?.chainPrice || 0),
+    discountPrice: convertPrice(item?.discountPrice || 0),
+    originalPrice: convertPrice(item?.originalPrice || 0),
+    extraCost: convertPrice(item?.extraCost || 0),
+    }));
+
+  // Extract PayPal payment details
+  const transactionId = paymentDetails?.id || "unknown";
+  const amountDetails = paymentDetails?.purchase_units?.[0]?.payments?.captures?.[0]?.amount;
+  const currency = amountDetails?.currency_code || "USD";
+  const amountValue = amountDetails?.value || "0.00";
+
+  const updatedOrder = {
+    ...latestOrder,
+    billingAddress: latestOrder?.finalBillingAddress,
+
+    cart: convertedCart,
+    totalPrice: convertPrice(latestOrder?.totalPrice),
+    subTotalPrice:convertPrice(latestOrder?.subTotalPrice),
+    couponDiscount: convertPrice(latestOrder?.discountPrice),
+
+    paymentInfo: {
+      id: transactionId,
+      status: 'Success',
+      type: 'PayPal',
+      amount: `${currency} ${amountValue}`,
+      currency:currency,
+    },
+    referralCode: referralCode,
+  };
+
+  try {
+    // Send order to server
+    const response = await axios.post(`${server}/order/create-order`, updatedOrder, {
+      headers: {
+        'Content-Type': 'application/json',
+      }
+    });
+
+    console.log('Server response:', response.data);
+    const orderId = response.data.order._id;
+
+    if (referralBalanceUsed > 0 && user) {
+      const currentReferralBalance = user.referralBalance || 0;
+
+      let updatedReferralBalance;
+      if (currentReferralBalance < referralBalanceUsed) {
+        updatedReferralBalance = 0;
+        toast.warning(`Referral balance used: ${currentReferralBalance}. Remaining balance is zero.`);
+      } else {
+        updatedReferralBalance = currentReferralBalance - referralBalanceUsed;
+      }
+
+      await updateReferralBalanceInBackend(user._id, updatedReferralBalance);
+      user.referralBalance = updatedReferralBalance;
+    }
+
+    // Clear localStorage
+    localStorage.setItem("cartItems", JSON.stringify([]));
+    localStorage.setItem("latestOrder", JSON.stringify([]));
+    localStorage.setItem("orderDetails", JSON.stringify({ ...updatedOrder, orderId }));
+
+    setIsLoading(false);
+    navigate("/order/success");
+    window.location.reload();
+
+    toast.success("Order Successfully Placed");
+  } catch (error) {
+    console.error("Order placement failed:", error);
+    setIsLoading(false);
+    toast.error("Failed to place order. Please try again.");
+  }
+};
+
+const paypalSupportedCurrencies = [
+  "AUD", // Australian Dollar
+  "BRL", // Brazilian Real
+  "CAD", // Canadian Dollar
+  "CZK", // Czech Koruna
+  "DKK", // Danish Krone
+  "EUR", // Euro
+  "HKD", // Hong Kong Dollar
+  "HUF", // Hungarian Forint
+  "INR", // Indian Rupee
+  "ILS", // Israeli New Shekel
+  "JPY", // Japanese Yen
+  "MYR", // Malaysian Ringgit
+  "MXN", // Mexican Peso
+  "TWD", // New Taiwan Dollar
+  "NZD", // New Zealand Dollar
+  "NOK", // Norwegian Krone
+  "PHP", // Philippine Peso
+  "PLN", // Polish Zloty
+  "GBP", // Pound Sterling
+  "RUB", // Russian Ruble
+  "SGD", // Singapore Dollar
+  "SEK", // Swedish Krona
+  "CHF", // Swiss Franc
+  "THB", // Thai Baht
+  "USD"  // US Dollar
+];
+
+
+useEffect(() => {
+  setSelectedPaymentMethod(null);
+
+  if (!paypalSupportedCurrencies?.includes(currency)) {
+  alert(`Currency ${currency} is not supported by PayPal. Please choose another payment method.`);
+}
+}, [currency]);
+
+
+  
+
+
     return (
         <div className='w-full bg-[#fafafa;] pb-8'>
              {isLoading && (
@@ -1208,7 +1349,10 @@ function PaymentPage() {
 
                             <div className=''>
 
-                            <div className='flex items-center gap-8'>
+
+                            {
+                                currency === "INR" && (
+                                    <div className='flex items-center gap-8'>
                                     <div className='flex items-center gap-2'>
                                         <input
                                             id="payu"
@@ -1225,9 +1369,14 @@ function PaymentPage() {
                                         </label>
 
                                     </div>
+                                    </div>
 
+                                )
+                            }
 
-                                </div>
+                            
+                            {
+                                currency === "INR" && (
 
                                 <div className='flex items-center gap-8'>
                                     <div className='flex items-center gap-2'>
@@ -1248,7 +1397,40 @@ function PaymentPage() {
                                         </div>
                                     </div>
                                 </div>
+                             )
+                            }
 
+
+
+                            {currency !== "INR" && (
+                                 <div className='flex items-start gap-4'>
+                                    <div className='flex items-center gap-2'>
+                                    <input
+                                        id="paypal"
+                                        type="radio"
+                                        name="paymentMethod"
+                                        value="paypal"
+                                        checked={selectedPaymentMethod === 'paypal'}
+                                        onChange={handlePaymentMethodChange}
+                                        className="int-emailcheck !w-[15px] !h-[15px] cursor-pointer"
+                                    />
+                                    <label htmlFor="paypal" className='cursor-pointer'>
+                                        <img src={paypalimg} alt="PayPal" className='!w-[100px] !h-[36px] object-contain' />
+                                    </label>
+                                    </div>
+
+
+                                 
+                                </div>
+                            )
+                            }
+
+
+
+
+                                 {/* PayPal Option */}
+                               
+                                   
                                 
 
 
@@ -1287,7 +1469,7 @@ function PaymentPage() {
                         </div>
 
                         <div className='flex justify-end '>
-                            <div className={`button-wrapperdiv`} >
+                            <div className={`${selectedPaymentMethod !== 'paypal' ? 'button-wrapperdiv' : ''}`} >
                                 {selectedPaymentMethod === 'razorpay' && (
                                     <button onClick={handleRazorpayPayment}>Pay With Razorpay</button>
                                 )}
@@ -1297,6 +1479,61 @@ function PaymentPage() {
                                                     {selectedPaymentMethod === 'payu' && (
                                 <button className='cursor-pointer' onClick={handlePayUPayment}>Pay With PayU</button>
                             )}
+
+                               {/* PayPal Buttons - Show only if selected */}
+                                   {selectedPaymentMethod === 'paypal' && ( 
+                                    <PayPalScriptProvider
+                                        options={{
+                                        "client-id": "AVmOR4oMQUVjdAVfJoC_DWMzsjwHCpPnJL58lz8duHT-MRRzXNS8ihagNAadbKGgAY6zwyNLguKwOn58",
+                                         currency: currency,
+                                        dataNamespace: "paypal_sdk",
+                                        components: "buttons",
+                                        intent: "capture",
+                                        }}
+                                    >
+                                       <PayPalButtons
+                                            fundingSource="paypal"
+                                            style={{
+                                            layout: 'vertical',
+                                            color: 'gold',
+                                            shape: 'rect',
+                                            label: 'paypal',
+                                            }}
+
+                                             createOrder={(data, actions) => {
+                                            const price = convertPrice(orderData?.totalPrice); // Use your converted price
+                                            
+                                            return actions.order.create({
+                                                purchase_units: [
+                                                {
+                                                    amount: {
+                                                    currency_code: currency, // Set correct currency here
+                                                    value: price.toString(), // Always ensure it's a string
+                                                    },
+                                                },
+                                                ],
+                                            });
+                                            }}
+                                            onApprove={async (data, actions) => {
+                                            const response = await fetch(
+                                                `${backend_url}paypal/capture/${data.orderID}`,
+                                                { method: "POST" }
+                                            );
+                                            console.log(response,'repsone payapal-------------')
+                                            const result = await response.json();
+                                            console.log("PayPal capture result:", result);
+                                            // Handle success here
+                                            if (result.status === 'COMPLETED') {
+                                                await handlePayPalPaymentSuccess(result);
+                                                } else {
+                                                toast.error("Payment was not completed.");
+                                                }
+                                            }}
+
+                                        />
+                                    </PayPalScriptProvider>
+                                    
+                                     )}
 
 
                                 {selectedPaymentMethod === 'cod' && (
@@ -1354,9 +1591,9 @@ function PaymentPage() {
                                                         </div> */}
                                                         <div className="">
                                                             {/* Original Price with line-through */}
-                                                            <span className="text-[#6f6f79] text-[13px] line-through">
+                                                            {/* <span className="text-[#6f6f79] text-[13px] line-through">
                                                                 {currency} {convertedOriginalPrice}
-                                                            </span>
+                                                            </span> */}
                                                             
                                                             {/* Discounted Price */}
                                                             <span className="text-[13px] pl-2">

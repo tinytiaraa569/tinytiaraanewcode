@@ -203,8 +203,10 @@ function AllProducts() {
             isLowStock: checkLowStock(item),
             isLive: item?.isLive,
             productType: productType,
+            reviewCount: item?.reviews?.length || 0,
         };
     });
+    const totalReviewsCount = products?.reduce((acc, product) => acc + (product.reviews?.length || 0), 0);
 
     const columns = [
         // { field: 'id', headerName: 'Product Id', minWidth: 150, flex: 0.7 },
@@ -276,14 +278,15 @@ function AllProducts() {
         },
         {
             field: 'Review',
-            headerName: 'Review',
+            headerName: `Review (${totalReviewsCount})`,
             flex: 0.4,
-            minWidth: 70,
+            minWidth: 90,
             sortable: false,
             renderCell: (params) => (
                 <Link to={`/product-review/${params.row.id}`}>
-                    <button>
-                        <MdRateReview  size={18}  />
+                    <button className="mt-1 flex items-center gap-2 px-2 py-1 rounded-md hover:bg-gray-100 transition">
+                        <MdRateReview size={20} className="text-gray-700" />
+                        <span className="text-xs text-gray-500 ">{params?.row?.reviewCount}</span>
                     </button>
                 </Link>
             ),
@@ -645,6 +648,7 @@ function AllProducts() {
 
     // You can map the path segment to a more readable name
     const breadcrumbText = currentPage.charAt(0).toUpperCase() + currentPage.slice(1); // Capitalize first letter
+
 
 
     return (

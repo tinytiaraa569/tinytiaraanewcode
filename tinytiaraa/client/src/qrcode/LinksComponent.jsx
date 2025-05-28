@@ -18,6 +18,9 @@ const LinksComponent = () => {
   
   const categoryname = searchParams.get("category"); 
   const productName = searchParams.get("product");
+  const subcategoryName = searchParams.get("subcategory");
+
+  console.log(subcategoryName,"subctgeoryname---------")
   // let categoryname = "Tabeez Collection"; // Category name to match
 
   useEffect(() => {
@@ -54,9 +57,17 @@ const LinksComponent = () => {
   ? productDetails.category
   : categoryname;
 
-  const filteredProductslength = products
-    .filter((product) => product.category === selectedCategory)
-     // Show only first 3 products
+  const filteredProductslength = products.filter((product) => {
+    console.log(product,'product-----')
+  const matchesCategory = product.category === selectedCategory;
+
+
+   const matchesSubcategory = subcategoryName
+    ? product.subcategory?.toLowerCase() === subcategoryName.toLowerCase()
+    : true;
+
+  return matchesCategory && matchesSubcategory;
+});
 
      const filteredProducts = [...filteredProductslength]
      .sort(() => Math.random() - 0.5) // Shuffle the array
@@ -64,7 +75,6 @@ const LinksComponent = () => {
     const navigate = useNavigate()
 
 
-    console.log(productDetails,"productDetails")
 
   return (
     <div className="!mb-0 flex flex-col rounded-[10px] p-4">

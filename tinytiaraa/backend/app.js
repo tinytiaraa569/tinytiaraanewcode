@@ -1026,5 +1026,62 @@ app.get('/api/v2/qr-page-views', async (req, res) => {
 
 
 
+// Get access token from PayPal
+async function generateAccessToken() {
+  const credentials = `${process.env.PAYPAL_CLIENT_ID}:${process.env.PAYPAL_CLIENT_SECRET}`;
+  const base64Credentials = Buffer.from(credentials).toString("base64");
+
+  const response = await fetch(`${process.env.PAYPAL_API}/v1/oauth2/token`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/x-www-form-urlencoded",
+      Authorization: `Basic ${base64Credentials}`,
+    },
+    body: "grant_type=client_credentials",
+  });
+
+  const data = await response.json();
+  return data.access_token;
+}
+
+// Capture payment for an order
+app.post("/paypal/capture/:orderID", async (req, res) => {
+  const { orderID } = req.params;
+
+  try {
+    const accessToken = await generateAccessToken();
+
+    const captureResponse = await fetch(
+      `${process.env.PAYPAL_API}/v2/checkout/orders/${orderID}/capture`,
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({}),
+      }
+    );
+
+    const data = await captureResponse.json();
+
+    if (!captureResponse.ok) {
+      console.error("Capture Error:", data);
+      return res.status(500).send("Payment Capture Failed");
+    }
+
+    // Optionally: Save order details to DB here
+
+    console.log(data, "response.data-------");
+    res.json(data);
+  } catch (error) {
+    console.error("Capture Exception:", error);
+    res.status(500).send("Payment Capture Failed");
+  }
+});
+
+
+
+
 app.use(ErrorHandler)
 module.exports = app;

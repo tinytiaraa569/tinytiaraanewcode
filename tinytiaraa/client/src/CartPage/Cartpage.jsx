@@ -26,8 +26,6 @@ import { GiCash } from 'react-icons/gi';
 import CryptoJS from 'crypto-js';
 
 
-
-
 function Cartpage() {
   useEffect(() => {
     window.scrollTo(0, 0)
@@ -92,137 +90,6 @@ function Cartpage() {
 
   const shipping = "Free Shipping"
 
-  // const handleSubmit = async (e) => {
-  //   e.preventDefault()
-  //   const name = couponCode;
-
-  //   try {
-  //     const res = await axios.get(`${server}/coupon/get-coupon-value/${name}`);
-
-  //     if (res.data.success && res.data.couponCode) {
-  //       const shopId = res.data.couponCode?.shop;
-  //       const couponCodeValue = res.data.couponCode?.value;
-  //       const percentageDiscount = res.data.couponCode?.percentageDiscount;
-  //       const isCouponValid = cart.filter((item) => item.shopId === shopId);
-
-  //       if (isCouponValid.length === 0) {
-  //         toast.error("Coupon code is not valid for items in your cart.");
-  //         setCouponCode("");
-  //       } else {
-  //         const eligiblePrice = isCouponValid.reduce(
-  //           (acc, item) => acc + item.qty * item.discountPrice,
-  //           0
-  //         );
-
-  //         let calculatedDiscount = 0;
-
-  //         if (percentageDiscount !== null) {
-  //           // Calculate discount based on percentage
-  //           calculatedDiscount = (eligiblePrice * (percentageDiscount / 100)).toFixed(2);
-  //         } else {
-  //           // Use fixed value discount
-  //           calculatedDiscount = couponCodeValue.toFixed(2);
-  //         }
-
-  //         setDiscountPrice(calculatedDiscount); // Set the discount price
-  //         setCouponCodeData(res.data.couponCode); // Store coupon code data if needed elsewhere
-  //         toast.success("Coupon applied successfully.");
-  //         setCouponCode("");
-
-  //       }
-  //     } else {
-  //       toast.error("Coupon code does not exist.");
-  //       setCouponCode("");
-  //     }
-  //   } catch (error) {
-  //     console.error("Error applying coupon:", error);
-  //     toast.error("Failed to apply coupon code. Please try again later.");
-  //   }
-  // };
- 
-
-  //withcard items
-  // const handleSubmit = async (e) => {
-  //   e.preventDefault();
-  
-  //   try {
-  //     const res = await axios.post(`${server}/coupon/apply-coupon`, {
-  //       name: couponCode,
-  //       cartItems: cart, // Send the cart to the server for validation
-  //     });
-  
-  //     if (res.data.success) {
-  //       setDiscountPrice(res.data.discount); // Set the discount price
-  //       toast.success("Coupon applied successfully.");
-  //     } else {
-  //       toast.error(res.data.message || "Coupon code is not valid.");
-  //     }
-  //     setCouponCode("");
-  //   } catch (error) {
-  //     console.error("Error applying coupon:", error);
-  //     toast.error("Failed to apply coupon code. Please try again later.");
-  //   }
-  // };
-  // const handleSubmit = async (e) => {
-  //   e.preventDefault();
-  //   const name = couponCode; // Only sending the coupon code
-  
-  //   try {
-  //     const res = await axios.get(`${server}/coupon/get-coupon-value/${name}`);
-  //     console.log("Coupon Response:", res.data); // Log the coupon response
-  
-  //     if (res.data.success) {
-  //       const shopId = res.data.couponCode?.shop; // Extracting shopId from coupon
-  //       const couponCodeValue = res.data.couponCode?.value; // This should be 500
-  //       const percentageDiscount = res.data.couponCode?.percentageDiscount; // This should be null
-  
-  //       console.log("Shop ID from coupon:", shopId); // Log shopId
-  //       console.log("Cart Items:", cart); // Log current cart items
-  
-  //       // Check if cart has items
-  //       if (!cart || cart.length === 0) {
-  //         toast.error("Your cart is empty.");
-  //         return;
-  //       }
-  
-  //       // Find valid items for the coupon
-  //       const isCouponValid = cart.filter((item) => item.shopId === shopId);
-  //       console.log("Valid Items for Coupon:", isCouponValid); // Log valid items
-  
-  //       if (isCouponValid.length === 0) {
-  //         toast.error("Coupon code is not valid for items in your cart.");
-  //         setCouponCode("");
-  //       } else {
-  //         const eligiblePrice = isCouponValid.reduce(
-  //           (acc, item) => acc + item.qty * item.discountPrice,
-  //           0
-  //         );
-  
-  //         let calculatedDiscount = 0;
-  
-  //         // Apply fixed value discount
-  //         if (couponCodeValue !== null) {
-  //           calculatedDiscount = couponCodeValue.toFixed(2);
-  //         } else {
-  //           // If percentageDiscount is not null, calculate discount
-  //           calculatedDiscount = (eligiblePrice * (percentageDiscount / 100)).toFixed(2);
-  //         }
-  
-  //         setDiscountPrice(calculatedDiscount); // Set the discount price
-  //         setCouponCodeData(res.data.couponCode); // Store coupon code data if needed elsewhere
-  //         toast.success("Coupon applied successfully.");
-  //         setCouponCode("");
-  //       }
-  //     } else {
-  //       toast.error("Coupon code does not exist.");
-  //       setCouponCode("");
-  //     }
-  //   } catch (error) {
-  //     console.error("Error applying coupon:", error.response ? error.response.data : error.message);
-  //     toast.error("Failed to apply coupon code. Please try again later.");
-  //   }
-  // };
-  
   const decryptDiscount = (encryptedDiscount) => {
     const [ivHex, encryptedData] = encryptedDiscount.split(':'); // Split IV and encrypted data
     const iv = CryptoJS.enc.Hex.parse(ivHex); // Convert hex IV to CryptoJS format
@@ -403,12 +270,12 @@ const convertedFinalPrice = (finalPrice * (conversionRates[currency] || 1)).toFi
   return (
     
 
-    <div className='w-full  bg-[#fafafa;] pb-8'>
+    <div className='w-full  pb-8'>
       <div class="secureshoppingbaghead text-center font-[500] text-[22px] py-5">
-        <h2>Secure Shopping Bag</h2>
+        <h2 className='text-[#B67F6D]'>Secure Shopping Bag</h2>
         <div className={`text-center flex justify-center items-center`}>
-          <LuShoppingBag size={18} className='secureshoppingbagitems' />
-          <h5 className='pl-2 text-[18px] font-[400] secureshoppingbagitems'>{cart && cart.length} Items</h5>
+          <LuShoppingBag size={18} className='secureshoppingbagitems text-[#B67F6D]' />
+          <h5 className='pl-2 text-[18px] font-[400] secureshoppingbagitems !text-[#B67F6D]'>{cart && cart.length} Items</h5>
         </div>
       </div>
       {
@@ -527,7 +394,7 @@ const convertedFinalPrice = (finalPrice * (conversionRates[currency] || 1)).toFi
                     </div>
                   </div>
 
-                  <div className="available-coupons mt-2">
+                  {/* <div className="available-coupons mt-2">
                   <h3 className="!text-[12px] mt-2 mb-1 ">Available Coupons</h3>
                   {isLoading ? (
                     <p className="text-gray-500">Loading coupons...</p>
@@ -547,7 +414,7 @@ const convertedFinalPrice = (finalPrice * (conversionRates[currency] || 1)).toFi
                   ) : (
                     <p className="text-gray-500">No coupons available</p>
                   )}
-                </div>
+                </div> */}
 
 </form>
 
@@ -918,9 +785,9 @@ const CartSingle = ({ data, quantityChangeHandler, removeFromCartHandler }) => {
             <span className="disprice pl-1">₹ {data.chainPrice > 0 ? data.discountPrice + data.chainPrice : data.discountPrice} </span>
             <span className='text-[#EB4F5C] ml-[5px] text-[0.9rem] pl-1'>save ₹{(data.originalPrice - data.discountPrice).toFixed(2)}</span> */}
 
-        <span className="oprice">
+        {/* <span className="oprice">
           {currency} {data.chainPrice > 0 ? (parseFloat(convertedOriginalPrice) + parseFloat(convertedChainPrice)).toFixed(0) : convertedOriginalPrice}
-        </span>
+        </span> */}
         <span className="disprice pl-1">
           {currency} {data.chainPrice > 0 ? (parseFloat(convertedDiscountPrice) + parseFloat(convertedChainPrice)).toFixed(0) : convertedDiscountPrice}
         </span>
@@ -928,14 +795,14 @@ const CartSingle = ({ data, quantityChangeHandler, removeFromCartHandler }) => {
           save {currency} {(data.originalPrice * conversionRates[currency] - data.discountPrice * conversionRates[currency]).toFixed(2)}
         </span> */}
 
-        <span className="text-[#EB4F5C] ml-[5px] text-[0.9rem] pl-1">
+        {/* <span className="text-[#EB4F5C] ml-[5px] text-[0.9rem] pl-1">
           save <span className='ml-1'> {currency} 
           {(
             ((data.originalPrice + (data?.extraCost || 0)) * (conversionRates[currency] || 1)) -
             ((data.discountPrice || 0) * (conversionRates[currency] || 1))
           ).toFixed(0)}
           </span>
-        </span>
+        </span> */}
           </div>
 
           <div className="details">

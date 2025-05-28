@@ -1782,9 +1782,9 @@ function ProductDetails({ data }) {
                                         </h5> */}
 
                                         {/* conversion price  */}
-                                        <h4 className={`${styles.price} line-through`}>
+                                        {/* <h4 className={`${styles.price} line-through`}>
                                             {finalOriginalPrice ? `${currency} ${convertedFinalOriginalPrice}` : null}
-                                        </h4>
+                                        </h4> */}
 
                                         {/* Discounted Price */}
                                         <h5 className={`${styles.productDiscountPrice} !text-[#01463A]`}>
@@ -1792,11 +1792,11 @@ function ProductDetails({ data }) {
                                         </h5>
 
                                         
-                                        {discountPercentage > 0 && (
+                                        {/* {discountPercentage > 0 && (
                                             <span className="ml-2 text-[#4B4B4B] font-[450]">
                                                 Save {discountPercentage}%
                                             </span>
-                                        )}
+                                        )} */}
 
                                     </div>
                                         

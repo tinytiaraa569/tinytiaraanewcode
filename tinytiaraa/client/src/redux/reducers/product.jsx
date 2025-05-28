@@ -3,6 +3,7 @@ import { createReducer } from "@reduxjs/toolkit";
 const initialState ={
     isLoading:true,
     products: [],
+    
     error: null, 
 }
 
@@ -81,6 +82,9 @@ export const productReducer = createReducer(initialState,(builder)=>{
 
        
     })
+
+
+
 
     // Product update
     .addCase("productUpdateRequest", (state) => {

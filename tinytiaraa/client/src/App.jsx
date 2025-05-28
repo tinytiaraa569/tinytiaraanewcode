@@ -122,6 +122,9 @@ import ShopAllSaleOrders from './ShopSaleOrders/ShopAllSaleOrders';
 import ShopSalesOrderDetails from './ShopSaleOrders/ShopSalesOrderDetails';
 import ShopReview from './shopreview/ShopReview';
 import CustomerReview from './CustomerReview/CustomerReview';
+import AboutMain from './About/AboutMain';
+import CustomizationMain from './CustomisedJewel/CustomizationMain';
+import ContactMain from './Contact/ContactMain';
 
 
 
@@ -162,6 +165,18 @@ function App() {
 
 
   const dispatch = useDispatch();
+
+  
+    useEffect(() => {
+   
+       dispatch(getAllProducts(20,0))
+       dispatch(getAllProducts(600,20))
+
+       // Fetch the next 200 products
+       Store.dispatch(loadUser())
+       Store.dispatch(loadSeller())
+       Store.dispatch(getAllEvents());   
+  }, [])
 
   
 
@@ -263,21 +278,6 @@ function App() {
 
 
 
-    useEffect(() => {
-   
-      // Fetch initial products
-
-      dispatch(getAllProducts(20, 0)); // Fetch the first 40 products
-
-      dispatch(getAllProducts(840, 20));
-       // Fetch the next 200 products
-       Store.dispatch(loadUser())
-       Store.dispatch(loadSeller())
-       Store.dispatch(getAllEvents());
-
-    
-   
-  }, [dispatch])
   useEffect(() => {
 
     const delay = {
@@ -405,10 +405,10 @@ function App() {
         {!shouldHideNavbar && <Chatbotmsg />}
         <Routes>
           <Route path='/' element={<Home />} />
-          <Route path='/about' element={<About />} />
-          <Route path='/shop' element={<Shop />} />
-          <Route path='/personalised-prosperity' element={<CustomisedJewels />} />
-          <Route path='/contacts' element={<Conatct />} />
+          <Route path='/about' element={<AboutMain />} />
+          {/* <Route path='/shop' element={<Shop />} /> */}
+          <Route path='/personalised-prosperity' element={<CustomizationMain />} />
+          <Route path='/contacts' element={<ContactMain />} />
 
 
           <Route path='/terms-and-conditions' element={<TermsCon />} />
@@ -716,7 +716,9 @@ function App() {
 
 
           <Route path="/qrcode/:id" element={<QrCodeRedirect type="qrcode" />} />
+          
           <Route path="/qrcode/product/:productId" element={<QrCodeRedirect type="product" />} />
+          <Route path="/qrcode/sub/:subcategoryId" element={<QrCodeRedirect type="subcategory" />} />
           
            <Route path='/qr-code' element={<QrCode/>} />
 

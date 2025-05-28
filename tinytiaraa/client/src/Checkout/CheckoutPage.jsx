@@ -451,29 +451,30 @@ const calculateEDD = async () => {
                                         {error && <div className="text-red-500 text-xs mt-1">{error}</div>}
                                     </div>
                                     <div className='w-[45%] adjustinpser'>
-            <label className='text-[12px] text-[#6f6f79] font-[400] mb-[4px] tracking-[0.55px] block' htmlFor="shipping-country">
-                Country *
-            </label>
-            <select
-                id='shipping-country'
-                className="int-emailcheck rounded-[5px]"
-                value={country}
-                onChange={(e) => setCountry(e.target.value)}
-            >
-                {/* Show default option only if country is not selected */}
-                {country === '' && (
-                    <option className="text-[12px] text-[#6f6f79] font-[400] mb-[4px] tracking-[0.55px] block" value="">
-                        Select Country
-                    </option>
-                )}
-                {Country && 
-                    Country.getAllCountries().filter(item => item.isoCode === 'IN').map((item) => (
-                        <option key={item.isoCode} value={item.isoCode}>
-                            {item.name}
-                        </option>
-                    ))}
-            </select>
-        </div>
+                                        <label className='text-[12px] text-[#6f6f79] font-[400] mb-[4px] tracking-[0.55px] block' htmlFor="shipping-country">
+                                            Country *
+                                        </label>
+                                        <select
+                                            id='shipping-country'
+                                            className="int-emailcheck rounded-[5px]"
+                                            value={country}
+                                            onChange={(e) => setCountry(e.target.value)}
+                                        >
+                                            {/* Show default option only if country is not selected */}
+                                            {country === '' && (
+                                                <option className="text-[12px] text-[#6f6f79] font-[400] mb-[4px] tracking-[0.55px] block" value="">
+                                                    Select Country
+                                                </option>
+                                            )}
+                                            {/* .filter(item => item.isoCode === 'IN')  for specifc country */}
+                                            {Country && 
+                                                Country.getAllCountries().map((item) => (
+                                                    <option key={item.isoCode} value={item.isoCode}>
+                                                        {item.name}
+                                                    </option>
+                                                ))}
+                                        </select>
+                                    </div>
                                     </div>
 
                                     <div className='flex gap-5 items-center mb-4 sercol'>
@@ -818,9 +819,9 @@ const calculateEDD = async () => {
                                                         </div> */}
                                                          <div className="">
                                                             {/* Original Price with line-through */}
-                                                            <span className="text-[#6f6f79] text-[13px] line-through">
+                                                            {/* <span className="text-[#6f6f79] text-[13px] line-through">
                                                                 {currency} {convertedOriginalPrice}
-                                                            </span>
+                                                            </span> */}
                                                             
                                                             {/* Discounted Price */}
                                                             <span className="text-[13px] pl-2">

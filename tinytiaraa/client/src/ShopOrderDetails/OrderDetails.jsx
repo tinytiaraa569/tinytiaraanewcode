@@ -565,7 +565,26 @@ function OrderDetails() {
                         <h5 className='text-sm text-[#0000008c]'><span className='font-bold'>{productType === 'gold' ? 'Gold' : 'Silver'}:</span> {item.goldWeight ? item.goldWeight.weight : "Not Updated"}</h5>
                         <h5 className='text-sm text-[#0000008c]'><span className='font-bold'>Diamond:</span> {item.diamondWeight ? item.diamondWeight.weight : "Not Updated"}</h5>
                     </div>
-                    <h5 className='text-lg mt-2 text-[#0000008c]'>₹{item.chainPrice > 0 ? item.discountPrice + item.chainPrice : item.discountPrice} x {item.qty}</h5>
+                    {/* <h5 className='text-lg mt-2 text-[#0000008c]'>₹{item.chainPrice > 0 ? item.discountPrice + item.chainPrice : item.discountPrice} x {item.qty}</h5> */}
+                        
+                    <h5 className='text-lg mt-2 text-[#0000008c]'>
+                        {
+                            data?.paymentInfo?.currency
+                            ? `${data.paymentInfo.currency} ${(
+                                (Number(item?.chainPrice) > 0
+                                    ? Number(item?.discountPrice) + Number(item?.chainPrice)
+                                    : Number(item?.discountPrice)
+                                ) * Number(item?.qty)
+                                ).toFixed(2)}`
+                            : `₹${(
+                                (Number(item?.chainPrice) > 0
+                                    ? Number(item?.discountPrice) + Number(item?.chainPrice)
+                                    : Number(item?.discountPrice)
+                                ) * Number(item?.qty)
+                                ).toFixed(2)}`
+                        }
+                        </h5>
+
                 </div>
             </div>
         )
@@ -575,8 +594,14 @@ function OrderDetails() {
 
 
             <div className='border-t w-full text-right mb-5'>
-                <h5 className='pt-3 text-[15px]'>Coupon Discount :- <strong>{data?.couponDiscount ? `₹ ${data?.couponDiscount}`  : "No Coupon Applied" }</strong></h5>
-                <h5 className='pt-3 text-[18px]'>Total Price : <strong>₹{data?.totalPrice}</strong> </h5>
+                <h5 className='pt-3 text-[15px]'>Coupon Discount :- <strong>{data?.couponDiscount ? `${data.paymentInfo.currency || "₹"} ${data?.couponDiscount}`  : "No Coupon Applied" }</strong></h5>
+                {/* <h5 className='pt-3 text-[18px]'>Total Price : <strong>₹{data?.totalPrice}</strong> </h5> */}
+                <h5 className='pt-3 text-[18px]'>
+                Total Price : <strong>
+                    {data?.paymentInfo?.currency ? `${data.paymentInfo.currency} ${data?.totalPrice}` : `₹${data?.totalPrice}`}
+                </strong>
+                </h5>
+
 
             </div>
 

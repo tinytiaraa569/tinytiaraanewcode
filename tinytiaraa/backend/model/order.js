@@ -47,6 +47,12 @@ const orderSchema = new mongoose.Schema({
         type: {
             type: String
 
+        },
+        amount:{
+            type: String
+        },
+        currency:{
+            type: String
         }
     },
     referralBalance: {

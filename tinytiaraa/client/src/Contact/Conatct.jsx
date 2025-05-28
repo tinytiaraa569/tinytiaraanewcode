@@ -1,8 +1,9 @@
 import React, { useEffect } from 'react'
-import Contactsec1 from './Contactsec1/Contactsec1'
-import Contactsec2 from './Contactsec2/Contactsec2'
-import Contactsec3 from './Contactsec3/Contactsec3'
+
 import { Helmet } from 'react-helmet-async'
+import ContactSec1 from './Contactsec1'
+import ContactSec2 from './Contactsec2'
+import ContactSec3 from './Contactsec3'
 
 function Conatct() {
   useEffect(() => {
@@ -17,9 +18,12 @@ function Conatct() {
         <link rel="canonical" href="/contacts" />
 
       </Helmet>
-      <Contactsec1 />
-      <Contactsec2 />
-      <Contactsec3 />
+  
+      <ContactSec1 />
+      <ContactSec2 />
+      <ContactSec3 />
+
+
     </div>
   )
 }

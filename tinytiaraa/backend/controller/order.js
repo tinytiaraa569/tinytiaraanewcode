@@ -816,7 +816,9 @@ const generateInvoiceTemplate = (order) => {
     <tbody>
       ${order.cart
         .map((item, index) => {
-          const discountPrice = item.chainPrice > 0 ? item.discountPrice + item.chainPrice : item.discountPrice;
+          const discountPrice = item.chainPrice > 0 
+            ? Number(item.discountPrice) + Number(item.chainPrice) 
+            : Number(item.discountPrice);
           const cgst = (discountPrice * 0.015).toFixed(2);
           const sgst = (discountPrice * 0.015).toFixed(2);
           const igst = (discountPrice * 0.03).toFixed(2);
@@ -895,19 +897,34 @@ const generateInvoiceTemplate = (order) => {
             </td>
         <td></td>
         <td>${grandTotal}</td>
-        <td>${order.cart.reduce((acc, item) => acc + parseFloat((item.chainPrice > 0 ? (item.discountPrice + item.chainPrice) * 0.015 : item.discountPrice * 0.015).toFixed(2)), 0)}</td>
-        <td>${order.cart.reduce((acc, item) => acc + parseFloat((item.chainPrice > 0 ? (item.discountPrice + item.chainPrice) * 0.015 : item.discountPrice * 0.015).toFixed(2)), 0)}</td>
+        <td>${
+        order.cart.reduce((acc, item) => {
+            const discountPrice = Number(item.discountPrice) || 0;
+            const chainPrice = Number(item.chainPrice) || 0;
+            const price = chainPrice > 0 ? discountPrice + chainPrice : discountPrice;
+            return acc + price * 0.015;
+        }, 0).toFixed(2)
+        }</td>
+
+        <td>${
+        order.cart.reduce((acc, item) => {
+            const discountPrice = Number(item.discountPrice) || 0;
+            const chainPrice = Number(item.chainPrice) || 0;
+            const price = chainPrice > 0 ? discountPrice + chainPrice : discountPrice;
+            return acc + price * 0.015;
+        }, 0).toFixed(2)
+        }</td>
         <td></td>
         <td>${order.totalPrice}</td>
       </tr>
       <tr>
         <td colspan="8" rowspan="2">Rupees in Words: ${totalPriceInWords.toUpperCase()}.</td>
         <td colspan="2">Coupon Discount</td>
-        <td>Rs. ${order?.couponDiscount || 0}</td>
+        <td>${order?.paymentInfo?.currency || "Rs"} ${order?.couponDiscount || 0}</td>
       </tr>
       <tr style="text-align: center;">
         <td colspan="2">Total Amount Payable</td>
-        <td>Rs. ${order.totalPrice}</td>
+        <td>${order?.paymentInfo?.currency || "Rs"} ${order.totalPrice}</td>
       </tr>
     </tfoot>
   </table>
@@ -1062,10 +1079,12 @@ router.post(
 
             const order = await Order.create(orderData);
 
+            const currencySymbol = order?.paymentInfo?.currency || "₹";
+
             const htmlContent = `
             <html>
 
-<head>
+        <head>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700&display=swap"
         rel="stylesheet">
     <style>
@@ -1235,13 +1254,13 @@ router.post(
             </div>
             <div class="a1adjust" style="text-align: center;">
                 <h1 class="adj">Order Confirmation</h1>
-                <p>OrderId: ${order._id}</p>
+                <p>OrderId: ${order?._id}</p>
             </div>
             
         </div>
 
         <div style="clear: both;margin-top: 25px;">
-            <p>Dear <span style="text-transform: capitalize;">${shippingAddress.name}</span>,</p>
+            <p>Dear <span style="text-transform: capitalize;">${shippingAddress?.name}</span>,</p>
             <p>We have received your Tiny Tiaraa order! Thank you for your purchase.</p>
         </div>
 
@@ -1270,16 +1289,19 @@ router.post(
                     ${item?.showWithChain !== null ? `<p>Chain: ${item.showWithChain ? 'With Chain' : 'Without Chain'} ${item.showWithChain && item.selectedChainSize ? `(${item.selectedChainSize})` : ''}</p>` : ''}
                     ${item?.selectedEnamelColor ? `<p>Enamel Color: ${item.selectedEnamelColor}</p>` : ''}
 
-                    <p>${item.qty} x ₹${item.chainPrice > 0 ? item.discountPrice + item.chainPrice : item.discountPrice}</p>
+                  
+                    <p>${item.qty} x ${order?.paymentInfo?.currency || "₹"}${Number(item?.chainPrice) > 0 
+                    ? (Number(item?.discountPrice) + Number(item.chainPrice)).toFixed(2) 
+                    : Number(item?.discountPrice).toFixed(2)}</p>
                 </div>
             </div>`).join('')}
         </div>
 
         <div class="totalcost">
-            <p>Subtotal: ₹${totalPrice}</p>
+            <p>Subtotal: ${order?.paymentInfo?.currency || "₹"}${totalPrice}</p>
             <p>Shipping: Free</p>
-            <p>Coupon: ₹${couponDiscount ? couponDiscount : 'No coupon applied'}</p>
-            <p>Total: ₹${totalPrice}</p>
+            <p>Coupon: ${order?.paymentInfo?.currency || "₹"} ${couponDiscount ? couponDiscount : 'No coupon applied'}</p>
+            <p>Total: ${order?.paymentInfo?.currency || "₹"} ${totalPrice}</p>
         </div>
 
         <div class="shippingaddress">
@@ -2284,16 +2306,18 @@ router.put("/update-order-status/:id", isSeller, catchAsyncErrors(async (req, re
                         ${item?.showWithChain !== null ? `<p>Chain: ${item.showWithChain ? 'With Chain' : 'Without Chain'} ${item.showWithChain && item.selectedChainSize ? `(${item.selectedChainSize})` : ''}</p>` : ''}
                         ${item?.selectedEnamelColor ? `<p>Enamel Color: ${item.selectedEnamelColor}</p>` : ''}
 
-                        <p>${item.qty} x ₹${item.chainPrice > 0 ? item.discountPrice + item.chainPrice : item.discountPrice}</p>
+                        <p>${item.qty} x ${order?.paymentInfo?.currency || "₹"}${Number(item?.chainPrice) > 0 
+                            ? (Number(item?.discountPrice) + Number(item.chainPrice)).toFixed(2) 
+                            : Number(item?.discountPrice).toFixed(2)}</p>
                     </div>
                 </div>`).join('')}
                 </div>
 
                 <div class="totalcost">
-                <p>Subtotal: ₹${order.totalPrice}</p>
+                <p>Subtotal: ${order?.paymentInfo?.currency || "₹"}${order?.totalPrice}</p>
                 <p style="padding: 4px 0;">Shipping: Free</p>
-                <p>Coupon: ₹${order.couponDiscount ? order.couponDiscount : 'No coupon applied'}</p>
-                <p style="padding: 4px 0;">Total: ₹${order.totalPrice}</p>
+                <p>Coupon: ${order?.paymentInfo?.currency || "₹"} ${order.couponDiscount ? order.couponDiscount : 'No coupon applied'}</p>
+                <p style="padding: 4px 0;">Total: ${order?.paymentInfo?.currency || "₹"}${order?.totalPrice}</p>
                 </div>
 
                 <div class="shippingaddress">
@@ -2343,7 +2367,6 @@ router.put("/update-order-status/:id", isSeller, catchAsyncErrors(async (req, re
                 subject: "Your Order Has Been Shipped",
                 html: htmlContent,
                 cc: "orders@tinytiaraa.com"
-
             });
         }
 
@@ -3090,16 +3113,18 @@ router.put("/update-order-status/:id", isSeller, catchAsyncErrors(async (req, re
                     ${item?.showWithChain !== null ? `<p>Chain: ${item.showWithChain ? 'With Chain' : 'Without Chain'} ${item.showWithChain && item.selectedChainSize ? `(${item.selectedChainSize})` : ''}</p>` : ''}
                     ${item?.selectedEnamelColor ? `<p>Enamel Color: ${item.selectedEnamelColor}</p>` : ''}
 
-                    <p>${item.qty} x ₹${item.chainPrice > 0 ? item.discountPrice + item.chainPrice : item.discountPrice}</p>
+                    <p>${item.qty} x ${order?.paymentInfo?.currency || "₹"}${Number(item?.chainPrice) > 0 
+                    ? (Number(item?.discountPrice) + Number(item.chainPrice)).toFixed(2) 
+                    : Number(item?.discountPrice).toFixed(2)}</p>
                 </div>
             </div>`).join('')}
             </div>
 
             <div class="totalcost">
-            <p>Subtotal: ₹${order.totalPrice}</p>
+            <p>Subtotal: ${order?.paymentInfo?.currency || "₹"}${order.totalPrice}</p>
             <p style="padding: 4px 0;">Shipping: Free</p>
-            <p>Coupon: ₹${order.couponDiscount ? order.couponDiscount : 'No coupon applied'}</p>
-            <p style="padding: 4px 0;">Total: ₹${order.totalPrice}</p>
+            <p>Coupon: ${order?.paymentInfo?.currency || "₹"} ${order.couponDiscount ? order.couponDiscount : 'No coupon applied'}</p>
+            <p style="padding: 4px 0;">Total: ${order?.paymentInfo?.currency || "₹"}${order?.totalPrice}</p>
             </div>
 
             <div class="shippingaddress">

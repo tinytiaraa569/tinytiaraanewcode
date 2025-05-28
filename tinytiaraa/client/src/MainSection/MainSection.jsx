@@ -14,6 +14,17 @@ import FollowUS from './FollowUS/FollowUS'
 import { FaGift } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 import Review from './Review/Review'
+import HomeSec1 from './Homenew/Homesec1'
+import Homesec2 from './Homenew/Homesec2'
+import Homesec3 from './Homenew/Homesec3'
+import Homesec4 from './Homenew/Homesec4'
+import Homesec5 from './Homenew/Homesec5'
+import Homesec6 from './Homenew/Homesec6'
+import Homesec7 from './Homenew/Homesec7'
+import Homesec8 from './Homenew/Homesec8'
+import Homesec9 from './Homenew/Homesec9'
+import Homesec10 from './Homenew/Homesec10'
+import Homesec11 from './Homenew/Homesec11'
 
 function MainSection() {
   const navigate = useNavigate();
@@ -35,19 +46,20 @@ function MainSection() {
 
   return (
     <div>
-      <SliderSection />
-      <WhyPage />
-      {/* <Shippingpage /> */}
-      <Categories />
-      {/* <MorePage /> */}
-      <NewArrivals />
-      <Customise />
-      <Safety />
-      <Slidertext />
-      <CustomizedAccordions />
-      <Review />
+      {/* <SliderSection /> */}  <HomeSec1 />
+      {/* <WhyPage />  */}   <Homesec2 />
+      {/* <Shippingpage /> */}  <Homesec3 />
+      {/* <Categories /> */}   <Homesec4 />
+      {/* <MorePage /> */}   <Homesec5 />
+      {/* <NewArrivals /> */}  <Homesec6 />
+      {/* <Customise /> */}    <Homesec7 />
+      {/* <Safety />   <Homesec8 /> */}
+      {/* <Slidertext /> */}   <Homesec9 />
+      {/* <CustomizedAccordions /> */}  <Homesec10 />
+      <Homesec11 />
+      {/* <Review />   
       <FollowUS />
-      <Ttclub />
+      <Ttclub /> */}
 
        {/* Fixed Gift Icon */}
        {/* <div

@@ -11,10 +11,23 @@ import allproductbanner from "./allproductbanner.jpg";
 
 import { FiChevronDown, FiChevronUp } from "react-icons/fi";
 
+
 import Zoom from 'react-medium-image-zoom';
 import 'react-medium-image-zoom/dist/styles.css';
 import axios from "axios";
 import { imgdburl, server } from "@/server";
+import { Card, CardContent } from "@/components/ui/card";
+import { AnimatePresence, motion } from "framer-motion"
+import { Filter, Search, SlidersHorizontal, X } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Swiper, SwiperSlide } from 'swiper/react';
+import { Pagination } from 'swiper/modules';
+import 'swiper/css';
+import 'swiper/css/pagination';
+
 
 function ProductsPage() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -30,11 +43,32 @@ function ProductsPage() {
 
   const [isFilterVisible, setIsFilterVisible] = useState(true);
   const [loading, setLoading] = useState(true);
-
+const [isFilterOpen, setIsFilterOpen] = useState(false)
 
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [selectedSubcategory, setSelectedSubcategory] = useState(null);
   
+
+    // Animation variants
+  const fadeSlide = {
+    heading: {
+      initial: { opacity: 0, y: 50 },
+      animate: { opacity: 1, y: 0 },
+      transition: { duration: 0.8, ease: "easeOut" },
+    },
+    description: {
+      initial: { opacity: 0, y: 30 },
+      animate: { opacity: 1, y: 0 },
+      transition: { duration: 0.8, delay: 0.3, ease: "easeOut" },
+    },
+  }
+
+  // Image animation variant
+  const imageVariant = {
+    initial: { opacity: 0, scale: 1.1 },
+    animate: { opacity: 1, scale: 1 },
+    transition: { duration: 1.2, ease: "easeOut" },
+  }
   // console.log(products, "products");
 
   const [categoriesData, setCategoriesData] = useState([]);
@@ -61,6 +95,7 @@ function ProductsPage() {
 
     fetchCategories();
     }, []);
+    
 
     // console.log(categoriesData,"from product page ")
 
@@ -91,8 +126,11 @@ function ProductsPage() {
   useEffect(() => {
     if (isMobile) {
       setIsFilterVisible(false);
+      setIsFilterOpen(false)
     } else {
       setIsFilterVisible(true);
+      setIsFilterOpen(false)
+
     }
   }, [isMobile]);
 
@@ -673,9 +711,9 @@ function ProductsPage() {
 
  
   
-  const handleSortChange = (e) => {
-    setSortOption(e.target.value);
-    updateURLParams({ sort: e.target.value });
+  const handleSortChange = (value) => {
+    setSortOption(value);
+    updateURLParams({ sort: value });
   };
 
   const handleMetalColorChange = (e) => {
@@ -973,29 +1011,70 @@ function ProductsPage() {
       {/* <div className="productbanner">
         <img src={allproductbanner} alt="" />
       </div> */}
+      {/* https://i.pinimg.com/736x/15/f0/48/15f0482998fd3ec56a836cfe4145a009.jpg */}
 
-      <div>
-        {/* Render the banner of the selected category */}
-        {selectedCategory ? (
-          <div className="productbanner">
+     <div>
+      {selectedCategory ? (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.5 }}
+          className="relative h-[200px] sm:h-[250px] lg:h-[300px] overflow-hidden"
+        >
+          <img
+            loading="eager" // Changed from lazy for above-the-fold images
+            src={`${imgdburl}${selectedCategory.productbanner.url}`}
+            alt={selectedCategory.title}
+            className="w-full h-full object-cover"
+            onError={(e) => {
+              e.target.onerror = null;
+              e.target.src = "https://i.pinimg.com/736x/15/f0/48/15f0482998fd3ec56a836cfe4145a009.jpg";
+            }}
+          />
+        </motion.div>
+      ) : (
+        <div className="relative h-[200px] sm:h-[250px] lg:h-[300px] overflow-hidden bg-gradient-to-t from-[#F4E7E2] via-[#F9F6F4] to-white dark:from-gray-900 dark:via-gray-800 dark:to-gray-700">
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.8 }}
+            className="absolute inset-0"
+          >
             <img
-              loading="lazy"
-              src={`${imgdburl}${selectedCategory.productbanner.url}`}
-              alt={selectedCategory.title}
-              
+              loading="eager"
+              src="https://t3.ftcdn.net/jpg/03/68/92/66/240_F_368926684_Y4Fr8MQpDmNZsZPyu5ehbBc35rLcalHy.jpg"
+             
+              className="w-full h-full object-cover"
             />
+            <div className="absolute inset-0 bg-black/30 dark:bg-black/50" />
+          </motion.div>
+
+          <div className="relative z-10 h-full flex items-center justify-center px-4 sm:px-6 lg:px-8">
+            <div className="text-center max-w-4xl mx-auto">
+              <div className="space-y-3 sm:space-y-4">
+                <motion.h1
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ duration: 0.5 }}
+                  className="text-2xl sm:text-3xl lg:text-5xl font-bold text-[#ffffff] drop-shadow-lg"
+                >
+                  All Products
+                </motion.h1>
+
+                <motion.p
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ duration: 0.5, delay: 0.2 }}
+                  className="text-sm sm:text-base lg:text-lg text-white/90 drop-shadow-md max-w-2xl mx-auto leading-relaxed"
+                >
+                  Made with love , warm with joy jewelry for little star
+                </motion.p>
+              </div>
+            </div>
           </div>
-        ) : (
-          <div className="productbanner">
-             <img
-              loading="lazy"
-              src={allproductbanner}
-              
-            />
-          </div>
-          
-        )}
-      </div>
+        </div>
+      )}
+    </div>
       {/* <button
         onClick={toggleFilterVisibility}
         className="flex items-center bg-gray-100 hover:bg-gray-200 text-gray-800 p-2 rounded-md border border-gray-300 shadow-sm transition-all duration-150 ease-in-out"
@@ -1009,17 +1088,37 @@ function ProductsPage() {
           <FiChevronDown size={20} className="ml-2 text-gray-600" />
         )}
       </button> */}
-       <button
-      onClick={toggleFilterVisibility}
-      className="flex items-center mt-3 bg-gray-200 hover:bg-gray-300 text-gray-700 p-1 rounded-lg border border-gray-400 shadow-sm text-[12px] font-medium transition-all duration-150 ease-in-out sm:p-1.5 sm:text-base md:p-1.5 md:text-[14px]"
-    >
-      <span>{isFilterVisible ? "Hide" : "Show"} filter</span>
-      {isFilterVisible ? (
-        <FiChevronUp size={14} className="ml-2 text-gray-600" />
-      ) : (
-        <FiChevronDown size={14} className="ml-2 text-gray-600" />
-      )}
-    </button>
+      <div className="flex items-center gap-3 mt-3">
+              {!isMobile && (
+                <Button
+                  onClick={toggleFilterVisibility}
+                  variant="outline"
+                  size="sm"
+                  className="bg-[#D7A295] hover:bg-[#e6b2a5] text-[white] border-[#f2cbc1]"
+                >
+                  <Filter className="w-4 h-4 mr-2" />
+                  {isFilterVisible ? "Hide" : "Show"} Filters
+                  {isFilterVisible ? (
+                    <FiChevronUp size={14} className="ml-2" />
+                  ) : (
+                    <FiChevronDown size={14} className="ml-2" />
+                  )}
+                </Button>
+              )}
+              {isMobile && (
+                <Button
+                  onClick={() => setIsFilterOpen(true)}
+                  className="bg-[#D7A295] hover:bg-[#e6b2a5] text-[white] border border-[#f2cbc1]"
+                >
+                  <SlidersHorizontal className="w-4 h-4 mr-2" />
+                  Filters
+                  
+                </Button>
+              )}
+            </div>
+
+
+
       <div
         className={`productpagemain flex  ${
           isFilterVisible ? "" : "justify-center"
@@ -1030,13 +1129,23 @@ function ProductsPage() {
         {isFilterVisible && (
           <div
             className={`filtersection ${
-              isFilterVisible ? "visible" : "hidden"
+             !isMobile && isFilterVisible ? "visible" : "hidden"
             }  `}
           >
+              <motion.div
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            className={`lg:w-72 ${!isMobile && isFilterVisible ? "block" : "hidden lg:block"}`}
+          >
+            <Card className="bg-white/80 backdrop-blur-sm border-[#E8D5CE] sticky top-4">
+              <CardContent className='p-0 px-4 py-4'>
+
+            
+
             <div className="filtersechead">
               {/* Applied Filters */}
               <div className="mb-4">
-                <h3 className="font-semibold mb-2">Applied Filters</h3>
+                <h3 className="font-semibold mb-2 !text-[#D7A295]">Applied Filters</h3>
 
                 <div className="flex flex-wrap gap-2">
                   {searchQuery && (
@@ -1128,7 +1237,7 @@ function ProductsPage() {
                 </div>
               </div>
 
-              <div className="searchfilter">
+              {/* <div className="searchfilter">
                 <input
                   type="text"
                   placeholder="Search product..."
@@ -1137,12 +1246,23 @@ function ProductsPage() {
                   className="searchfilterinp"
                 />
 
-                <IoSearchOutline className="serachiconfilter" />
-              </div>
+                <IoSearchOutline className="serachiconfilter" /> */}
+
+
+                <div className="relative">
+                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+                    <Input
+                      placeholder="Search jewelry..."
+                      value={searchQuery}
+                      onChange={handleSearch}
+                      className="pl-10 bg-white/80 border-[#E8D5CE] focus:ring-[#D4C4B8]"
+                    />
+                  </div>
+              {/* </div> */}
             </div>
 
             <div className="filterprice ml-4">
-              <h5>Filter by Price</h5>
+              <h5 className="!text-sm my-3">Filter by Price</h5>
               <div className="card-conteiner">
                 <div className="card-content">
                   <div className="rangeslider mb-2">
@@ -1171,7 +1291,7 @@ function ProductsPage() {
               <span className="pl-1 pr-1">-</span>
               <span className="mb-5">₹{priceRange[1] || 60000}</span>
             </div>
-            <div className="marginbottom"></div>
+            <div className="border-b border-[#E8D5CE] my-3"></div>
 
             {/* <div className="filtercategory ml-2">
               <h5>Product Categories</h5>
@@ -1199,7 +1319,7 @@ function ProductsPage() {
             </div> */}
 
           <div className="filtercategory ml-2">
-            <h5 className="font-semibold text-lg">Product Categories</h5>
+            <h5 className="!text-sm my-4 !text-[#D7A295]">Product Categories</h5>
 
             {/* Filter Checkboxes */}
             <div className="flex gap-4 mt-2">
@@ -1247,13 +1367,13 @@ function ProductsPage() {
               )}
             </div>
 
-            <div className="marginbottom"></div>
           </div>
+            <div className="border-b border-[#E8D5CE] my-3"></div>
 
 
 
             <div className="Enamelcolours">
-              <h5>Enamel Colors</h5>
+              <h5 className="!text-sm my-4 !text-[#D7A295]">Enamel Colors</h5>
               <div className="enamelscolorlist">
                 <div
                   className="enamelclrbox deepblue"
@@ -1317,15 +1437,16 @@ function ProductsPage() {
                   }
                 ></div>
               </div>
-              <div className="marginbottom"> </div>
             </div>
 
-            <div className="producttags">
-              <h5>Product Tags</h5>
+              <div className="border-b border-[#E8D5CE] my-3"></div>
+
+            <div className="producttags mb-3">
+              <h5 className="!text-sm my-4 !text-[#D7A295]">Product Tags</h5>
 
               <div className="producttagflex">
                 <div
-                  className="producttagsingle"
+                  className="producttagsingle !border !border-[#D7A295] !text-[black]"
                   onClick={() => {
                     handleTagClick("Pendant")
                     window.scrollTo({ top: 0, behavior: "smooth" }); 
@@ -1336,7 +1457,7 @@ function ProductsPage() {
                   Pendant
                 </div>
                 <div
-                  className="producttagsingle"
+                  className="producttagsingle !border !border-[#D7A295] !text-[black]"
                   onClick={() =>{
                     handleTagClick("Earrings")
                     window.scrollTo({ top: 0, behavior: "smooth" }); 
@@ -1347,7 +1468,7 @@ function ProductsPage() {
                   Earrings
                 </div>
                 <div
-                  className="producttagsingle"
+                  className="producttagsingle !border !border-[#D7A295] !text-[black]"
                   onClick={() => {
                     handleTagClick("Bracelets")
                     window.scrollTo({ top: 0, behavior: "smooth" }); 
@@ -1359,7 +1480,7 @@ function ProductsPage() {
                 </div>
 
                 <div
-                  className="producttagsingle"
+                  className="producttagsingle !border !border-[#D7A295] !text-[black]"
                   onClick={() => {
                     handleTagClick("Nazariya")
                     window.scrollTo({ top: 0, behavior: "smooth" }); 
@@ -1369,7 +1490,7 @@ function ProductsPage() {
                   Nazariya
                 </div>
                 <div
-                  className="producttagsingle"
+                  className="producttagsingle !border !border-[#D7A295] !text-[black]"
                   onClick={() => 
                     {
                       handleTagClick("Mom & me")
@@ -1381,7 +1502,7 @@ function ProductsPage() {
                   Mom & me
                 </div>
                 <div
-                  className="producttagsingle"
+                  className="producttagsingle !border !border-[#D7A295] !text-[black]"
                   onClick={() => 
                     {
                       handleTagClick("Gift")
@@ -1417,6 +1538,9 @@ function ProductsPage() {
             />
           </div>
         </div> */}
+          </CardContent>
+              </Card>
+              </motion.div>
           </div>
         )}
         {/* Products Display Section */}
@@ -1427,25 +1551,28 @@ function ProductsPage() {
         >
           <div className="sortfilter">
             <div className="mb-4 flex items-center justify-end gap-3">
-              <h3 className="font-semibold mb-2">Sort By</h3>
-              <select
-                value={sortOption}
-                onChange={handleSortChange}
-                className=" border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              >
-                <option value="">Select</option>
-                <option value="priceLowToHigh">Price: Low to High</option>
-                <option value="priceHighToLow">Price: High to Low</option>
-                <option value="nameAToZ">Name: A to Z</option>
-                <option value="nameZToA">Name: Z to A</option>
-                <option value="bestseller">Bestseller</option>{" "}
-                {/* Add bestseller option */}
-              </select>
-            </div>
-            <div className="sortline"></div>
+            <h3 className="text-sm my-2 !text-[#D7A295] !font-medium">Sort By</h3>
+          <Select value={sortOption} onValueChange={handleSortChange}>
+            <SelectTrigger
+              className="w-[200px] border border-[#D7A295] rounded-md bg-gradient-to-t from-[#f9efeb] via-[#F9F6F4] to-white text-[#D7A295] shadow-sm focus:ring-1 focus:ring-[#D7A295]"
+            >
+              <SelectValue placeholder="Select" />
+            </SelectTrigger>
+            <SelectContent className="border border-[#D7A295] bg-white text-[#2e2d2c]">
+              <SelectItem value="select">Select</SelectItem>
+              <SelectItem value="priceLowToHigh">Price: Low to High</SelectItem>
+              <SelectItem value="priceHighToLow">Price: High to Low</SelectItem>
+              <SelectItem value="nameAToZ">Name: A to Z</SelectItem>
+              <SelectItem value="nameZToA">Name: Z to A</SelectItem>
+              <SelectItem value="bestseller">Bestseller</SelectItem>
+            </SelectContent>
+          </Select>
+          </div>
+
+            <div className="border-b border-[#E8D5CE] mb-2"></div>
           </div>
           <div className="section filtsecbig">
-            <h1 className="text-center text-2xl font-semibold mb-5">
+            <h1 className="text-center text-2xl font-semibold mb-5 text-[#D7A295]">
               {categoryData ? categoryData : "All Products"}
             </h1>
 
@@ -1610,39 +1737,113 @@ function ProductsPage() {
 
 
               {/* //only for diamond endant */}
-              {selectedCategory && selectedCategory.subcategories && selectedCategory.subcategories.length > 0 && (
-                      <div className="mt-3 mb-10 pb-7 border-b border-[#5DC2B0]">
-                          <h2 className="text-center text-[18px] font-[500] text-[#000000cf] mb-4">SubCategories</h2>
-                          <div className="flex justify-center">
-                              <div className={`grid justify-center grid-cols-1 sm:grid-cols-2 ${selectedCategory.subcategories.length >= 4 ? "grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4" : "grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4"}  gap-8`}>
-                                  {selectedCategory.subcategories.map((subcat, subIndex) => (
-                                      <div onClick={() => submitHandle(selectedCategory, subcat)} key={subIndex} className="subpendantcat cursor-pointer w-[210px] bg-white border border-[#41d399c1] shadow-lg rounded-[22px] p-4 text-center transition-transform duration-300 hover:shadow-xl hover:scale-105">
+            {selectedCategory && selectedCategory.subcategories?.length > 0 && (
+              <div className="mt-3 mb-10 pb-7 border-b border-[#D7A295]">
+                <h2 className="text-center text-[18px] font-[500] text-[#8B4513] mb-4">
+                  SubCategories
+                </h2>
 
-                                          <h3 className="font-Poppins text-[16px] text-[#000000c2] mb-2">{subcat.name}</h3>
-                                          <div className="overflow-hidden">
+                {/* Swiper for mobile only (< md) */}
+                <div className="block md:hidden px-2">
+<Swiper
+        modules={[Pagination]}
+        pagination={{ 
+          clickable: true,
+          dynamicBullets: true
+        }}
+        spaceBetween={16}
+        slidesPerView={1.2} // Default for smallest screens
+        breakpoints={{
+          // When window width is >= 480px
+          480: {
+            slidesPerView: 1.8,
+            spaceBetween: 16
+          },
+          // When window width is >= 640px
+          640: {
+            slidesPerView: 2.5,
+            spaceBetween: 16
+          },
+          // When window width is >= 768px (tablets)
+          768: {
+            slidesPerView: 3,
+            spaceBetween: 20
+          },
+          // When window width is >= 1024px
+          1024: {
+            slidesPerView: 4,
+            spaceBetween: 24
+          },
+          // When window width is >= 1280px
+          1280: {
+            slidesPerView: 5,
+            spaceBetween: 24
+          }
+        }}
+      >
+        {selectedCategory.subcategories.map((subcat, subIndex) => (
+          <SwiperSlide key={subIndex} className="!w-auto"> {/* Allow slides to size naturally */}
+            <div
+              onClick={() => submitHandle(selectedCategory, subcat)}
+              className="w-[180px] sm:w-[200px] cursor-pointer bg-gradient-to-t from-[#F4E7E2] via-[#F9F6F4] to-white border border-[#D7A295] shadow-md rounded-2xl p-4 text-center transition-all duration-300 hover:shadow-xl "
+            >
+              <h3 className="text-[15px] text-[#8B4513] font-medium mb-2 line-clamp-2">
+                {subcat.name}
+              </h3>
+              {subcat?.image_Url && (
+                <img
+                  src={`${imgdburl}${subcat.image_Url.url}`}
+                  alt={subcat.name}
+                  className={`w-full h-24 object-contain rounded-md mt-2 ${
+                    selectedCategory.title !== 'Kids Accessories' ? 'scale-125' : ''
+                  }`}
+                  loading="lazy"
+                />
+              )}
+              <div className="mt-3">
+                <button className="px-4 py-1.5 text-white text-xs rounded bg-[#D7A295] hover:bg-[#c98d76] transition-colors">
+                  View {subcat.name}
+                </button>
+              </div>
+            </div>
+          </SwiperSlide>
+        ))}
+      </Swiper>
+                </div>
 
-                                          {subcat?.image_Url && (
-                                            <img
-                                            src={`${imgdburl}${subcat.image_Url.url}`}
-                                            alt={subcat.name}
-                                            className={`w-full h-32 object-contain ${selectedCategory.title === "Kids Accessories" ? "" : "scale-125"}  rounded-md mt-2`}
-                                            />
-                                          )}
-                                          </div>
-                                          <div className={`${selectedCategory.title === "Kids Accessories" ? "mt-[-2px]" : "mt-[-15px]"}  mb-3`}>
-                                          <button
-                                              
-                                              className="subpendantcatbtn px-5 py-2 bg-[#35a578] text-white rounded hover:bg-[#006039] text-[10px]"
-                                              >
-                                              View {subcat.name}
-                                          </button>
-                                            </div>
-                                      </div>
-                                  ))}
-                              </div>
-                          </div>
+                {/* Grid for md and above */}
+                <div className="hidden md:flex justify-center">
+                  <div className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                    {selectedCategory.subcategories.map((subcat, subIndex) => (
+                      <div
+                        onClick={() => submitHandle(selectedCategory, subcat)}
+                        key={subIndex}
+                        className="min-w-[180px] max-w-[210px] cursor-pointer bg-gradient-to-t from-[#F4E7E2] via-[#F9F6F4] to-white border border-[#D7A295] shadow-md rounded-2xl p-4 text-center transition-transform duration-300 hover:shadow-xl"
+                      >
+                        <h3 className="text-[15px] text-[#8B4513] font-medium mb-2">
+                          {subcat.name}
+                        </h3>
+                        {subcat?.image_Url && (
+                          <img
+                            src={`${imgdburl}${subcat.image_Url.url}`}
+                            alt={subcat.name}
+                            className={`w-full h-24 object-contain rounded-md mt-2 ${
+                              selectedCategory.title !== 'Kids Accessories' ? 'scale-125' : ''
+                            }`}
+                          />
+                        )}
+                        <div className="mt-2">
+                          <button className="px-4 py-1.5 text-white text-xs rounded bg-[#D7A295] hover:bg-[#c98d76] transition">
+                            View {subcat.name}
+                          </button>
+                        </div>
                       </div>
-                  )}
+                    ))}
+                  </div>
+                </div>
+              </div>
+            )}
+
 
 {/* 
                   {/* //only for kids accessories */}
@@ -1709,6 +1910,357 @@ function ProductsPage() {
             )}
           </div>
         </div>
+
+        <AnimatePresence>
+        {isFilterOpen && (
+          <>
+            {/* Backdrop */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 bg-black/50 z-50"
+              onClick={() => setIsFilterOpen(false)}
+            />
+
+            {/* Bottom Sheet */}
+            <motion.div
+              initial={{ y: "100%" }}
+              animate={{ y: 0 }}
+              exit={{ y: "100%" }}
+              transition={{ type: "spring", damping: 25, stiffness: 200 }}
+              className="fixed bottom-0 left-0 right-0 z-50 bg-gradient-to-t from-[#F4E7E2] to-white rounded-t-3xl shadow-2xl max-h-[80vh] overflow-hidden"
+            >
+              {/* Handle */}
+              <div className="flex justify-center pt-4 pb-2">
+                <div className="w-12 h-1 bg-[#D4C4B8] rounded-full" />
+              </div>
+
+              {/* Header */}
+              <div className="flex items-center  justify-between px-6 py-1 border-b border-[#E8D5CE]">
+                <div>
+                <h2 className="text-xl font-semibold text-[#8B4513]">Filters</h2>
+                {/* Applied Filters */}
+              <div className="">
+                <h3 className="font-semibold !text-xs text-gray-500 mb-2">Applied Filters</h3>
+
+                <div className="flex flex-wrap gap-2">
+                  {searchQuery && (
+                    <div className="flex items-center bg-blue-200 px-2 py-1 rounded-md">
+                      <span>Search: {searchQuery}</span>
+                      <RiCloseFill
+                        className="ml-2 cursor-pointer"
+                        onClick={() => removeFilter("search")}
+                      />
+                    </div>
+                  )}
+                  {priceRange.length === 2 && (
+                    <div className="flex items-center bg-blue-200 px-2 py-1 rounded-md">
+                      <span>
+                        Price: {priceRange[0]} - {priceRange[1]}
+                      </span>
+                      <RiCloseFill
+                        className="ml-2 cursor-pointer"
+                        onClick={() => removeFilter("price")}
+                      />
+                    </div>
+                  )}
+                  {selectedMetalColor && (
+                    <div className="flex items-center bg-blue-200 px-2 py-1 rounded-md">
+                      <span>Metal Color: {selectedMetalColor}</span>
+                      <RiCloseFill
+                        className="ml-2 cursor-pointer"
+                        onClick={() => removeFilter("metalColor")}
+                      />
+                    </div>
+                  )}
+                  {sortOption && (
+                    <div className="flex items-center bg-blue-200 px-2 py-1 rounded-md">
+                      <span>Sort: {sortOption}</span>
+                      <RiCloseFill
+                        className="ml-2 cursor-pointer"
+                        onClick={() => removeFilter("sort")}
+                      />
+                    </div>
+                  )}
+                  {selectedEnamelColor && (
+                    <div className="flex items-center bg-blue-200 px-2 py-1 rounded-md">
+                      <span>Enamel Color: {selectedEnamelColor}</span>
+                      <RiCloseFill
+                        className="ml-2 cursor-pointer"
+                        onClick={() => removeFilter("enamelColor")}
+                      />
+                    </div>
+                  )}
+                  {selectedTag && (
+                    <div className="flex items-center bg-blue-200 px-2 py-1 rounded-md">
+                      <span>Tag: {selectedTag}</span>
+                      <RiCloseFill
+                        className="ml-2 cursor-pointer"
+                        onClick={() => removeFilter("tag")}
+                      />
+                    </div>
+                  )}
+
+                  {selectedAgeGroup && (
+                    <div className="flex items-center bg-blue-200 px-2 py-1 rounded-md">
+                      <span>AgeGroup: {selectedAgeGroup}</span>
+                      <RiCloseFill
+                        className="ml-2 cursor-pointer"
+                        onClick={() => removeFilter("ageGroup")}
+                      />
+                    </div>
+                  )}
+
+                {selectedCategory && (
+                        <div className="flex items-center bg-blue-200 px-2 py-1 rounded-md">
+                            <span className="text-[12px]">Category: {selectedCategory.title}</span>
+                            <RiCloseFill
+                                className="ml-2 cursor-pointer"
+                                onClick={() => removeFilter("category")}
+                            />
+                        </div>
+                    )}
+
+                {selectedSubcategory && ( // New check for selected subcategory
+                        <div className="flex items-center bg-blue-200 px-2 py-1 rounded-md">
+                          <span className="text-[12px]">Subcategory: {selectedSubcategory}</span>
+                          <RiCloseFill
+                            className="ml-2 cursor-pointer"
+                            onClick={() => removeFilter("subcategory")} // Handle removal
+                          />
+                        </div>
+                      )}
+                </div>
+              </div>
+
+                </div>
+                <div className="flex items-center gap-3">
+                 
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => setIsFilterOpen(false)}
+                    className="text-[#8B4513] hover:bg-[#F4E7E2]"
+                  >
+                    <X className="w-4 h-4" />
+                  </Button>
+                </div>
+
+                
+              </div>
+
+              {/* Filter Content */}
+              <div className="overflow-y-auto max-h-[60vh] px-6 py-4 space-y-4">
+                {/* Categories */}
+                <div>
+                  <div className="flex items-center gap-5 mb-3">
+                  <h3 className="font-medium text-[#8B4513] ">Categories</h3>
+                   <div className="flex gap-4 ">
+                    <label className="flex items-center space-x-2 cursor-pointer text-sm">
+                      <input
+                        type="checkbox"
+                        checked={selectedFilters.gold}
+                        onChange={() => handleFilterChange("gold")}
+                        className="w-3 h-3 accent-[#FFD700]"
+                      />
+                      <span className="text-gray-700">Gold</span>
+                    </label>
+                    <label className="flex items-center space-x-2 cursor-pointer text-sm">
+                      <input
+                        type="checkbox"
+                        checked={selectedFilters.silver}
+                        onChange={() => handleFilterChange("silver")}
+                        className="w-3 h-3 accent-[#C0C0C0]"
+                      />
+                      <span className="text-gray-700">Silver</span>
+                    </label>
+                  </div>
+
+                  </div>
+                  <div className="grid grid-cols-2 gap-2 max-h-48 overflow-y-auto">
+                    {filteredCategories.map((category, i) => (
+                      <Button
+                        key={i}
+                        variant={selectedCategory?.title === category.title ? "default" : "outline"}
+                        size="sm"
+                        onClick={() => {
+                          handleViewProducts(category.title);
+                          setSelectedCategory(category)
+                          setIsFilterOpen(false)
+                        }}
+                        className={`text-xs ${
+                          selectedCategory?.title === category.title
+                            ? "bg-[#8B4513] text-white hover:bg-[#6B3410]"
+                            : "bg-white border-[#E8D5CE] text-[#8B4513] hover:bg-[#F4E7E2]"
+                        }`}
+                      >
+                        {category.title}
+                      </Button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Enamel Colors */}
+                <div className="Enamelcolours ml-0 !px-0">
+                <h3 className="font-medium text-[#8B4513] mb-3">Enamel Colors</h3>
+                  <div className="enamelscolorlist">
+                    <div
+                      className="enamelclrbox deepblue"
+                      onClick={
+                        () => {
+                          handleEnamelColorChange("Deep_Blue")
+                          setIsFilterOpen(false)
+                          window.scrollTo({ top: 0, behavior: "smooth" })
+                        }
+
+                      }
+                    ></div>
+                    <div
+                      className="enamelclrbox pink"
+                      onClick={() => {
+                        handleEnamelColorChange("Pink")
+                          setIsFilterOpen(false)
+
+                        window.scrollTo({ top: 0, behavior: "smooth" })
+                      }
+                      }
+                    ></div>
+                    <div
+                      className="enamelclrbox turquoise"
+                      onClick={() =>{
+                        handleEnamelColorChange("Turquoise")
+                          setIsFilterOpen(false)
+
+                        window.scrollTo({ top: 0, behavior: "smooth" })
+                      } 
+                      }
+                    ></div>
+                    <div
+                      className="enamelclrbox red"
+                      onClick={() => 
+                        {
+                          handleEnamelColorChange("Red")
+                          setIsFilterOpen(false)
+
+                          window.scrollTo({ top: 0, behavior: "smooth" })
+                        }
+                      }
+                    ></div>
+                    <div
+                      className="enamelclrbox black"
+                      onClick={() => {
+
+                        handleEnamelColorChange("Black")
+                          setIsFilterOpen(false)
+
+                        window.scrollTo({ top: 0, behavior: "smooth" })  
+                      }
+                      }
+                    ></div>
+                    <div
+                      className="enamelclrbox deepgreen"
+                      onClick={() => {
+                        handleEnamelColorChange("Deep_Green")
+                          setIsFilterOpen(false)
+
+                        window.scrollTo({ top: 0, behavior: "smooth" })
+                      }
+                        
+                      }
+                    ></div>
+                    <div
+                      className="enamelclrbox lotusgreen"
+                      onClick={() =>{
+                        handleEnamelColorChange("Lotus_Green")
+                          setIsFilterOpen(false)
+
+                        window.scrollTo({ top: 0, behavior: "smooth" })
+                      }
+                      }
+                    ></div>
+                  </div>
+                </div>
+
+                {/* Product Tags */}
+                <div>
+                  <h3 className="font-medium text-[#8B4513] mb-3">Product Tags</h3>
+                  <div className="grid grid-cols-2 gap-2">
+                    {["Pendant", "Earrings", "Bracelets", "Nazariya", "Mom & me", "Gift"].map((tag) => (
+                      <Button
+                        key={tag}
+                        variant={selectedTag === tag.toLowerCase() ? "default" : "outline"}
+                        size="sm"
+                        onClick={() => {
+                          handleTagClick(tag)
+                          setSelectedTag(tag.toLowerCase())
+                          setIsFilterOpen(false)
+                        }}
+                        className={`text-xs ${
+                          selectedTag === tag.toLowerCase()
+                            ? "bg-[#8B4513] text-white hover:bg-[#6B3410]"
+                            : "bg-white border-[#E8D5CE] text-[#8B4513] hover:bg-[#F4E7E2]"
+                        }`}
+                      >
+                        {tag}
+                      </Button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Price Range */}
+                {/* <div>
+                  <h3 className="font-medium text-[#8B4513] mb-3">
+                    Price Range: ₹{priceRange[0].toLocaleString()} - ₹{priceRange[1].toLocaleString()}
+                  </h3>
+                  <Slider value={priceRange} onValueChange={setPriceRange} max={60000} step={1000} className="mt-2" />
+                </div> */}
+
+                 <div className="filterprice ">
+              <h3 className="font-medium text-[#8B4513] mb-1">Filter by Price</h3>
+              <div className="card-conteiner">
+                <div className="card-content">
+                  <div className="rangeslider mb-2">
+                    <input
+                      className="min input-ranges"
+                      name="range_0"
+                      type="range"
+                      min={0}
+                      max={priceRange[1] }
+                      value={priceRange[0] || 0}
+                      onChange={(e) => handlePriceChange(e, 0)}
+                    />
+                    <input
+                      className="max input-ranges"
+                      name="range_1"
+                      type="range"
+                      min={priceRange[0] }
+                      max={80000}
+                      value={priceRange[1] || 80000}
+                      onChange={(e) => handlePriceChange(e, 1)}
+                    />
+                  </div>
+                </div>
+              </div>
+              <span>Price: ₹{priceRange[0] || 0}</span>
+              <span className="pl-1 pr-1">-</span>
+              <span className="mb-2">₹{priceRange[1] || 80000}</span>
+            </div>
+              </div>
+
+              {/* Apply Button */}
+              <div className="px-6 py-4 border-t border-[#E8D5CE] bg-white">
+                <Button
+                  onClick={() => setIsFilterOpen(false)}
+                  className="w-full bg-[#D7A295] hover:bg-[#d6a89c] text-white"
+                >
+                  close Filters 
+                </Button>
+              </div>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
       </div>
     </>
   );

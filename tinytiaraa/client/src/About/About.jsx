@@ -1,15 +1,16 @@
 import React, { useEffect } from 'react'
-import Aboutwho from './Aboutsections/Aboutwho/Aboutwho'
-import Aboutsecion2 from './Aboutsection2/Aboutsecion2'
-import Aboutsection3 from './Aboutsection3/Aboutsection3'
-import AboutSection4 from './Aboutscetion4/AboutSection4'
-import Aboutsection5 from './Aboutsection5/Aboutsection5'
+
 import { Helmet } from 'react-helmet-async'
+import Aboutsec1 from './Aboutsec1'
+import Aboutsec2 from './Aboutsec2'
+import Aboutsec3 from './Aboutsec3'
+import Aboutsec4 from './Aboutsec4'
+
 
 function About() {
   useEffect(() => {
-    window.scrollTo(0, 0)
-  }, [])
+      window.scrollTo(0, 0);
+    }, []);
   return (
     <div>
       <Helmet>
@@ -19,12 +20,12 @@ function About() {
         <link rel="canonical" href="/about" />
 
       </Helmet>
+    <Aboutsec1 />
+    <Aboutsec2 />
+    <Aboutsec3 />
+    <Aboutsec4 />
 
-    <Aboutwho />
-    <Aboutsecion2 />
-    <Aboutsection3 />
-    <AboutSection4 />
-    <Aboutsection5/>
+    
       
     </div>
   )

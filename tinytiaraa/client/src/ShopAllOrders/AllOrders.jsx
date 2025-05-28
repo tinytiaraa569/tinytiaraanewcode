@@ -94,13 +94,17 @@ function AllOrders() {
     const row = [];
 
     orders && orders.forEach((item) => {
+        const currency = item?.paymentInfo?.currency || "INR";
         row.push({
             id: item._id,
             itemsQty: item.cart.length,
-            total: "Inr ₹" + item.totalPrice,
+            // total: "Inr ₹" + item.totalPrice,
+             total: `${currency} ${Number(item?.totalPrice).toFixed(2)}`,
             status: item.status
         });
     });
+
+    console.log(orders,'ordered forma ll orders')
     const location = useLocation();
 
     // Get the last segment of the URL (e.g., "dashboard" or "overview")

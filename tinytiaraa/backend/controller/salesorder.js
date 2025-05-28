@@ -254,8 +254,9 @@ const generateInvoiceTemplate = (order) => {
           const cgst = (discountPrice * 0.015).toFixed(2);
           const sgst = (discountPrice * 0.015).toFixed(2);
           const igst = (discountPrice * 0.03).toFixed(2);
+         const taxableValue = +(discountPrice - igst).toFixed(2);
           
-          grandTotal += discountPrice;
+          grandTotal += taxableValue;
           return `
             <tr style="text-align: center;">
               <td rowspan="4">${index + 1}</td>
@@ -282,10 +283,20 @@ const generateInvoiceTemplate = (order) => {
                 }
                 </td>
               <td rowspan="4">${item.qty}</td>
-              <td rowspan="4">${discountPrice}</td>
-              <td rowspan="4">${cgst}</td>
-              <td rowspan="4">${sgst}</td>
-              <td rowspan="4">${igst}</td>
+              <td rowspan="4">${taxableValue}</td>
+               ${
+                  order?.venue?.toLowerCase().includes("maharashtra")
+                    ? `
+                  <td rowspan="4">${cgst}</td>
+                  <td rowspan="4">${sgst}</td>
+                  <td rowspan="4">-</td>
+                `
+                    : `
+                  <td rowspan="4">-</td>
+                  <td rowspan="4">-</td>
+                  <td rowspan="4">${igst}</td>
+                `
+                }
               <td rowspan="4">${discountPrice}</td>
             </tr>
             <tr style="text-align: center;">
@@ -329,24 +340,33 @@ const generateInvoiceTemplate = (order) => {
             </td>
         <td></td>
         <td>${grandTotal}</td>
-        <td>
-          ${order.cart.reduce((acc, item) => acc + parseFloat(
-            ((item.salesTeamPrice 
-              ? parseFloat(item.salesTeamPrice) 
-              : (item.chainPrice > 0 
-                ? item.discountPrice + item.chainPrice 
-                : item.discountPrice)) * 0.015
-            ).toFixed(2)), 0)}
-        </td>
-       <td>
-        ${order.cart.reduce((acc, item) => acc + parseFloat(
-          ((item.salesTeamPrice 
-            ? parseFloat(item.salesTeamPrice) 
-            : (item.chainPrice > 0 
-              ? item.discountPrice + item.chainPrice 
-              : item.discountPrice)) * 0.015
-          ).toFixed(2)), 0)}
-      </td>
+        ${order?.venue?.toLowerCase().includes("maharashtra")
+          ? `<td>
+              ${order.cart.reduce((acc, item) => acc + parseFloat(
+                ((item.salesTeamPrice 
+                  ? parseFloat(item.salesTeamPrice) 
+                  : (item.chainPrice > 0 
+                    ? item.discountPrice + item.chainPrice 
+                    : item.discountPrice)) * 0.015
+                ).toFixed(2)), 0).toFixed(2)}
+            </td>`
+          : `<td>-</td>`}
+
+            <td>
+            ${order?.venue?.toLowerCase().includes("maharashtra")
+              ? order.cart.reduce((acc, item) => acc + parseFloat(
+                  (
+                    (item.salesTeamPrice 
+                      ? parseFloat(item.salesTeamPrice) 
+                      : (item.chainPrice > 0 
+                        ? item.discountPrice + item.chainPrice 
+                        : item.discountPrice)
+                    ) * 0.015
+                  ).toFixed(2)
+                ), 0).toFixed(2)
+              : "-"}
+          </td>
+
         <td></td>
         <td>${order.totalPrice}</td>
       </tr>

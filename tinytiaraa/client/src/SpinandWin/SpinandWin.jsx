@@ -209,7 +209,7 @@ function SpinandWin() {
   return (
     <div className="flex flex-col justify-center items-center h-auto">
          <div className="balloon  absolute flex flex-col items-center w-full h-80 space-y-4 ">
-        {winners.map((winner, index) => (
+        {winners?.slice(-10).map((winner, index) => (
         <WinnerBalloon
         key={index}
         name={winner.name}
@@ -218,7 +218,7 @@ function SpinandWin() {
         onAnimationEnd={() => handleRemoveBalloon(index)}
         index={index} // Pass the index to the WinnerBalloon
         isVisible={visibleWinners[index]} // Pass the visibility state
-    />
+        />
         ))}
       </div>
       <div className="p-1 rounded-lg">

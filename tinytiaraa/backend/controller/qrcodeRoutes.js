@@ -6,8 +6,10 @@ const ErrorHandler = require('../utils/Errorhandler');
 const crypto = require('crypto');
 const catchAsyncErrors = require('../middleware/catchAsyncErrors');
 const QRCode = require('../model/qrcodeModel');
+
 const mongoose = require("mongoose");
 const ObjectId = mongoose.Types.ObjectId;
+const Subcategory = require('../model/SubcategoryQRCode')
 
 const generateRandomString = (length) => {
   return crypto.randomBytes(length).toString('hex').slice(0, length);
@@ -156,6 +158,152 @@ router.post("/save-qrcode", async (req, res) => {
   }
 
 });
+
+
+
+// for subcatgeory new routes 
+
+router.get("/get-subcategory/:id", async (req, res) => {
+  try {
+    const subcategory = await Subcategory.findById(req.params.id)
+    if (!subcategory) return res.status(404).json({ message: "Not found" })
+    res.json({ subcategory })
+  } catch (error) {
+    res.status(500).json({ error: "Server error" })
+  }
+})
+
+router.get("/qrcode/sub/:subcategoryId", async (req, res) => {
+  try {
+    const { subcategoryId } = req.params;
+
+    const qrCode = await Subcategory.findOne({ subcategoryId });
+
+    if (!qrCode) {
+      return res.status(404).json({ message: "QR Code not found" });
+    }
+
+    res.status(200).json({ redirectUrl: qrCode.redirectUrl });
+  } catch (error) {
+    res.status(500).json({ message: "Error retrieving subcategory QR Code", error });
+  }
+});
+
+
+
+// Route to save a QR code for a subcategory
+router.post("/save-subcategory-qrcode", async (req, res) => {
+  try {
+    const { categoryId, subcategoryId, url, redirectUrl, qrImageBase64 } = req.body;
+
+    if (!categoryId || !subcategoryId || !url || !redirectUrl || !qrImageBase64) {
+      return res.status(400).json({ success: false, message: "Missing required fields" });
+    }
+
+    const processedQRImage = processBase64Image(qrImageBase64);
+
+    const newQRCode = new Subcategory({
+      categoryId,
+      subcategoryId,
+      url,
+      redirectUrl,
+      qrImage: processedQRImage,
+    });
+
+     await newQRCode.save();
+
+    const qrRedirectUrl = `https://www.tinytiaraa.com/qrcode/sub/${newQRCode._id}`;
+
+    res.status(201).json({
+      success: true,
+      message: "Subcategory QR Code saved successfully",
+      data: { ...newQRCode.toObject(), qrRedirectUrl },
+    });
+  } catch (error) {
+    console.error("Error saving subcategory QR code:", error);
+    res.status(500).json({ success: false, message: error.message });
+  }
+});
+
+
+router.get("/get-all-subcategory-qrcodes", async (req, res) => {
+  try {
+    const qrcodes = await Subcategory.find()
+      .populate("categoryId", "title subcategories"); // fetch title and subcategories
+
+    const qrcodeWithSubcategory = qrcodes.map((qrcode) => {
+      const subcategory = qrcode.categoryId?.subcategories?.find(
+        (sub) => sub._id.toString() === qrcode.subcategoryId.toString()
+      );
+
+      return {
+        ...qrcode.toObject(),
+        categoryTitle: qrcode.categoryId?.title,
+        subcategoryName: subcategory?.name || null,
+      };
+    });
+
+    res.json(qrcodeWithSubcategory);
+  } catch (error) {
+    console.error("Error fetching QR Codes:", error);
+    res.status(500).json({ message: "Error fetching QR Codes", error });
+  }
+});
+
+
+//delete 
+router.delete("/delete-subcategory-qrcode/:qrId", async (req, res) => {
+  try {
+    const { qrId } = req.params;
+
+    // Check if the QR code exists
+    const qrcode = await Subcategory.findById(qrId);
+    if (!qrcode) {
+      return res.status(404).json({ message: "QR Code not found" });
+    }
+
+    // Delete the QR code document
+    await Subcategory.findByIdAndDelete(qrId);
+
+    res.status(200).json({ message: "QR Code deleted successfully" });
+  } catch (error) {
+    console.error("Error deleting QR Code:", error);
+    res.status(500).json({ message: "Failed to delete QR Code", error });
+  }
+});
+
+
+
+//edit 
+
+router.put("/update-subcategory-qrcode/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { categoryId, subcategoryId, url, redirectUrl } = req.body;
+
+    // Find the existing Subcategory QR Code entry
+    const qrCode = await Subcategory.findById(id);
+    if (!qrCode) {
+      return res.status(404).json({ success: false, message: "Subcategory QR Code not found" });
+    }
+
+    // Update the fields
+    qrCode.categoryId = categoryId || qrCode.categoryId;
+    qrCode.subcategoryId = subcategoryId || qrCode.subcategoryId;
+    qrCode.url = url || qrCode.url;
+    qrCode.redirectUrl = redirectUrl || qrCode.redirectUrl;
+
+    await qrCode.save();
+
+    res.status(200).json({ success: true, message: "Subcategory QR Code updated successfully", data: qrCode });
+  } catch (error) {
+    console.error("Error updating subcategory QR Code:", error);
+    res.status(500).json({ success: false, message: error.message });
+  }
+});
+
+
+
 
 
 module.exports = router;
