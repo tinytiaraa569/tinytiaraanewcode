@@ -157,7 +157,7 @@ const ContactSec2 = () => {
               <div className="relative h-[300px] md:h-auto">
                 <div
                   className="absolute inset-0 bg-cover bg-center"
-                  style={{ backgroundImage: `url('https://tiny-tiaraanew.vercel.app/assets/office-BNYsVGP5.png')` }}
+                  style={{ backgroundImage: `url('https://www.tinytiaraa.com/assets/office-BNYsVGP5.png')` }}
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-[black]/80 via-[#B67F6D]/10 to-transparent" />
 
