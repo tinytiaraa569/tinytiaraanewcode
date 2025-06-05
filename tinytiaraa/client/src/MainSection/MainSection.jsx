@@ -53,7 +53,7 @@ function MainSection() {
       {/* <MorePage /> */}   <Homesec5 />
       {/* <NewArrivals /> */}  <Homesec6 />
       {/* <Customise /> */}    <Homesec7 />
-      {/* <Safety />   <Homesec8 /> */}
+      {/* <Safety /> */}  <Homesec8 /> 
       {/* <Slidertext /> */}   <Homesec9 />
       {/* <CustomizedAccordions /> */}  <Homesec10 />
       <Homesec11 />

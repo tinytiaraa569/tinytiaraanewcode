@@ -141,7 +141,7 @@ export default function Aboutsec4() {
         }}
       />
       <motion.img
-        src="https://tiny-tiaraanew.vercel.app/assets/first-Dsg0_80p.svg"
+        src="https://www.tinytiaraa.com/assets/first-Dsg0_80p.svg"
         alt="Association 1"
         width={120}
         height={120}
@@ -181,7 +181,7 @@ export default function Aboutsec4() {
                   }}
                 />
                 <motion.img
-                  src="https://tiny-tiaraanew.vercel.app/assets/third-CBytz535.svg"
+                  src="https://www.tinytiaraa.com/assets/third-CBytz535.svg"
                   alt="Association 2"
                   width={120}
                   height={120}
@@ -222,7 +222,7 @@ export default function Aboutsec4() {
                   }}
                 />
                 <motion.img
-                  src="https://tiny-tiaraanew.vercel.app/assets/fourth-BinWpgKg.svg"
+                  src="https://www.tinytiaraa.com/assets/fourth-BinWpgKg.svg"
                   alt="Association 3"
                   width={120}
                   height={120}
