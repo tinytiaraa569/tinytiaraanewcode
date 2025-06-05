@@ -2155,6 +2155,9 @@ import { useSelector } from "react-redux"
 import { usePriceRange } from "@/pricerange/PriceRangeContext"
 import { FaUserAlt } from "react-icons/fa"
 import { changeCurrency, initializeConversionRates } from "@/redux/actions/currencyActions"
+import CurrencySelector from "@/CurrencySelector/CurrencySelector"
+import { useDispatch } from "react-redux"
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 
 // Animation variants
 const navbarAnimation = {
@@ -2274,13 +2277,14 @@ function Navbar() {
 
          const toggleShopDropdown = () => {
          setIsDropdownVisible(!isDropdownVisible);
+         
          };
 
          const closeDropdown = () => {
          setIsDropdownVisible(false);
          };
 
-              const [isShopOpen, setIsShopOpen] = useState(false);
+      const [isShopOpen, setIsShopOpen] = useState(false);
      const shopRef = useRef(null);
 
 
@@ -2313,6 +2317,7 @@ function Navbar() {
          const handleClickOutside = (event) => {
              if (shopRef.current && !shopRef.current.contains(event.target)) {
                  closeShopDropdown();
+
              }
          };
 
@@ -2537,8 +2542,9 @@ function Navbar() {
           console.error(error.response?.data?.message || 'Error during logout');
         });
     };
+    const dispatch = useDispatch();
 
-        const [isCurrencySelectorOpen, setIsCurrencySelectorOpen] = useState(false);
+    const [isCurrencySelectorOpen, setIsCurrencySelectorOpen] = useState(false);
 
     const toggleCurrencySelector = () => {
         setIsCurrencySelectorOpen(!isCurrencySelectorOpen);
@@ -2587,6 +2593,46 @@ function Navbar() {
 
   };
 
+   const setDefaultCurrency = async () => {
+    const countryCode =   await fetchUserCountry();
+   
+    if (countryCode && currencyDataz.length > 0) {
+        const matchedCurrency = currencyDataz.find(
+            (currency) => currency.code.toUpperCase().includes(countryCode.toUpperCase())
+          );
+
+      if (matchedCurrency) {
+        setSelectedCurrency(matchedCurrency.code);
+       
+      }
+    }
+  };
+ // Fetch currency data on component mount
+    useEffect(() => {
+        fetchCurrencyData();
+    }, []);
+
+     // Set default currency after fetching data
+  useEffect(() => {
+    if (currencyDataz.length > 0) {
+      setDefaultCurrency();
+     
+   
+    }
+  }, [currencyDataz]);
+  useEffect(() => {
+    if (selectedCurrency) {
+        
+        dispatch(changeCurrency(selectedCurrency))
+      dispatch(initializeConversionRates(selectedCurrency));
+    }
+  }, [selectedCurrency]);
+
+
+  console.log(selectedCurrency,"slected surency us ")
+
+  console.log(currencyDataz,'currencyDataz------')
+  console.log(isCurrencySelectorOpen,'isCurrencySelectorOpen-----')
           
     return (
       <header 
@@ -2907,6 +2953,26 @@ function Navbar() {
                       }
                     </div>
 
+                     {/* ✅ Mobile currency selector */}
+                    <div
+                      className="flex items-center justify-center mb-3 lg:hidden gap-2 cursor-pointer"
+                      onClick={toggleCurrencySelector}
+                    >
+                      {currencyDataz.length > 0 && (
+                        <img
+                          src={currencyDataz.find(currency => currency.code === selectedCurrency)?.flag}
+                          alt={`${selectedCurrency} flag`}
+                          className="w-5 h-5"
+                        />
+                      )}
+                      <span className="text-sm font-medium text-gray-800">{selectedCurrency}</span>
+                      <span className="text-xs text-gray-500">(Tap to change)</span>
+                    </div>
+
+
+         
+
+
                     </motion.div>
                   )}
                 </AnimatePresence>
@@ -2980,7 +3046,7 @@ function Navbar() {
 
 
                 <NavigationMenuItem
-                ref={shopRef}   
+                // ref={shopRef}   
                   onMouseEnter={() => setIsDropdownVisible(true)} 
                   // onMouseLeave={(e) => {
                   //     if (!e.currentTarget.contains(e.relatedTarget)) {
@@ -2993,7 +3059,12 @@ function Navbar() {
                   
                 >
                   <NavigationMenuTrigger
-                  onClick={()=> navigate("/products")}
+                   onClick={() => {
+                      setIsDropdownVisible(false);
+                      setIsShopOpen(false); // hide the dropdown
+                      setTimeout(() => navigate("/products"), 200); // delay navigation for exit animation
+                    }}
+
                     className={cn(
                       "text-sm font-medium !px-1 py-2",
                       pathname.includes("/products")
@@ -3010,7 +3081,7 @@ function Navbar() {
                     pathname.startsWith("/products") &&
                       "text-[#D7A295] !bg-transparent hover:bg-transparent font-semibold after:content-[''] after:absolute after:left-0 after:mt-2 after:h-[2px] after:w-full after:bg-[#D7A295] after:rounded-full after:bottom-[-8px]"
                   )}
-                    onClick={toggleShopDropdown} whileHover={{ y: -2 }}>Shop</motion.span>
+                     whileHover={{ y: -2 }}>Shop</motion.span>
                   </NavigationMenuTrigger>
                   
                     {
@@ -3260,7 +3331,7 @@ function Navbar() {
                       variant="ghost"
                       size="icon"
                       className="absolute right-2 top-0 text-[#D7A295] hover:bg-transparent focus:bg-transparent active:bg-transparent"
-                      onClick={() => setSearchOpen(false)}
+                      onClick={() => resetSearch()}
                     >
                       <X className="h-4 w-4" />
                     </Button>
@@ -3421,6 +3492,45 @@ function Navbar() {
                   </DropdownMenuContent>
                 </DropdownMenu>
               </motion.div>
+
+               <div 
+                className="cursor-pointer hidden lg:flex items-center"
+                onClick={toggleCurrencySelector} 
+                >
+                {currencyDataz.length > 0 && (
+                    <img 
+                        src={currencyDataz.find(currency => currency.code === selectedCurrency)?.flag} 
+                        alt={`${selectedCurrency} flag`} 
+                        className="w-5 h-5 mr-2" 
+                    />
+                    
+                )}
+                <span className='font-[400] !text-xs'>{selectedCurrency}</span>
+              </div>
+
+              {/* {
+                currencyDataz.length > 0 &&  (
+                    <div style={{display:"none"}}>
+
+                    <CurrencySelector  onCurrencySelect={handleCurrencySelect} toggleCurrencySelector={toggleCurrencySelector}  currencyDataz={currencyDataz || []}  />
+                    </div>
+
+                )
+            } */}
+
+            <Dialog open={isCurrencySelectorOpen} onOpenChange={toggleCurrencySelector}>
+              <DialogContent className="max-w-md w-[95%] rounded-xl shadow-xl">
+                <DialogHeader>
+                  <DialogTitle className="text-left"></DialogTitle>
+                </DialogHeader>
+
+                <CurrencySelector 
+                  onCurrencySelect={handleCurrencySelect} 
+                  toggleCurrencySelector={toggleCurrencySelector}  
+                  currencyDataz={currencyDataz || []} 
+                />
+              </DialogContent>
+            </Dialog>
 
               <motion.div variants={fadeInUp}>
                 <Button

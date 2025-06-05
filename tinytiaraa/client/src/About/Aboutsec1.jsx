@@ -18,7 +18,7 @@ const Aboutsec1 = () => {
   return (
     <div ref={ref}>
       <motion.section
-        className="relative h-[550px] md:h-[650px] lg:h-[700px] overflow-hidden bg-[#FDF8F6]"
+        className="relative h-[550px] md:h-[650px] lg:h-[700px] 2xl:h-[760px] overflow-hidden bg-[#FDF8F6]"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.8 }}

@@ -4,27 +4,33 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Link, useNavigate } from "react-router-dom"
 import { motion } from "framer-motion"
 import { useSelector } from "react-redux"
+import infantsimg from './homebanner5/infantsimg.webp'
+import momandmeimg from './homebanner5/momandmeimg.webp'
+import kidsimg from './homebanner5/kidsimg.webp'
+import teenimg from './homebanner5/teenimg.webp'
+
+
 
 const Agefilterdata = [
   {
     label: "Infants 0-3 YRS",
     key: "infants",
-    bg: "https://i.pinimg.com/736x/71/da/49/71da49376a2aa744d5626d78ed7e4278.jpg",
+    bg: infantsimg,
   },
   {
     label: "Kids 3-10 YRS",
     key: "kids",
-    bg: "https://i.pinimg.com/736x/ec/c3/24/ecc324e3b41f2c0bdb054c0be5286940.jpg",
+    bg: kidsimg,
   },
   {
     label: "Teen",
     key: "teens",
-    bg: "https://i.pinimg.com/736x/8e/da/8a/8eda8a2cce705eb0f314d2e77eaa245c.jpg",
+    bg: teenimg,
   },
   {
     label: "Mom & Me",
     key: "momandme",
-    bg: "https://i.pinimg.com/736x/3b/69/93/3b6993ddb4f3ccb6033c29bf8e126ccc.jpg",
+    bg: momandmeimg,
   },
 ]
 

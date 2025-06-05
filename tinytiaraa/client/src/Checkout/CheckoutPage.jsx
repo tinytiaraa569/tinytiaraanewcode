@@ -318,17 +318,17 @@ const calculateEDD = async () => {
 
     return (
 
-        <div className='w-full bg-[#fafafa;] pb-8'>
+        <div className='w-full bg-gradient-to-b from-[#ecd0c6]/10 to-white pb-8'>
             <div >
 
                 <div className='w-full flex pt-3 mb-7'>
 
                     <div className='w-[15%] flex !text-[black] items-center gap-2 pl-2 cursor-pointer' onClick={handleback}>
-                        <IoIosArrowBack size={18} className='secureshoppingbagitems' />
-                        <span className='text-[18px] securehecoutsize'>Bag</span>
+                        <IoIosArrowBack size={16} className='secureshoppingbagitems' />
+                        <span className='text-[md] securehecoutsize'>Bag</span>
                     </div>
                     <div className='w-[80%]'>
-                        <h2 className='securehecoutsizehead text-center text-[20px] font-[600]'>Secure Checkout</h2>
+                        <h2 className='securehecoutsizehead !text-[#B67F6D] text-center text-[20px] font-[600]'>Secure Checkout</h2>
                     </div>
                 </div>
 
@@ -764,7 +764,7 @@ const calculateEDD = async () => {
                                 </div>
 
                                 <div className='flex justify-end '>
-                                    <div className={`button-wrapperdiv`} onClick={paymentSubmit}>
+                                    <div className={`button-wrapperdiv bg-gradient-to-r from-[#D8B4A0] to-[#D7A295] hover:opacity-90 text-white`} onClick={paymentSubmit}>
                                         <button className={`button-wrapper`}>Continue To Payment</button>
                                     </div>
                                 </div>

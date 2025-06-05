@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { server } from "@/server";
 import { changeCurrency, initializeConversionRates } from "@/redux/actions/currencyActions";
+import { Button } from "@/components/ui/button";
 
 const CurrencySelector = ({ toggleCurrencySelector, onCurrencySelect , currencyDataz}) => {
   const dispatch = useDispatch();
@@ -77,7 +78,7 @@ const CurrencySelector = ({ toggleCurrencySelector, onCurrencySelect , currencyD
   };
 
   return (
-    <div>
+    <div className="relative !z-50">
       <h1 className="text-[15px] text-center text-[#000000c2]">
         Change Country / Currency
       </h1>
@@ -120,10 +121,10 @@ const CurrencySelector = ({ toggleCurrencySelector, onCurrencySelect , currencyD
         </div>
       </div>
 
-      <div className="flex justify-center my-1 mb-3 cursor-pointer">
-        <button className="productviewmore" onClick={toggleCurrencySelector}>
+      <div className="flex justify-center my-3 mb-1 cursor-pointer">
+        <Button className="bg-gradient-to-r from-[#D8B4A0] to-[#D7A295] hover:opacity-90 text-white border-0" onClick={toggleCurrencySelector}>
           Update Currency
-        </button>
+        </Button>
       </div>
     </div>
   );

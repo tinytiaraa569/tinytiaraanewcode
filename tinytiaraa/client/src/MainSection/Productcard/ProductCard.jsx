@@ -238,7 +238,7 @@ import { addToWishlist, removeFromWishlist } from "@/redux/actions/wishlist"
  import { FaInstagram } from 'react-icons/fa'
 
 
-const ProductCard = ({ data, selectedEnamelColorimg = 0 }) => {
+const ProductCard = ({ data, selectedEnamelColorimg }) => {
 
  const { currency, conversionRates } = useSelector((state) => state.currency); // Accessing currency state and conversion rates
   const { wishlist } = useSelector((state) => state.wishlist)
@@ -266,41 +266,45 @@ const averageRating = totalReviews
   : 0;
 
 
-  const processImageUrl = (url) => {
-    if (!url) return "/placeholder.svg"
-    if (url.match(/https:\/\/res\.cloudinary\.com\/ddaef5aw1\/image\/upload\/v[0-9]+/)) {
-      return url.replace(
-        /https:\/\/res\.cloudinary\.com\/ddaef5aw1\/image\/upload\/v[0-9]+/,
-        `${imgdburl}/uploads/images`
-      )
-    }
-    return `${imgdburl}${url}`
-  }
+  // const processImageUrl = (url) => {
+  //   if (!url) return "/placeholder.svg"
+  //   if (url.match(/https:\/\/res\.cloudinary\.com\/ddaef5aw1\/image\/upload\/v[0-9]+/)) {
+  //     return url.replace(
+  //       /https:\/\/res\.cloudinary\.com\/ddaef5aw1\/image\/upload\/v[0-9]+/,
+  //       `${imgdburl}/uploads/images`
+  //     )
+  //   }
+  //   return `${imgdburl}${url}`
+  // }
 
-  // Get all available images
-  const allImages = []
+  // // Get all available images
+  // const allImages = []
 
-  // Add enamel color images if available
-  const enamelColorImages = data?.enamelColors?.[selectedEnamelColorimg]
-    ? Object.values(data.enamelColors[selectedEnamelColorimg]).flat()
-    : []
+  // // Add enamel color images if available
+  // const enamelColorImages = data?.enamelColors?.[selectedEnamelColorimg]
+  //   ? Object.values(data.enamelColors[selectedEnamelColorimg]).flat()
+  //   : []
 
-  if (enamelColorImages.length > 0) {
-    enamelColorImages.forEach(img => allImages.push(img.url))
-  }
+  // if (enamelColorImages.length > 0) {
+  //   enamelColorImages.forEach(img => allImages.push(img.url))
+  // }
 
-  // Add regular images if available
-  if (data?.images) {
-    data.images.forEach(img => allImages.push(img.url))
-  }
+  // // Add regular images if available
+  // if (data?.images) {
+  //   data.images.forEach(img => allImages.push(img.url))
+  // }
 
-  // Process image URLs and ensure at least one image
-  const processedImages = allImages.length > 0 
-    ? allImages.map(processImageUrl) 
-    : [processImageUrl(null)]
+  // // Process image URLs and ensure at least one image
+  // const processedImages = allImages.length > 0 
+  //   ? allImages.map(processImageUrl) 
+  //   : [processImageUrl(null)]
 
-  const primaryImage = processedImages[1]
-  const secondaryImage = processedImages.length > 1 ? processedImages[2] : primaryImage
+  // const primaryImage = processedImages[1]
+
+  const enamelColorImages = data.enamelColors[selectedEnamelColorimg]
+  ? Object.values(data.enamelColors[selectedEnamelColorimg]).flat()
+  : [];
+  // const secondaryImage = processedImages.length > 1 ? processedImages[2] : primaryImage
 
   const cardVariants = {
     initial: { scale: 0.95, opacity: 0 },
@@ -343,8 +347,9 @@ const averageRating = totalReviews
 
   //  Reusable rating component
 const RatingStars = ({ rating }) => {
-  const fullStars = Math.floor(rating);
-  const hasHalfStar = rating % 1 >= 0.5;
+  const roundedRating = Math.round(rating * 2) / 2; // e.g. 3.7 → 3.5
+  const fullStars = Math.floor(roundedRating);
+  const hasHalfStar = roundedRating % 1 !== 0;
 
   return (
     <div className="flex items-center gap-0.5">
@@ -361,6 +366,7 @@ const RatingStars = ({ rating }) => {
     </div>
   );
 };
+
 
 
 // Reusable buy now button
@@ -381,17 +387,17 @@ const DiscountBadge = ({ originalPrice, discountPrice }) => {
 
   const discountPercentage = Math.round(((originalPrice - discountPrice) / originalPrice) * 100)
 
-  return <Badge className="absolute top-2 left-2 bg-red-500 hover:bg-red-600">{discountPercentage}% OFF</Badge>
+  return <Badge className="absolute z-10 top-2 left-2 bg-red-500 hover:bg-red-600">{discountPercentage}% OFF</Badge>
 }
 
 const PriceDisplay = ({ originalPrice, discountPrice }) => {
   return (
      <div className="flex items-center gap-1  text-[12px]">
-      {originalPrice > discountPrice && (
+      {/* {originalPrice > discountPrice && (
         <span className="text-[10px] text-[#d55b45]  line-through">
           {currency} {convertedOriginalPrice}
         </span>
-      )}
+      )} */}
       <span className="text-[10px] font-semibold text-gray-800">
         {currency} {convertedDiscountPrice}
       </span>
@@ -446,26 +452,65 @@ const PriceDisplay = ({ originalPrice, discountPrice }) => {
      onMouseLeave={() => setIsHovered(false)}
    >
      <Card
-      className="overflow-hidden transition-all duration-300 hover:shadow-md !py-0 !gap-0"
+      className="cursor-pointer overflow-hidden transition-all duration-300 hover:shadow-md !py-0 !gap-0"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => {
         handleMouseLeave()
         setIsHovered(false)
       }}
+      
     >
       <div className="relative h-[200px] overflow-hidden cursor-pointer">
         <DiscountBadge originalPrice={data?.originalPrice} discountPrice={data?.discountPrice} />
 
         <motion.img
-          src={isHovered ? primaryImage : secondaryImage}
-          alt={data?.name}
-          fill
-           variants={fadeVariants}
-           initial="hidden"
+            onClick={() => { navigate(`/product/${product_name}`) }}
+            src={
+              isHovered
+                ? // ✅ Hovered image (primary)
+                  enamelColorImages.length > 0 
+                    ? (
+                        enamelColorImages[0].url.match(/https:\/\/res\.cloudinary\.com\/ddaef5aw1\/image\/upload\/v[0-9]+/) 
+                          ? enamelColorImages[0].url.replace(
+                              /https:\/\/res\.cloudinary\.com\/ddaef5aw1\/image\/upload\/v[0-9]+/, 
+                              `${imgdburl}/uploads/images`
+                            )
+                          : `${imgdburl}${enamelColorImages[0].url}`
+                      )
+                    : (
+                        data?.images?.[2]?.url?.match(/https:\/\/res\.cloudinary\.com\/ddaef5aw1\/image\/upload\/v[0-9]+/) 
+                          ? data.images[2].url.replace(
+                              /https:\/\/res\.cloudinary\.com\/ddaef5aw1\/image\/upload\/v[0-9]+/, 
+                              `${imgdburl}/uploads/images`
+                            )
+                          : `${imgdburl}${data?.images?.[0]?.url}`
+                      )
+                : // ✅ Default (non-hovered) image (secondary)
+                  enamelColorImages.length > 1 
+                    ? (
+                        enamelColorImages[1].url.match(/https:\/\/res\.cloudinary\.com\/ddaef5aw1\/image\/upload\/v[0-9]+/) 
+                          ? enamelColorImages[1].url.replace(
+                              /https:\/\/res\.cloudinary\.com\/ddaef5aw1\/image\/upload\/v[0-9]+/, 
+                              `${imgdburl}/uploads/images`
+                            )
+                          : `${imgdburl}${enamelColorImages[1].url}`
+                      )
+                    : (
+                        data?.images?.[1]?.url?.match(/https:\/\/res\.cloudinary\.com\/ddaef5aw1\/image\/upload\/v[0-9]+/) 
+                          ? data.images[1].url.replace(
+                              /https:\/\/res\.cloudinary\.com\/ddaef5aw1\/image\/upload\/v[0-9]+/, 
+                              `${imgdburl}/uploads/images`
+                            )
+                          : `${imgdburl}${data?.images?.[1]?.url}`
+                      )
+            }
+            alt={data?.name}
+            className="absolute z-0 inset-0 w-full h-full object-contain p-2 transition-all duration-500 scale-110"
+            variants={fadeVariants}
+            initial="hidden"
             animate="visible"
             exit="hidden"
-          className="absolute inset-0  w-full h-full object-contain p-2  transition-all duration-500 scale-110"
-        />
+          />
 
         <div
           className={cn(
@@ -505,33 +550,47 @@ const PriceDisplay = ({ originalPrice, discountPrice }) => {
           </div>
 
 
-           {/* <div className=''>
-             {showShareIcons && (
-               <div className="share-icons  mt-4 flex gap-[4px] p-2  rounded-md z-10">
-                 <FacebookShareButton url={`https://www.tinytiaraa.com/product/${product_name}`} onClick={closeShareIcons} >
-                   <FacebookIcon size={32} round={true} />
-                 </FacebookShareButton>
+          {/* Share Icons Dropdown */}
+          {showShareIcons && (
+              <div className="absolute mt-2  right-0 flex items-center gap-1 px-2 py-1 bg-white dark:bg-[#2f2b28] border border-gray-200 dark:border-[#44403c] rounded-md shadow-md z-50">
+                <FacebookShareButton
+                  url={`https://www.tinytiaraa.com/product/${product_name}`}
+                  onClick={closeShareIcons}
+                  className="hover:scale-105 transition-transform"
+                >
+                  <FacebookIcon size={24} round />
+                </FacebookShareButton>
 
-                 <div onClick={handleWhatsappShare}>
-                   <WhatsappIcon size={32} round={true} />
-                 </div>
+                <div
+                  onClick={handleWhatsappShare}
+                  className="hover:scale-105 transition-transform cursor-pointer"
+                >
+                  <WhatsappIcon size={24} round />
+                </div>
 
-                 <EmailShareButton url={`https://www.tinytiaraa.com/product/${product_name}`} onClick={closeShareIcons} >
-                   <EmailIcon size={32} round={true} />
-                 </EmailShareButton>
+                <EmailShareButton
+                  url={`https://www.tinytiaraa.com/product/${product_name}`}
+                  onClick={closeShareIcons}
+                  className="hover:scale-105 transition-transform"
+                >
+                  <EmailIcon size={24} round />
+                </EmailShareButton>
 
-                 <div onClick={() => { shareOnInstagram(data) }}>
-                   <i className="fa-brands fa-square-instagram instasty" style={{ cursor: 'pointer' }}></i>
-                 </div>
-               </div>
-             )}
-           </div> */}
+                <div
+                  onClick={() => shareOnInstagram(data)}
+                  className="hover:scale-105 transition-transform cursor-pointer"
+                >
+                  <FaInstagram size={20} color="#E1306C" />
+                </div>
+              </div>
+            )}
+
 
            
         </div>
       </div>
 
-      <CardContent className="px-4 pb-4">
+      <CardContent className="px-4 pb-4" onClick={() => { navigate(`/product/${product_name}`) }}>
         <Link to={`/product/${product_name}`}>
              <h4 className='pb-1 font-[500] text-[14px] text-center !line-clamp-1'>{data.name.length > 28 ? data.name.slice(0, 28) + "..." : data.name}</h4>
            </Link>

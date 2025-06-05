@@ -11,6 +11,22 @@ import { motion, useInView } from "framer-motion"
 import axios from "axios"
 import { server,imgdburl } from "@/server"
 import { useNavigate } from "react-router-dom"
+import mainbanner from './homebanner2/mainbanner.webp'
+
+import goldbanner from './homebanner2/goldbanner.webp'
+import silverbanner from './homebanner2/silverbanner.webp'
+
+
+import gold1img from './homebanner2/gold1.webp'
+import gold2img from './homebanner2/gold2.webp'
+
+
+
+
+import silver1img from './homebanner2/silver1.webp'
+import silver2img from './homebanner2/silver2.webp'
+
+
 
 
 const Homesec2 = () => {
@@ -171,7 +187,7 @@ const Homesec2 = () => {
           visible: { opacity: 1, transition: { duration: 0.8 } },
         }}
       >
-        {"Kids & InfantsJewlery".split("").map((char, index) => (
+        {"Infants & kids Jewlery".split("").map((char, index) => (
           <motion.span
             key={index}
             variants={{
@@ -205,21 +221,23 @@ const Homesec2 = () => {
         </motion.div>
 
         {/* Column 2 */}
-        <motion.div
-          className="h-[350px] w-full md:w-[250px] flex items-center justify-center rounded-lg bg-[#F4E7E2] border border-gray-100 shadow-sm overflow-hidden"
-          variants={slideInVariants}
-        
-        >
-          <motion.img
-            className="w-full h-full rounded-lg object-cover"
-            src="https://i.pinimg.com/736x/99/c6/ab/99c6ab77c9c136b403aae270ae8c3eb2.jpg"
-            alt="Jewelry showcase"
-            initial={{ scale: 1.1 }}
-            animate={{ scale: 1 }}
-            transition={{ duration: 1.2, ease: "easeOut" }}
-            whileHover={{ scale: 1.05, transition: { duration: 0.5 } }}
-          />
-        </motion.div>
+       <motion.div
+      className="group relative cursor-pointer h-[300px] sm:h-[350px] w-full md:w-[250px] flex items-center justify-center rounded-lg bg-[#F4E7E2] border border-gray-100 shadow-sm overflow-hidden"
+      variants={slideInVariants}
+    >
+      {/* Black Overlay */}
+      <div className="absolute inset-0 bg-black bg-opacity-10 group-hover:bg-opacity-5 z-10 transition-all pointer-events-none" />
+
+      {/* Image with hover scale */}
+      <motion.img
+        src={mainbanner}
+        alt="Jewelry showcase"
+        className="w-full h-full object-cover rounded-lg transition-transform duration-500 ease-out"
+        initial={{ scale: 1 }}
+        whileHover={{ scale: 1.1 }}
+      />
+    </motion.div>
+
 
         {/* Column 3 - Adjusted to match Column 4 */}
         <motion.div
@@ -236,9 +254,9 @@ const Homesec2 = () => {
               className="w-full h-full rounded-lg object-cover"
               src={
               selectedType === "gold" ? 
-              "https://i.pinimg.com/736x/cd/df/22/cddf228c201a446720f41bf912689c3e.jpg"
+              gold1img
               :
-              "https://i.pinimg.com/736x/46/80/b1/4680b18ccd08f0244580fe6ac4c728e5.jpg"
+              silver1img
               }
                 
               alt="Jewelry item"
@@ -260,9 +278,9 @@ const Homesec2 = () => {
               className="w-full h-full rounded-lg object-cover"
                src={
                 selectedType === "gold" ? 
-              "https://i.pinimg.com/736x/0e/d6/a4/0ed6a42a9e60cb7ab47252605db8f1d6.jpg"
+              gold2img
               :
-              "https://i.pinimg.com/736x/c4/e7/27/c4e7271a7b8d148ae905dc2514d25b72.jpg"
+              silver2img
                }
               alt="Jewelry item"
                initial={{ opacity: 0, scale: 0.95 }}
@@ -290,7 +308,7 @@ const Homesec2 = () => {
                   >
                     <motion.img
                       className="w-full max-h-[193px] object-cover"
-                      src="https://i.pinimg.com/736x/3d/76/74/3d76748b167171309cc2b94de26ef305.jpg"
+                      src={goldbanner}
                       alt="Gold Product"
                       whileHover={{
                         scale: 1.05,
@@ -308,7 +326,7 @@ const Homesec2 = () => {
                   >
                     <motion.img
                       className="w-full max-h-[193px] object-cover"
-                      src="https://i.pinimg.com/736x/2c/84/c9/2c84c9c4c7d04084d9e25c6451df4c00.jpg"
+                      src={silverbanner}
                       alt="Silver Product"
                       whileHover={{
                         scale: 1.05,

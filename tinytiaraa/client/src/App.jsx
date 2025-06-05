@@ -125,6 +125,7 @@ import CustomerReview from './CustomerReview/CustomerReview';
 import AboutMain from './About/AboutMain';
 import CustomizationMain from './CustomisedJewel/CustomizationMain';
 import ContactMain from './Contact/ContactMain';
+import FloatingSocial from './floatingsocial/FloatingSocial';
 
 
 
@@ -261,17 +262,6 @@ function App() {
 
     
 
-
-    
-
-
-
-    
-    
-
-    
-
-    
 
 
     
@@ -774,6 +764,8 @@ function App() {
         {/* <CurrencySelector /> */}
 
         {!shouldHideNavbar &&  <Footer />}
+
+        <FloatingSocial />
        
 
       </PriceRangeProvider>

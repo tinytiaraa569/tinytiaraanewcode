@@ -1,6 +1,8 @@
 .contact-information {
     padding: 24px 16px;
     box-shadow: rgba(0, 0, 0, 0.05) 0px 1px 10px;
+    font-family: Poppins, sans-serif !important;
+
 }
 
 .int-emailcheck {
@@ -24,9 +26,8 @@
 .button-wrapperdiv {
     max-width: 300px;
 
-    background: #006039;
+   
     font-weight: 400;
-    font-size: 16px;
     line-height: 30px;
     letter-spacing: 0.45px;
     transition: all 0.5s ease-in-out 0s;
@@ -40,10 +41,7 @@
     width: 100%;
     padding: 10px 5px;
 }
-.button-wrapperdiv:hover{
-    
-    background: #098d58;
-}
+
 .checkoutright {
     padding: 8px;
     border: 1px solid rgb(231, 231, 233);

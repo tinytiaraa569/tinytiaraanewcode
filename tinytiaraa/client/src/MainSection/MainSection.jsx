@@ -25,6 +25,9 @@ import Homesec8 from './Homenew/Homesec8'
 import Homesec9 from './Homenew/Homesec9'
 import Homesec10 from './Homenew/Homesec10'
 import Homesec11 from './Homenew/Homesec11'
+import CombineHome from './Homenew/CombineHome'
+import HomeReview from './Homenew/HomeReveiw'
+import HomeReferral from './Homenew/HomeReferral'
 
 function MainSection() {
   const navigate = useNavigate();
@@ -48,15 +51,20 @@ function MainSection() {
     <div>
       {/* <SliderSection /> */}  <HomeSec1 />
       {/* <WhyPage />  */}   <Homesec2 />
-      {/* <Shippingpage /> */}  <Homesec3 />
-      {/* <Categories /> */}   <Homesec4 />
-      {/* <MorePage /> */}   <Homesec5 />
+      {/* <Shippingpage />  <Homesec3 /> */}
+      <CombineHome />
+       <Homesec10 />
+      {/* <Categories />   <Homesec4 />  */}
+      {/* <MorePage />  */} <Homesec5 /> 
       {/* <NewArrivals /> */}  <Homesec6 />
       {/* <Customise /> */}    <Homesec7 />
-      {/* <Safety />   <Homesec8 /> */}
+      {/* <Safety />  */}
+        <Homesec8 />
       {/* <Slidertext /> */}   <Homesec9 />
-      {/* <CustomizedAccordions /> */}  <Homesec10 />
-      <Homesec11 />
+      {/* <CustomizedAccordions /> */} 
+      <HomeReview />
+      <HomeReferral />
+      {/* <Homesec11 /> */}
       {/* <Review />   
       <FollowUS />
       <Ttclub /> */}
@@ -71,13 +79,12 @@ function MainSection() {
         <FaGift size={32} />
       </div> */}
 
-
-    <div
+        {/* spin and win code */}
+    {/* <div
       className="fixed bottom-3 left-4 flex flex-col items-center cursor-pointer"
       onClick={handleGiftClick}
       title="Spin and Win"
     >
-      {/* "Spin and Win" Text */}
       {showText && (
         <span
           className="text-xs font-semibold text-white px-3 py-1 bg-gradient-to-r from-pink-500 to-red-500 rounded-full shadow-lg mb-2 animate-slide-bounce-fade"
@@ -90,7 +97,6 @@ function MainSection() {
         </span>
       )}
 
-      {/* Icon Circle */}
       <div
         className="bg-gradient-to-r from-pink-500 to-red-500 text-white p-3 rounded-full shadow-lg hover:scale-105 transition-transform transform"
         style={{
@@ -99,7 +105,7 @@ function MainSection() {
       >
         <FaGift size={22} />
       </div>
-    </div>
+    </div> */}
 
     </div>
   )

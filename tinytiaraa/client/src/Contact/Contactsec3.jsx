@@ -11,6 +11,7 @@ import { useForm } from "react-hook-form"
 import axios from "axios"
 import { server } from "@/server"
 import swal from "sweetalert";
+import { FaFacebookF, FaInstagram, FaRegEnvelope, FaWhatsapp } from "react-icons/fa"
 export default function ContactSec3() {
  const {
     register,
@@ -128,7 +129,7 @@ export default function ContactSec3() {
                 target="_blank"
                 className="w-12 h-12 flex items-center justify-center rounded-full bg-[#F3E9E6] dark:bg-[#3A332F] hover:bg-[#E3D2CC] transition-all duration-300 shadow-md"
                 >
-                <i className="fab fa-facebook-f text-[#8A6D63] dark:text-[#F4E7E2] text-lg" />
+                <FaFacebookF className="text-[#8A6D63] dark:text-[#F4E7E2] text-lg" />
                 </Link>
 
                 <Link
@@ -136,7 +137,7 @@ export default function ContactSec3() {
                 target="_blank"
                 className="w-12 h-12 flex items-center justify-center rounded-full bg-[#F3E9E6] dark:bg-[#3A332F] hover:bg-[#E3D2CC] transition-all duration-300 shadow-md"
                 >
-                <i className="fab fa-whatsapp text-[#8A6D63] dark:text-[#F4E7E2] text-lg" />
+                <FaWhatsapp className="text-[#8A6D63] dark:text-[#F4E7E2] text-lg" />
                 </Link>
 
                 <Link
@@ -144,7 +145,7 @@ export default function ContactSec3() {
                 target="_blank"
                 className="w-12 h-12 flex items-center justify-center rounded-full bg-[#F3E9E6] dark:bg-[#3A332F] hover:bg-[#E3D2CC] transition-all duration-300 shadow-md"
                 >
-                <i className="fab fa-instagram text-[#8A6D63] dark:text-[#F4E7E2] text-lg" />
+                <FaInstagram className="text-[#8A6D63] dark:text-[#F4E7E2] text-lg" />
                 </Link>
 
                 <Link
@@ -152,7 +153,7 @@ export default function ContactSec3() {
                 target="_blank"
                 className="w-12 h-12 flex items-center justify-center rounded-full bg-[#F3E9E6] dark:bg-[#3A332F] hover:bg-[#E3D2CC] transition-all duration-300 shadow-md"
                 >
-                <i className="fa-regular fa-envelope text-[#8A6D63] dark:text-[#F4E7E2] text-lg" />
+                 <FaRegEnvelope className="text-[#8A6D63] dark:text-[#F4E7E2] text-lg" />
                 </Link>
             </div>
             </div>

@@ -65,6 +65,7 @@ function Wishlist({ setOpenWishlist , isOpen = true  }) {
   </Helmet>
 
   const { wishlist } = useSelector((state) => state.wishlist)
+  
   const dispatch = useDispatch()
 
   const removeFromWishlistHandler = (data) => {
@@ -87,7 +88,7 @@ function Wishlist({ setOpenWishlist , isOpen = true  }) {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.3 }}
-       className='fixed top-0 left-0 w-full  inset-0 bg-black/20 backdrop-blur-sm z-50 !min-h-screen overflow-y-scroll scrollbar-hide'
+       className='fixed top-0 left-0 w-full  inset-0 bg-black/20 backdrop-blur-sm z-50 min-h-screen overflow-y-scroll scrollbar-hide'
        >
        
         {/* Wishlist Panel */}
@@ -96,7 +97,7 @@ function Wishlist({ setOpenWishlist , isOpen = true  }) {
             animate={{ x: 0 }}
             exit={{ x: "100%" }}
             transition={{ type: "spring", damping: 25, stiffness: 200 }}
-            className="fixed top-0 right-0 h-full w-full max-w-md bg-gradient-to-t from-[#F4E7E2] via-[#F9F6F4] to-white shadow-2xl z-50 flex flex-col"
+            className="fixed top-0 right-0 min-h-screen w-full max-w-md bg-gradient-to-t from-[#F4E7E2] via-[#F9F6F4] to-white shadow-2xl z-50 flex flex-col"
           >
              <SparkleEffect />
             {/* Header */}
@@ -185,6 +186,8 @@ function Wishlist({ setOpenWishlist , isOpen = true  }) {
 const CartSingle = ({ data, index, removeFromWishlistHandler, addToCartHandler, setOpenWishlist }) => {
   const navigate = useNavigate()
   const product_name = data.name?.replace(/\s+/g, "-")
+    const { currency, conversionRates } = useSelector((state) => state.currency); // Get currency and conversion rates from state
+
 
   const imageUrl = data?.images?.[0]?.url?.match(/https:\/\/res\.cloudinary\.com\/ddaef5aw1\/image\/upload\/v[0-9]+/)
     ? data.images[0].url.replace(
@@ -192,6 +195,14 @@ const CartSingle = ({ data, index, removeFromWishlistHandler, addToCartHandler, 
         `${imgdburl}/uploads/images`,
       )
     : `${imgdburl}${data?.images?.[0]?.url}`
+    const convertedDiscountPrice = (data.discountPrice * (conversionRates[currency] || 1)).toFixed(0);
+  const convertedOriginalPrice = (
+    (data.originalPrice * (conversionRates[currency] || 1)) 
+  ).toFixed(0);
+
+  
+
+
 
   return (
     <motion.div
@@ -257,15 +268,15 @@ const CartSingle = ({ data, index, removeFromWishlistHandler, addToCartHandler, 
             <div className="flex items-center justify-between mb-3">
               <div className="flex items-center gap-2">
                 {data.originalPrice && (
-                  <span className="text-xs text-slate-400 line-through">₹{data.originalPrice}</span>
+                  <span className="text-xs text-slate-400 line-through">{currency}{convertedOriginalPrice}</span>
                 )}
                 <span className="text-sm font-bold text-[#8B4513]">
-                  ₹{data.originalPrice === 0 ? data.originalPrice : data.discountPrice}
+                  {currency} {convertedDiscountPrice}
                 </span>
               </div>
               <div className="flex items-center gap-1">
                 <Star className="h-3 w-3 fill-yellow-400 text-yellow-400" />
-                <span className="text-xs text-slate-600">4.8</span>
+                <span className="text-xs text-slate-600">{data?.ratings.toFixed(1)}</span>
               </div>
             </div>
 
