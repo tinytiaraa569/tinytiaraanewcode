@@ -103,7 +103,7 @@ const HomeSec1 = () => {
       >
         {sliderData.map((slide, index) => (
           <SwiperSlide key={slide.id}>
-            <div className="relative h-[550px] md:h-[650px] lg:h-[700px] 2xl:h-[760px] w-full flex items-center overflow-hidden">
+            <div className="relative h-[550px] md:h-[650px] lg:h-[700px] 2xl:h-[780px] w-full flex items-center overflow-hidden">
               <div className={cn("absolute inset-0 z-0 bg-gradient-to-r transition-opacity duration-1000", slide.color)} />
               <motion.div
                 initial={{ scale: 1.1, opacity: 0.7 }}

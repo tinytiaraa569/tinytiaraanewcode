@@ -2,6 +2,7 @@
 import { useEffect, useRef } from "react"
 import { motion, useInView, useAnimation } from "framer-motion"
 import { Button } from "@/components/ui/button"
+import contactbannerimg from './contactbanner.webp'
 
 const ContactSec1 = () => {
   const controls = useAnimation()
@@ -52,7 +53,7 @@ const ContactSec1 = () => {
         <div className="absolute inset-0 z-0">
           <motion.div
             className="absolute inset-0 bg-cover bg-center"
-            style={{ backgroundImage: `url('https://media.istockphoto.com/id/610576802/photo/newborn-baby-girl-sleeping.jpg?s=1024x1024&w=is&k=20&c=v4hlmHNBFlfLzEE6OchzI4Ag2hnql5xinvk2w0POn_k=')` }}
+            style={{ backgroundImage: `url(${contactbannerimg})` }}
             initial={{ scale: 1.1 }}
             animate={{ scale: 1 }}
             transition={{ duration: 1.5, ease: "easeOut" }}

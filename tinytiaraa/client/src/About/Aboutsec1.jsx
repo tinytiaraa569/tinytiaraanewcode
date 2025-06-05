@@ -2,7 +2,7 @@
 import { useEffect, useRef } from "react"
 import { motion, useInView, useAnimation } from "framer-motion"
 import { Button } from "@/components/ui/button"
-import aboutimg from './about.jpg'
+import aboutimg from './about.webp'
 
 const Aboutsec1 = () => {
   const controls = useAnimation()
@@ -18,7 +18,7 @@ const Aboutsec1 = () => {
   return (
     <div ref={ref}>
       <motion.section
-        className="relative h-[550px] md:h-[650px] lg:h-[700px] 2xl:h-[760px] overflow-hidden bg-[#FDF8F6]"
+        className="relative h-[550px] md:h-[650px] lg:h-[700px] 2xl:h-[780px] overflow-hidden bg-[#FDF8F6]"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.8 }}
