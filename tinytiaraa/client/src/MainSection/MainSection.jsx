@@ -61,7 +61,7 @@ function MainSection() {
       {/* <Safety />  */}
         <Homesec8 />
 
-      {/* <Safety /> */}  <Homesec8 /> 
+      {/* <Safety />  <Homesec8 />  */}
 
       {/* <Slidertext /> */}   <Homesec9 />
       {/* <CustomizedAccordions /> */} 
