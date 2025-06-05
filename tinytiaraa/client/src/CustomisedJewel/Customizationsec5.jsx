@@ -100,7 +100,7 @@ const Customizationsec5 = () => {
             <div className="absolute inset-0 bg-gradient-to-br from-[#E8C4B8]/10 via-transparent to-transparent"></div>
             <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-[#E8C4B8] via-[#D0A98F] to-[#C8A79B]"></div>
 
-            <CardContent className="p-8 md:p-12">
+            <CardContent className="p-6 sm:p-8 md:p-12">
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
                 {/* Left side - Promise */}
                 <div>

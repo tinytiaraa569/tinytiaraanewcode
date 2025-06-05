@@ -20,7 +20,7 @@ export default function Aboutsec4() {
 
       {/* Vision & Story Section */}
       <section className="py-24 relative px-6 md:px-12  overflow-hidden bg-gradient-to-t from-[#F4E7E2] via-[#F9F6F4] to-white">
-        <div className="container mx-auto px-4">
+        <div className="container sm:mx-auto px-0 sm:px-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-16">
             <motion.div
               className="relative"
@@ -29,7 +29,7 @@ export default function Aboutsec4() {
               viewport={{ once: true }}
               transition={{ duration: 0.7 }}
             >
-              <div className="bg-[#FDF8F6] relative z-10  p-10 rounded-2xl">
+              <div className="bg-[#FDF8F6] relative z-10 p-6 sm:p-10 rounded-2xl">
                 <h3 className="text-2xl font-semibold mb-6 text-[#B67F6D]">Our Vision</h3>
                 <p className="text-gray-700">
                   Our vision at Tiny Tiaraa is to be the beacon of childhood magic, where every piece of jewelry becomes
@@ -58,7 +58,7 @@ export default function Aboutsec4() {
               viewport={{ once: true }}
               transition={{ duration: 0.7, delay: 0.2 }}
             >
-              <div className="bg-[#FDF8F6] p-10 rounded-2xl relative z-10">
+              <div className="bg-[#FDF8F6] p-6 sm:p-10 rounded-2xl relative z-10">
                 <h3 className="text-2xl font-semibold mb-6 text-[#B67F6D]">Our Story</h3>
                 <p className="text-gray-700">
                   Tiny Tiaraa is a jewelry brand that believes in the power of the five elements of nature to bring joy

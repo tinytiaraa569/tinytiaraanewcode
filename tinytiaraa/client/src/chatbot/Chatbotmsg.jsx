@@ -332,7 +332,7 @@ const Chatbotmsg = () => {
       )}
 
       {/* Chat icon toggle button */}
-      <div className="chatbot-toggle-container">
+      <div className="chatbot-toggle-container fixed bottom-5 right-[70px] z-[50]">
         <button className="chatbot-toggle" onClick={toggleChatbot}>
           {isOpen ? <FaTimes size={20} color="#ffffff" /> : <FaComments size={20} color="#ffffff" />}
           <span className="tooltip text-[!12px]">Chat Here</span> {/* Tooltip */}

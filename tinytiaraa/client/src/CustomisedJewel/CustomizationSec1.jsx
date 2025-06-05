@@ -110,7 +110,7 @@ const Customizationsec1 = () => {
               </motion.div>
 
               <motion.h1
-                className="text-5xl md:text-6xl lg:text-7xl font-bold mb-6 text-[#B67F6D]"
+                className="text-4xl md:text-6xl lg:text-7xl font-bold mb-6 text-[#B67F6D]"
                 variants={{
                   hidden: { opacity: 0, y: 30 },
                   visible: {
@@ -127,7 +127,7 @@ const Customizationsec1 = () => {
               </motion.h1>
 
               <motion.p
-                className="text-lg mb-8 text-gray-600 max-w-lg"
+                className="text-md sm:text-lg mb-8 text-gray-600 max-w-lg"
                 variants={{
                   hidden: { opacity: 0, y: 30 },
                   visible: {

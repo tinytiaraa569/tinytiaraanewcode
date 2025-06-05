@@ -310,14 +310,14 @@ const Homesec3 = ({products}) => {
 
   return (
     <motion.div
-      className="relative w-full py-12 px-4 md:px-6 bg-gradient-to-t from-[#F4E7E2] via-[#F9F6F4] to-white overflow-hidden"
+      className="relative w-full py-10 px-4 lg:px-16 bg-gradient-to-t from-[#F4E7E2] via-[#F9F6F4] to-white overflow-hidden"
       initial="hidden"
       whileInView="visible"
       viewport={{ once: true }}
       variants={fadeIn}
     >
       <SparkleEffect />
-      <motion.div className="max-w-7xl mx-auto" variants={staggerContainer}>
+      <motion.div className="flex flex-col  mb-4" variants={staggerContainer}>
         <motion.h3
           className="pl-3 font-bold text-lg sm:text-xl md:text-xl lg:text-xl tracking-wide text-stone-800"
           variants={slideIn}

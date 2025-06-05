@@ -142,7 +142,7 @@ const Aboutsec1 = () => {
               </motion.h1>
 
               <motion.p
-                className="text-lg mb-8 text-gray-600 max-w-lg"
+                className="text-md sm:text-lg mb-8 text-gray-600 max-w-lg"
                 variants={{
                   hidden: { opacity: 0, x: -30 },
                   visible: {

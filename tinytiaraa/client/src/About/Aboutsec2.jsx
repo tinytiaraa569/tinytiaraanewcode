@@ -34,20 +34,20 @@ export default function Aboutsec2() {
             </p>
           </motion.div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-16">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 sm:gap-16">
             <motion.div
-              className="flex gap-6"
+              className="flex flex-col sm:flex-row gap-4 sm:gap-6"
               initial={{ opacity: 0, x: -30 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.7 }}
             >
-              <div className="flex-shrink-0 mt-1">
+              <div className="flex-shrink-0 mt-1 flex justify-center sm:justify-start">
                 <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center text-[#B67F6D] shadow-sm border border-[#F4E7E2]">
                   <Sparkles size={32} />
                 </div>
               </div>
-              <div>
+              <div className="text-center sm:text-left">
                 <h3 className="text-xl font-semibold mb-3 text-[#B67F6D]">Join the Magic</h3>
                 <p className="text-gray-600">
                   At Tiny Tiaraa, discover magical jewelry that lights up children's eyes and creates cherished,
@@ -57,18 +57,18 @@ export default function Aboutsec2() {
             </motion.div>
 
             <motion.div
-              className="flex gap-6"
+              className="flex flex-col sm:flex-row gap-4 sm:gap-6"
               initial={{ opacity: 0, x: 30 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.7, delay: 0.1 }}
             >
-              <div className="flex-shrink-0 mt-1">
+              <div className="flex-shrink-0 mt-1 flex justify-center sm:justify-start">
                 <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center text-[#B67F6D] shadow-sm border border-[#F4E7E2]">
                   <Gallery size={32} />
                 </div>
               </div>
-              <div>
+              <div className="text-center sm:text-left">
                 <h3 className="text-xl font-semibold mb-3 text-[#B67F6D]">Collections</h3>
                 <p className="text-gray-600">
                   Our jewelry collections offer whimsical charms and elegant pieces, ensuring every child finds
@@ -78,18 +78,18 @@ export default function Aboutsec2() {
             </motion.div>
 
             <motion.div
-              className="flex gap-6"
+              className="flex flex-col sm:flex-row gap-4 sm:gap-6"
               initial={{ opacity: 0, x: -30 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.7, delay: 0.2 }}
             >
-              <div className="flex-shrink-0 mt-1">
+              <div className="flex-shrink-0 mt-1 flex justify-center sm:justify-start">
                 <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center text-[#B67F6D] shadow-sm border border-[#F4E7E2]">
                   <Shield size={32} />
                 </div>
               </div>
-              <div>
+              <div className="text-center sm:text-left">
                 <h3 className="text-xl font-semibold mb-3 text-[#B67F6D]">Safety First</h3>
                 <p className="text-gray-600">
                   We prioritize safety by using hypoallergenic materials and strict quality checks, ensuring jewelry
@@ -99,18 +99,18 @@ export default function Aboutsec2() {
             </motion.div>
 
             <motion.div
-              className="flex gap-6"
+              className="flex flex-col sm:flex-row gap-4 sm:gap-6"
               initial={{ opacity: 0, x: 30 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.7, delay: 0.3 }}
             >
-              <div className="flex-shrink-0 mt-1">
+              <div className="flex-shrink-0 mt-1 flex justify-center sm:justify-start">
                 <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center text-[#B67F6D] shadow-sm border border-[#F4E7E2]">
                   <Hammer size={32} />
                 </div>
               </div>
-              <div>
+              <div className="text-center sm:text-left">
                 <h3 className="text-xl font-semibold mb-3 text-[#B67F6D]">Craftsmanship</h3>
                 <p className="text-gray-600">
                   Craftsmanship is our core. Every piece is meticulously handcrafted with quality materials, ensuring

@@ -6,13 +6,7 @@
     padding: 20px;
   }
   
-  /* Container for the chatbot toggle button */
-  .chatbot-toggle-container {
-    position: fixed; /* Fixed position to always show at the bottom-right corner */
-    bottom: 20px;
-    right: 70px;
-    z-index: 8888 !important;
-  }
+
   
   /* Styling for the toggle button */
   .chatbot-toggle {

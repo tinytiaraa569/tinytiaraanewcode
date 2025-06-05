@@ -169,7 +169,7 @@ export default function Customizationsec4() {
               
 
               {/* left Column - Upload */}
-              <div className="bg-gradient-to-br from-[#F9F6F4] to-[#F4E7E2] p-8 md:p-10 relative overflow-hidden">
+              <div className="bg-gradient-to-br from-[#F9F6F4] to-[#F4E7E2] p-6 sm:p-8 md:p-10 relative overflow-hidden">
                 <div className="absolute top-0 right-0 w-40 h-40 bg-[#E8C4B8] rounded-full opacity-20 -mt-20 -mr-20"></div>
                 <div className="absolute bottom-0 left-0 w-40 h-40 bg-[#C8A79B] rounded-full opacity-20 -mb-20 -ml-20"></div>
 
@@ -239,7 +239,7 @@ export default function Customizationsec4() {
                   {
                     images?.length === 0 && (
                     <div className="mt-8">
-                    <div className="bg-white/80 backdrop-blur-sm rounded-lg p-6 shadow-sm border border-[#E8C4B8]/20">
+                    <div className="bg-white/80 backdrop-blur-sm rounded-lg p-4 sm:p-6 shadow-sm border border-[#E8C4B8]/20">
                       <h3 className="text-lg font-medium text-[#8A6D63] mb-3">Why Choose Us?</h3>
                       <ul className="space-y-3">
                         <li className="flex items-start">
@@ -266,7 +266,7 @@ export default function Customizationsec4() {
               </div>
 
               {/* right Column - Form */}
-              <div className="p-8 md:p-10">
+              <div className="p-6 sm:p-8 md:p-10 ">
                 <h2 className="text-2xl font-semibold text-[#8A6D63] mb-6 flex items-center">
                   <Sparkles className="w-5 h-5 mr-2 text-[#C8A79B]" />
                   Your Information

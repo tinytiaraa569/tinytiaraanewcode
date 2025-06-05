@@ -43,7 +43,7 @@ const ContactSec1 = () => {
   return (
     <div ref={ref}>
       <motion.section
-        className="relative h-[550px] md:h-[650px] lg:h-[700px] 2xl:h-[760px] overflow-hidden"
+        className="relative h-[550px] md:h-[650px] lg:h-[700px] 2xl:h-[780px] overflow-hidden"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.8 }}
@@ -145,7 +145,7 @@ const ContactSec1 = () => {
                       <motion.span
                         key={index}
                         variants={letterVariants}
-                        className="text-5xl md:text-7xl font-bold text-white inline-block"
+                        className="text-3xl sm:text-5xl md:text-7xl font-bold text-white inline-block"
                         style={{
                           display: char === " " ? "inline" : "inline-block",
                           marginRight: char === " " ? "0.5em" : "0.02em",
@@ -159,13 +159,13 @@ const ContactSec1 = () => {
                 </motion.div>
 
                 {/* Animated subtitle text */}
-                <motion.div className="mb-8 overflow-hidden" variants={textVariants}>
+                <motion.div className="mb-4 sm:mb-8 overflow-hidden" variants={textVariants}>
                   <div className="flex justify-center">
                     {subtitleText.split("").map((char, index) => (
                       <motion.span
                         key={index}
                         variants={letterVariants}
-                        className="text-3xl md:text-5xl font-bold text-white/90 inline-block"
+                        className="text-xl sm:text-3xl md:text-5xl font-bold text-white/90 inline-block"
                         style={{
                           display: char === " " ? "inline" : "inline-block",
                           marginRight: char === " " ? "0.5em" : "0.02em",
