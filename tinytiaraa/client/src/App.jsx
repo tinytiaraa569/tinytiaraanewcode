@@ -36,7 +36,7 @@ import ProductDetailsPage from './ProductDetailsPage/ProductDetailsPage.jsx';
 import ProfilePage from './ProfilePage/ProfilePage.jsx';
 import ProtectedRoute from './ProtectedRoute.jsx';
 import { useDispatch, useSelector } from 'react-redux';
-import Shopcreate from './Shopcreate/Shopcreate.jsx';
+// import Shopcreate from './Shopcreate/Shopcreate.jsx';
 import ShopcreatePage from './Shopcreate/ShopcreatePage.jsx';
 import SellerActivatinPage from './Shopcreate/SellerActivatinPage.jsx';
 import ShopLoginPage from './Shopcreate/ShopLoginPage.jsx';
@@ -125,6 +125,7 @@ import CustomerReview from './CustomerReview/CustomerReview';
 import AboutMain from './About/AboutMain';
 import CustomizationMain from './CustomisedJewel/CustomizationMain';
 import ContactMain from './Contact/ContactMain';
+import FloatingSocial from './floatingsocial/FloatingSocial';
 
 
 
@@ -261,17 +262,6 @@ function App() {
 
     
 
-
-    
-
-
-
-    
-    
-
-    
-
-    
 
 
     
@@ -774,6 +764,8 @@ function App() {
         {/* <CurrencySelector /> */}
 
         {!shouldHideNavbar &&  <Footer />}
+
+        <FloatingSocial />
        
 
       </PriceRangeProvider>

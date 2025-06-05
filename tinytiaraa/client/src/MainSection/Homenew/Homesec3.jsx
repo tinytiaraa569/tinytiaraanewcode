@@ -185,10 +185,13 @@ const BraceletsCategory = [
   "Diamond Bracelets",
   "Diamond Black Bead Bracelets",
   "Silver Bangles",
-  "Traditional Silver Jewelry",
+  "Nazariya",
 ];
+const Pendant_SetsCatgeory =["Sets" ,"Pearl Collection" ]
+const Traditional_JewelryCatgeory =["Traditional Silver Jewelry", "Kids Accessories" ,"Tabeez Collection" ]
 
-const Homesec3 = () => {
+
+const Homesec3 = ({products}) => {
   const [filteredData, setFilteredData] = useState([]);
   const [activeTab, setActiveTab] = useState("pendants");
   const [activeType, setActiveType] = useState("gold");
@@ -198,7 +201,7 @@ const Homesec3 = () => {
   const [isEnd, setIsEnd] = useState(false);
   const [categories, setCategories] = useState([]);
   
-  const { products } = useSelector((state) => state.products);
+  // const { products } = useSelector((state) => state.products);
   const dispatch = useDispatch();
 
   // Memoized category data
@@ -210,6 +213,10 @@ const Homesec3 = () => {
         return EarringsCategory;
       case "bracelets":
         return BraceletsCategory;
+      case "pendant sets":
+        return Pendant_SetsCatgeory;
+      case "traditional jewelry":
+        return Traditional_JewelryCatgeory;
       default:
         return [];
     }
@@ -275,10 +282,31 @@ const Homesec3 = () => {
     setPage((prev) => prev + 1);
   }, []);
 
-  const handleSlideChange = useCallback((swiperInstance) => {
+ const handleSlideChange = useCallback((swiperInstance) => {
     setIsBeginning(swiperInstance.isBeginning);
     setIsEnd(swiperInstance.isEnd);
   }, []);
+  const onSwiperInit = useCallback((swiperInstance) => {
+    setSwiper(swiperInstance);
+    setIsBeginning(swiperInstance.isBeginning);
+    setIsEnd(swiperInstance.isEnd);
+    // Force update navigation state
+    setTimeout(() => {
+      setIsBeginning(swiperInstance.isBeginning);
+      setIsEnd(swiperInstance.isEnd);
+    }, 100);
+  }, []);
+
+  // Update swiper when filtered data changes
+  useEffect(() => {
+    if (swiper) {
+      swiper.update();
+      setTimeout(() => {
+        setIsBeginning(swiper.isBeginning);
+        setIsEnd(swiper.isEnd);
+      }, 100);
+    }
+  }, [filteredData, swiper]);
 
   return (
     <motion.div
@@ -304,9 +332,9 @@ const Homesec3 = () => {
           className="w-full"
         >
           <motion.div variants={fadeIn}>
-            <TabsList className="mb-8 flex justify-start flex-wrap bg-transparent h-auto p-1 relative text-sm font-medium text-stone-500">
-              {["pendants", "earrings", "bracelets"].map((tab, index, array) => (
-                <div key={tab} className="flex items-center space-x-2 ml-2">
+            <TabsList className="mb-2 flex justify-start flex-wrap bg-transparent h-auto p-1 relative text-sm font-medium text-stone-500">
+              {["pendants", "earrings", "bracelets" ,"pendant sets" , "traditional jewelry"].map((tab, index, array) => (
+                <div key={tab} className="flex items-center space-x-2 my-1 ml-2">
                   <TabsTrigger
                     value={tab}
                     className={cn(
@@ -328,7 +356,7 @@ const Homesec3 = () => {
           </motion.div>
 
           <AnimatePresence mode="wait">
-            {["pendants", "earrings", "bracelets"].map((tab) => (
+            {["pendants", "earrings", "bracelets" ,"pendant sets" , "traditional jewelry"].map((tab) => (
               <TabsContent 
                 key={tab} 
                 value={tab} 
@@ -342,11 +370,12 @@ const Homesec3 = () => {
                   initial="hidden"
                   animate="visible"
                   exit="exit"
-                  className="space-y-8"
+                  className="space-y-2"
                 >
-                  <div className="flex justify-center gap-3 mb-8">
+                  <div className="flex justify-center gap-3 !mb-2">
                     <TypeSelector activeType={activeType} setActiveType={setActiveType} />
                   </div>
+                  
 
                   {filteredData.length > 0 ? (
                     <motion.div
@@ -357,24 +386,36 @@ const Homesec3 = () => {
                       variants={{ visible: { opacity: 1 }, hidden: { opacity: 0 } }}
                       transition={{ delay: 0.2 }}
                     >
-                      <NavigationButton 
-                        direction="prev" 
-                        onClick={() => swiper?.slidePrev()} 
-                        disabled={isBeginning} 
-                      />
+                      <button
+                        className={`swiper-button-prev-${activeTab}-${activeType} absolute top-1/2 -translate-y-1/2 z-10 w-10 h-10 flex items-center justify-center rounded-full left-0 ${
+                          isBeginning
+                            ? "bg-stone-100 text-stone-300 cursor-not-allowed"
+                            : "bg-white text-stone-600 shadow-md hover:bg-stone-50 hover:shadow-lg transition-all duration-200"
+                        }`}
+                        onClick={() => swiper?.slidePrev()}
+                        disabled={isBeginning}
+                      >
+                        <ChevronLeft size={20} />
+                      </button>
 
                       <Swiper
                         modules={[Navigation]}
                         spaceBetween={24}
                         slidesPerView="auto"
-                        onSwiper={setSwiper}
+                        onSwiper={onSwiperInit}
                         onSlideChange={handleSlideChange}
+                        navigation={{
+                          prevEl: `.swiper-button-prev-${activeTab}-${activeType}`,
+                          nextEl: `.swiper-button-next-${activeTab}-${activeType}`,
+                        }}
                         className="w-full pb-12"
-                        observer={true} // Enable mutation observer
-                        observeParents={true} // Observe parent changes
+                        observer={true}
+                        observeParents={true}
+                        watchSlidesProgress={true}
+                       
                       >
                         {paginatedData.map((product, idx) => (
-                          <SwiperSlide key={`product-${product._id || idx}`} style={{ width: "265px", height: "auto" }}>
+                          <SwiperSlide key={`product-${idx}`} style={{ width: "265px", height: "auto" }}>
                             <motion.div
                               variants={fadeInUp}
                               custom={idx}
@@ -389,7 +430,7 @@ const Homesec3 = () => {
                         ))}
 
                         {hasMoreItems && (
-                          <SwiperSlide style={{ width: "280px", height: "auto" }}>
+                          <SwiperSlide style={{ width: "265px", height: "auto" }}>
                             <div className="h-full flex items-center justify-center p-4">
                               <ViewMoreButton onClick={handleLoadMore} hasMore={hasMoreItems} />
                             </div>
@@ -397,11 +438,17 @@ const Homesec3 = () => {
                         )}
                       </Swiper>
 
-                      <NavigationButton 
-                        direction="next" 
-                        onClick={() => swiper?.slideNext()} 
-                        disabled={isEnd} 
-                      />
+                     <button
+                        className={`swiper-button-next-${activeTab}-${activeType} absolute top-1/2 -translate-y-1/2 z-10 w-10 h-10 flex items-center justify-center rounded-full right-0 ${
+                          isEnd
+                            ? "bg-stone-100 text-stone-300 cursor-not-allowed"
+                            : "bg-white text-stone-600 shadow-md hover:bg-stone-50 hover:shadow-lg transition-all duration-200"
+                        }`}
+                        onClick={() => swiper?.slideNext()}
+                        disabled={isEnd}
+                      >
+                        <ChevronRight size={20} />
+                      </button>
                     </motion.div>
                   ) : (
                     <motion.p

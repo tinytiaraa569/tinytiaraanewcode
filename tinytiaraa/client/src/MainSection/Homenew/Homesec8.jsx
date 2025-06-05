@@ -203,13 +203,13 @@ const Homesec8 = () => {
       </a>
     </motion.div>
 
-    <h2 className="text-xl md:text-2xl font-bold">Instagram Posts & Reels</h2>
+    <h2 className="text-xl md:text-2xl font-bold text-[#D7A295]">Watch and Shop</h2>
   </motion.div>
 
-  <Tabs defaultValue="posts" className="w-full">
-    <TabsList className="mx-auto mb-2 flex justify-center bg-pink-50 rounded-lg w-fit">
-      <TabsTrigger value="reels" className="cursor-pointer px-5 py-1">Reels</TabsTrigger>
-      <TabsTrigger value="posts" className="cursor-pointer px-5 py-1">Posts</TabsTrigger>
+  <Tabs defaultValue="reels" className="w-full">
+    <TabsList className="mx-auto mb-2 flex justify-center bg-[#D7A295]/60 rounded-lg w-fit">
+      <TabsTrigger value="reels" className="cursor-pointer px-5 py-1 text-white">Reels</TabsTrigger>
+      <TabsTrigger value="posts" className="cursor-pointer px-5 py-1 text-white">Posts</TabsTrigger>
     </TabsList>
 
     <div className="relative">

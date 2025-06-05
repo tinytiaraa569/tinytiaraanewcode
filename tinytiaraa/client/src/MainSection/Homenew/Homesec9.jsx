@@ -2,6 +2,9 @@ import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import { Check, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import firstimg from './homebanner9/firstimg.webp'
+import secondimg from './homebanner9/secondimg.webp'
+
 
 const SparkleEffect = () => {
   return (
@@ -58,7 +61,7 @@ const Homesec9 = () => {
         >
           <div className="relative w-full h-auto">
             <motion.img
-              src="https://i.pinimg.com/736x/71/da/49/71da49376a2aa744d5626d78ed7e4278.jpg"
+              src={firstimg}
               alt="main"
               className="rounded-xl shadow-lg w-[90%] h-[45vh] md:h-[60vh] lg:h-[65vh] object-cover"
               initial={{ opacity: 0, scale: 0.95 }}
@@ -68,7 +71,7 @@ const Homesec9 = () => {
             />
 
             <motion.img
-              src="https://i.pinimg.com/736x/45/2d/6f/452d6f715a7a331fdddc3a78b8e25648.jpg"
+              src={secondimg}
               alt="overlap"
               className="absolute top-[32%] right-0 transform -translate-y-1/2 w-2/3 md:w-1/2 rounded-xl shadow-2xl border-4 border-white"
               initial={{ opacity: 0, x: 40, scale: 0.95 }}

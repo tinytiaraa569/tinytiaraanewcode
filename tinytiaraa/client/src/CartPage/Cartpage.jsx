@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import './cartpage.css'
-import { MdDeleteForever } from "react-icons/md";
+import { MdDeleteForever, MdOutlineKeyboardArrowRight } from "react-icons/md";
 import styles from '../Styles/styles';
 import { IoBagHandleOutline } from 'react-icons/io5';
 import { HiOutlineMinus, HiPlus } from "react-icons/hi";
@@ -20,7 +20,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { AiOutlineHeart } from 'react-icons/ai';
 import { LuShoppingBag } from "react-icons/lu";
 import axios from 'axios';
-import { FaTimesCircle } from 'react-icons/fa';
+import { FaEnvelope, FaPhoneAlt, FaTimesCircle, FaWhatsapp } from 'react-icons/fa';
 import { XCircleIcon } from 'lucide-react';
 import { GiCash } from 'react-icons/gi';
 import CryptoJS from 'crypto-js';
@@ -270,7 +270,7 @@ const convertedFinalPrice = (finalPrice * (conversionRates[currency] || 1)).toFi
   return (
     
 
-    <div className='w-full  pb-8'>
+    <div className='w-full  pb-8 !font-poppins bg-gradient-to-b from-[#ecd0c6]/10 to-white'>
       <div class="secureshoppingbaghead text-center font-[500] text-[22px] py-5">
         <h2 className='text-[#B67F6D]'>Secure Shopping Bag</h2>
         <div className={`text-center flex justify-center items-center`}>
@@ -324,25 +324,25 @@ const convertedFinalPrice = (finalPrice * (conversionRates[currency] || 1)).toFi
                   <h3>Need Help?</h3>
                   <div className="contactus">
                     <Link to="tel:+91 8657062511" target="_blank">
-                    <div className="phonecontact">
+                    <div className="phonecontact flex items-center gap-3">
                       <span className="phoneicon" width={24} height={24}>
-                        <i className="fa-solid fa-phone text-[#006039]" />
+                         <FaPhoneAlt className="text-[#006039]" size={16} />
                       </span>
                       <span className="phonenumber spantext !text-[12px]">Call US :- +91 86570 62511</span>
                     </div>
                       </Link>
                       <Link to="mailto:care@tinytiaraa.com" target="_blank">
-                    <div className="phonecontact">
+                    <div className="phonecontact flex items-center gap-3">
                       <span className="emailicon" width={24} height={24}>
-                        <i className="fa-solid fa-envelope text-[#006039]" />
+                        <FaEnvelope className="text-[#006039]" size={18} />
                       </span>
                       <span className="phonenumber spantext">Email US</span>
                     </div>
                     </Link>
                     <Link to="https://web.whatsapp.com/send?phone=+91%208657062511" target="_blank">
-                    <div className="phonecontact">
+                    <div className="phonecontact flex items-center gap-3">
                       <span className="chaticon" width={24} height={24}>
-                        <i className="fa-solid fa-message text-[#006039]" />
+                         <FaWhatsapp className="text-[#006039]" size={18} />
                       </span>
                       <span className="phonenumber spantext">Chat With US </span>
                     </div>
@@ -389,7 +389,7 @@ const convertedFinalPrice = (finalPrice * (conversionRates[currency] || 1)).toFi
                       />
                     </div>
 
-                    <div className="couponbtn">
+                    <div className="couponbtn bg-gradient-to-r from-[#D8B4A0] to-[#D7A295] hover:opacity-90 text-white" >
                       <button type='submit'>Apply</button>
                     </div>
                   </div>
@@ -523,12 +523,12 @@ const convertedFinalPrice = (finalPrice * (conversionRates[currency] || 1)).toFi
               )}
 
 
-              <div className="checkout">
+              <div className="checkout bg-gradient-to-r from-[#D8B4A0] to-[#D7A295] hover:opacity-90 text-white">
 
                 <div className="secure-checkout cursor-pointer" onClick={handleCheckout}>
                   <BsShieldLock size={25} />
                   <span className="secure-text">Secure Checkout</span>
-                  <i className="fa fa-angle-right fs24" />
+                  <MdOutlineKeyboardArrowRight  className="text-[20px]" />
                 </div>
 
               </div>

@@ -4,6 +4,11 @@ import ttclubvideo from './ttclub.mp4';
 import logoimg from './logo.png';
 import { Card, CardContent } from '@/components/ui/card';
 import { Link } from 'react-router-dom';
+import firstimg from './homebanner7/firstimg.webp'
+import secondimg from './homebanner7/secondimg.webp'
+
+import thirdimg from './homebanner7/thirdimg.webp'
+
 
 const fadeInUp = {
   hidden: { opacity: 0, y: 40 },
@@ -83,7 +88,7 @@ const Homesec7 = () => {
           viewport={{ once: false }}
         >
           <motion.img
-            src="https://i.pinimg.com/736x/71/da/49/71da49376a2aa744d5626d78ed7e4278.jpg"
+            src={firstimg}
             alt="Reviews"
             className="w-full h-72 object-cover"
             initial="hidden"
@@ -133,7 +138,7 @@ const Homesec7 = () => {
           viewport={{ once: false }}
         >
           <motion.img
-            src="https://i.pinimg.com/736x/7c/c2/22/7cc2225b2568221f0a6af4a9d5820d9d.jpg"
+            src={secondimg}
             alt="Safety Banner"
             className="w-full h-80 object-cover"
             initial="hidden"
@@ -190,7 +195,7 @@ const Homesec7 = () => {
           viewport={{ once: false }}
         >
           <motion.img
-            src="https://i.pinimg.com/736x/b6/fe/40/b6fe40da79085df52cab6b2398b4c4c0.jpg"
+            src={thirdimg}
             alt="Materials"
             className="w-full h-80 object-cover"
             initial="hidden"

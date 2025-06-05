@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { imgdburl, server } from "@/server";
-import { FaArrowLeft, FaFacebookF, FaTwitter, FaWhatsapp } from "react-icons/fa";
+import { FaArrowLeft, FaFacebookF, FaInstagram, FaTwitter, FaWhatsapp } from "react-icons/fa";
 import { MdAccessTime, MdArticle } from "react-icons/md";
 
 const BlogDetails = () => {
@@ -138,13 +138,22 @@ const BlogDetails = () => {
                 <FaWhatsapp size={16} />
             </a>
 
-            <a
-                href={`https://www.instagram.com/?url=${shareUrl}`}
-                target="_blank"
-                rel="noopener noreferrer"
-            >
-               <i className="fa-brands fa-square-instagram instasty " style={{ cursor: 'pointer' }}></i>
-            </a>
+          <a
+          href={`https://www.instagram.com/?url=${shareUrl}`}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <div
+            className="bg-gradient-to-tr from-[#feda75] via-[#d62976] to-[#962fbf] p-1.5 rounded-full hover:opacity-90 transition duration-200"
+            style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}
+          >
+            <FaInstagram
+              size={20}
+              className="text-white"
+              style={{ cursor: 'pointer' }}
+            />
+          </div>
+          </a>
             </div>
 
 
@@ -153,8 +162,8 @@ const BlogDetails = () => {
         <div className="flex justify-center mt-8">
           <button 
             className="flex items-center gap-2 px-5 py-2.5 text-white rounded-[6px] shadow-md 
-                    bg-gradient-to-r from-green-500 to-green-700
-                    hover:from-green-600 hover:to-green-800 
+                    bg-gradient-to-r from-[#D8B4A0] to-[#D7A295]
+                    hover:from-[#D8B4A0] hover:to-[#b5897e] 
                     transition-all duration-300 ease-in-out transform hover:scale-105"
             onClick={() => navigate(-1)}
           >

@@ -20,7 +20,6 @@ import { GiMaterialsScience } from "react-icons/gi";
 import ImgZoom from 'react-img-zoom';
 // import 'react-img-zoom/dist/index.css';
 
-import Accordion from '@mui/material/Accordion';
 import AccordionActions from '@mui/material/AccordionActions';
 import AccordionSummary from '@mui/material/AccordionSummary';
 import AccordionDetails from '@mui/material/AccordionDetails';
@@ -45,8 +44,24 @@ import 'react-medium-image-zoom/dist/styles.css';
 import { EmailIcon, FacebookIcon, WhatsappIcon, } from "react-share";
 import { EmailShareButton, FacebookShareButton, WhatsappShareButton, } from "react-share";
 import { Helmet } from 'react-helmet-async';
+import { motion } from 'framer-motion';
+import { Button } from '@/components/ui/button';
+import { Award, Baby, Calendar, CheckCircle, Crown, Diamond, FileText, Heart, List, MapPin, Minus, Package, Plus, Quote, RotateCcw, Shield, ShoppingCart, Sparkles, Star, Truck, User, UserCheck, Users, Zap } from 'lucide-react';
+import { Input } from '@/components/ui/input';
+import { Accordion,AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
+import { Card, CardContent } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
 
+// Animation variants
+const imageFadeIn = {
+  hidden: { opacity: 0, y: 20 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: 'easeOut' } }
+};
 
+const thumbnailsFadeIn = {
+  hidden: { opacity: 0, y: 40 },
+  visible: { opacity: 1, y: 0, transition: { delay: 0.3, duration: 0.7, ease: 'easeOut' } }
+};
 
 Modal.setAppElement('#root'); // Replace '#root' with the ID of your root element
 
@@ -497,12 +512,16 @@ function ProductDetails({ data }) {
         const remainingImageCount = imagesArray.length - displayedImages.length;
 
         return (
-            <div className='w-full flex '>
+            <div className='w-full flex  gap-2'>
                 {displayedImages &&
                     displayedImages.map((image, index) => (
                         <div
                             key={index}
-                            className={`relative w-[24%] ${select === index ? 'border' : ''} cursor-pointer`}
+                            className={`relative w-[24%] rounded-lg overflow-hidden cursor-pointer transition-all duration-300 ${
+                            select === index
+                                ? 'border border-[#dcb699] shadow-md'
+                                : 'border border-[#f0f0f0]'
+                            }`}
                             onClick={() => setSelect(index)}
                         >
                             <img
@@ -516,7 +535,7 @@ function ProductDetails({ data }) {
                                         : `${imgdburl}${image?.url}` // Prepend imgdburl if not a Cloudinary URL
                                 }
                                 alt=""
-                                className='w-[100%] h-[160px] object-contain'
+                                className='w-[100%] h-auto sm:h-[160px]  object-contain'
                             />
                             {index === 3 && remainingImageCount > 0 && (
                                 <div
@@ -1017,7 +1036,7 @@ function ProductDetails({ data }) {
 
 
         const handleScrollToReviews = () => {
-            setActive(2); // If `active` is controlled with a setter
+            // setActive(2); // If `active` is controlled with a setter
             setTimeout(() => {
               reviewSectionRef.current?.scrollIntoView({ behavior: "smooth" });
             }, 200); // Wait for the content to mount
@@ -1509,8 +1528,8 @@ function ProductDetails({ data }) {
                 data ?
                     <div className={`${styles.section} w-[95%] 800px:w-[80%]`}>
                         <div className='w-full py-5'>
-                            <div className='flex w-full 800px:flex flex-col sm:flex-row'>
-                                <div className="w-full 800px:w-[50%] mr-5">
+                            <div className='flex w-full 800px:flex flex-col md:flex-row'>
+                                <div className="w-full 800px:w-[1/2] mr-5">
 
                                     {/* {select !== null && (
                                         selectedColor === 0 && data.MetalColor.YellowGoldclr ? (
@@ -1570,8 +1589,13 @@ function ProductDetails({ data }) {
                                     onZoom={() => setIsZoomed(true)} // Set zoomed state to true when the modal opens
                                     onUnzoom={() => setIsZoomed(false)} // Reset when it closes
                                 >
-                                    <img
-                                    loading='lazy'
+                                    <motion.img
+                                        initial="hidden"
+                                        whileInView="visible"
+                                        viewport={{ once: true }}
+                                        variants={imageFadeIn}
+                                        loading="lazy"
+                                    
                                         // src={selectedImage}
                                         src={
                                             selectedImage?.match(/https:\/\/res\.cloudinary\.com\/ddaef5aw1\/image\/upload\/v[0-9]+/)
@@ -1582,7 +1606,9 @@ function ProductDetails({ data }) {
                                                 : `${imgdburl}${selectedImage}` // Prepend imgdburl if not a Cloudinary URL
                                         }
                                         alt=""
-                                        className="textshadowfilterimgod w-[100%] h-[60vh] object-contain !cursor-pointer" // Image to click and zoom
+                                        // className="textshadowfilterimgod w-[100%] h-[60vh] object-contain !cursor-pointer" // Image to click and zoom
+                                        className="textshadowfilterimgod border border-[#f0f0f0] shadow-sm rounded-md w-full  md:h-[60vh] h-[45vh] object-contain !cursor-pointer transition-all"
+
                                     />
                                 </Zoom>
 
@@ -1600,7 +1626,11 @@ function ProductDetails({ data }) {
                                                 content: { border: 'none', background: 'transparent', padding: 0 },
                                             }}
                                         >
-                                            <div className="relative bg-white p-4 rounded-lg shadow-lg w-full h-full max-w-4xl flex justify-center items-center">
+                                            <motion.div
+                                            initial={{ opacity: 0, scale: 0.9 }}
+                                            animate={{ opacity: 1, scale: 1 }}
+                                            transition={{ duration: 0.4, ease: 'easeOut' }} 
+                                            className="relative bg-white p-4 rounded-lg shadow-lg w-full h-full max-w-4xl flex justify-center items-center">
                                                 <button
                                                     className="absolute top-4 right-4 text-black text-2xl"
                                                     onClick={() => setShowGallery(false)}
@@ -1640,7 +1670,7 @@ function ProductDetails({ data }) {
                                                         {currentImageIndex + 1} / {imagesArray.length}
                                                     </div>
                                                 </div>
-                                            </div>
+                                            </motion.div>
                                         </Modal>
 
 
@@ -1652,12 +1682,18 @@ function ProductDetails({ data }) {
                                 </div>
 
 
-                                <div className='w-full 800px:w-[50%] pt-2'>
+                                <div className='w-full 800px:w-[50%] pt-2 '>
+                                    
 
-                                    <h1 className={`${styles.productTitle} !font-[450] productpageproname`}>{data.name}</h1>
-                                     <p className='text-[#727386] pt-1 text-[14px]'>Design Application No. {data.designno}</p>
+                                    <div className='space-y-1'>
 
-                                    <h3 className={`text-[#727386] text-left  text-[14px] font-Poppins pt-1 productpageproskuid`}>{data.skuid}</h3>
+                                   <h1 className="text-md sm:text-2xl font-semibold text-[#C8A79B]">
+                                        {data.name}
+                                    </h1>
+                                    <p className="text-sm text-[#8A6D63]/80">Design Application No. {data.designno}</p>
+                                    <p className="text-xs font-medium text-[#8A6D63]/80">{data.skuid}</p>
+                                    </div>
+
 
                                     {
                                         totalReviews > 0 && (
@@ -1799,293 +1835,7 @@ function ProductDetails({ data }) {
                                         )} */}
 
                                     </div>
-                                        
-                                    {/* <div className="instockcon">
-                                        <div className="instockconflex">
-                                            {(() => {
-                                                if (selectedEnamelColor !== null) {
-                                                    const cleanedEnamelColor = selectedEnamelColor.toLowerCase().replace(/_/g, '');
-                                                    const metalColor = metalColors[selectedColor].replace(/\s+/g, '');
-
-                                                    const enamelMetalStockKey = `${cleanedEnamelColor}${metalColor}clrStock`;
-                                                    const enamelMetalStock = data?.Enamelcolorstock[cleanedEnamelColor]?.[enamelMetalStockKey] || 0;
-
-                                                    return enamelMetalStock > 0 ? (
-                                                        // Green tick icon for in-stock
-                                                        <svg width="13" height="11" viewBox="0 0 13 11" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                            <path d="M13 1.1566L4.08571 11L0 6.48844L1.04743 5.33184L4.08571 8.6786L11.9526 0L13 1.1566Z" fill="#0B8D08" />
-                                                        </svg>
-                                                    ) : (
-                                                        // Red cross icon for out-of-stock
-                                                        <svg width="13" height="13" viewBox="0 0 13 13" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                            <path d="M1 1L12 12" stroke="#FF0000" strokeWidth="2"/>
-                                                            <path d="M12 1L1 12" stroke="#FF0000" strokeWidth="2"/>
-                                                        </svg>
-                                                    );
-                                                }
-                                                if (selectedColor && data.Enamelcolorstock === null) {
-                                                    const metalStockKey = `${metalColors[selectedColor].replace(/\s+/g, '')}clrStock`;
-                                                    const metalStock = data?.Metalcolorstock[metalStockKey] || 0;
-
-                                                    return metalStock > 0 ? (
-                                                        // Green tick icon for in-stock
-                                                        <svg width="13" height="11" viewBox="0 0 13 11" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                            <path d="M13 1.1566L4.08571 11L0 6.48844L1.04743 5.33184L4.08571 8.6786L11.9526 0L13 1.1566Z" fill="#0B8D08" />
-                                                        </svg>
-                                                    ) : (
-                                                        // Red cross icon for out-of-stock
-                                                        <svg width="13" height="13" viewBox="0 0 13 13" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                            <path d="M1 1L12 12" stroke="#FF0000" strokeWidth="2"/>
-                                                            <path d="M12 1L1 12" stroke="#FF0000" strokeWidth="2"/>
-                                                        </svg>
-                                                    );
-                                                }
-                                                if (data?.stock !== null) {
-                                                    return data?.stock > 0 ? (
-                                                        // Green tick icon for in-stock
-                                                        <svg width="13" height="11" viewBox="0 0 13 11" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                            <path d="M13 1.1566L4.08571 11L0 6.48844L1.04743 5.33184L4.08571 8.6786L11.9526 0L13 1.1566Z" fill="#0B8D08" />
-                                                        </svg>
-                                                    ) : (
-                                                        // Red cross icon for out-of-stock
-                                                        <svg width="13" height="13" viewBox="0 0 13 13" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                            <path d="M1 1L12 12" stroke="#FF0000" strokeWidth="2"/>
-                                                            <path d="M12 1L1 12" stroke="#FF0000" strokeWidth="2"/>
-                                                        </svg>
-                                                    );
-                                                }
-
-                                                // Default fallback: green tick
-                                                return (
-                                                    <svg width="13" height="11" viewBox="0 0 13 11" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                        <path d="M13 1.1566L4.08571 11L0 6.48844L1.04743 5.33184L4.08571 8.6786L11.9526 0L13 1.1566Z" fill="#0B8D08" />
-                                                    </svg>
-                                                );
-                                            })()}
-                                            <span
-                                                style={{
-                                                    color: (() => {
-                                                        if (selectedEnamelColor !== null) {
-                                                            const cleanedEnamelColor = selectedEnamelColor.toLowerCase().replace(/_/g, '');
-                                                            const metalColor = metalColors[selectedColor].replace(/\s+/g, '');
-
-                                                            const enamelMetalStockKey = `${cleanedEnamelColor}${metalColor}clrStock`;
-                                                            const enamelMetalStock = data?.Enamelcolorstock[cleanedEnamelColor]?.[enamelMetalStockKey] || 0;
-
-                                                            return enamelMetalStock > 0 ? '#0B8D08' : '#FF0000'; // Green if in stock, red if out of stock
-                                                        }
-                                                        if (selectedColor && data.Enamelcolorstock === null) {
-                                                            const metalStockKey = `${metalColors[selectedColor].replace(/\s+/g, '')}clrStock`;
-                                                            const metalStock = data?.Metalcolorstock[metalStockKey] || 0;
-
-                                                            return metalStock > 0 ? '#0B8D08' : '#FF0000'; // Green if in stock, red if out of stock
-                                                        }
-                                                        if (data?.stock !== null) {
-                                                            return data?.stock > 0 ? '#0B8D08' : '#FF0000'; // Green if in stock, red if out of stock
-                                                        }
-
-                                                        return '#0B8D08'; // Default fallback color
-                                                    })()
-                                                }}
-                                                className="text-[14px] font-medium leading-[24px]"
-                                            >
-                                                {(() => {
-                                                    if (selectedEnamelColor !== null) {
-                                                        const cleanedEnamelColor = selectedEnamelColor.toLowerCase().replace(/_/g, '');
-                                                        const metalColor = metalColors[selectedColor].replace(/\s+/g, '');
-
-                                                        const enamelMetalStockKey = `${cleanedEnamelColor}${metalColor}clrStock`;
-                                                        const enamelMetalStock = data?.Enamelcolorstock[cleanedEnamelColor]?.[enamelMetalStockKey] || 0;
-
-                                                        return enamelMetalStock > 0 ? "In Stock" : "Out of Stock";
-                                                    }
-                                                    if (selectedColor && data.Enamelcolorstock === null) {
-                                                        const metalStockKey = `${metalColors[selectedColor].replace(/\s+/g, '')}clrStock`;
-                                                        const metalStock = data?.Metalcolorstock[metalStockKey] || 0;
-
-                                                        return metalStock > 0 ? "In Stock" : "Out of Stock";
-                                                    }
-                                                    if (data?.stock !== null) {
-                                                        return data?.stock > 0 ? "In Stock" : "Out of Stock";
-                                                    }
-
-                                                    return "In Stock"; // Default fallback
-                                                })()}
-                                            </span>
-                                        </div>
-                                    </div> */}
-
-                                    
-
-
-{/* <div className="instockcon">
-  <div className="instockconflex">
-    <svg width="13" height="11" viewBox="0 0 13 11" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <path d="M13 1.1566L4.08571 11L0 6.48844L1.04743 5.33184L4.08571 8.6786L11.9526 0L13 1.1566Z" fill="#0B8D08" />
-    </svg>
-    <span
-      style={{
-        color: (() => {
-          if (selectedEnamelColor !== null && selectedEnamelColor !== undefined && selectedColor !== null && selectedColor !== undefined) {
-            const cleanedEnamelColor = selectedEnamelColor.toLowerCase().replace(/_/g, '');
-            const metalColor = metalColors[selectedColor]?.replace(/\s+/g, '');
-
-            if (!metalColor) return '#FF0000'; // Fallback if metalColor is undefined
-
-            const enamelMetalStockKey = `${cleanedEnamelColor}${metalColor}clrStock`;
-            const enamelMetalStock = data?.Enamelcolorstock[cleanedEnamelColor]?.[enamelMetalStockKey] || 0;
-
-            return enamelMetalStock > 0 ? '#0B8D08' : '#FF0000'; // Green if in stock, red if out of stock
-          }
-          if (selectedColor && data.Enamelcolorstock === null) {
-            const metalStockKey = `${metalColors[selectedColor]?.replace(/\s+/g, '')}clrStock`;
-
-            if (!metalStockKey) return '#FF0000'; // Fallback if metalStockKey is undefined
-
-            const metalStock = data?.Metalcolorstock[metalStockKey] || 0;
-            return metalStock > 0 ? '#0B8D08' : '#FF0000'; // Green if in stock, red if out of stock
-          }
-          if (data?.stock !== null) {
-            return data?.stock > 0 ? '#0B8D08' : '#FF0000'; // Green if in stock, red if out of stock
-          }
-
-          return '#0B8D08'; // Default fallback color
-        })()
-      }}
-      className="text-[14px] font-medium leading-[24px]"
-    >
-      {(() => {
-        if (selectedEnamelColor !== null && selectedEnamelColor !== undefined) {
-          const cleanedEnamelColor = selectedEnamelColor.toLowerCase().replace(/_/g, '');
-          const metalColor = metalColors[selectedColor]?.replace(/\s+/g, '');
-
-          if (!metalColor) return "Out of Stock"; // Fallback if metalColor is undefined
-
-          const enamelMetalStockKey = `${cleanedEnamelColor}${metalColor}clrStock`;
-          const enamelMetalStock = data?.Enamelcolorstock[cleanedEnamelColor]?.[enamelMetalStockKey] || 0;
-
-          return enamelMetalStock > 0 ? "In Stock" : "Out of Stock";
-        }
-        if (selectedColor) {
-            const metalStockKey = `${metalColors[selectedColor]?.replace(/\s+/g, '')}clrStock`;
-          
-            if (!metalStockKey) return "Out of Stock"; // Fallback if metalStockKey is undefined
-          
-            // Check if the stock exists and handle null or zero values
-            const metalStock = data?.Metalcolorstock[metalStockKey];
-          
-            if (metalStock === null || metalStock === 0) {
-              return "Out of Stock"; // Explicitly handle null and zero stock
-            } else if (metalStock > 0) {
-              return "In Stock";
-            }
-          }
-        if (data?.stock !== null) {
-          return data?.stock > 0 ? "In Stock" : "Out of Stock";
-        }
-
-        return "In Stock"; // Default fallback
-      })()}
-    </span>
-  </div>
-</div> */}
-
-{/* <div className="instockcon">
-  <div className="instockconflex">
-    <svg width="13" height="11" viewBox="0 0 13 11" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <path d="M13 1.1566L4.08571 11L0 6.48844L1.04743 5.33184L4.08571 8.6786L11.9526 0L13 1.1566Z" fill="#0B8D08" />
-    </svg>
-    <span
-      style={{
-        color: (() => {
-          // Log selected colors for debugging
-          console.log("Checking stock for:", selectedEnamelColor, selectedColor);
-
-          if (selectedEnamelColor && selectedColor >= 0) {
-            const cleanedEnamelColor = selectedEnamelColor.toLowerCase().replace(/_/g, '');
-            const metalColor = metalColors[selectedColor]?.replace(/\s+/g, '');
-
-            // Log cleaned values
-            console.log("cleanedEnamelColor:", cleanedEnamelColor);
-            console.log("metalColor:", metalColor);
-
-            if (!metalColor) return '#FF0000'; // Return red if metalColor is undefined
-
-            const enamelMetalStockKey = `${cleanedEnamelColor}${metalColor}clrStock`;
-            const enamelMetalStock = data?.Enamelcolorstock?.[cleanedEnamelColor]?.[enamelMetalStockKey] || 0;
-
-            // Log stock key and value
-            console.log("enamelMetalStockKey:", enamelMetalStockKey);
-            console.log("enamelMetalStock:", enamelMetalStock);
-
-            return enamelMetalStock > 0 ? '#0B8D08' : '#FF0000'; // Green if in stock, red if out of stock
-          }
-
-          if (selectedColor >= 0  && selectedColor >= 0) {
-            console.log(selectedColor,"color check")
-            const metalStockKey = `${metalColors[selectedColor]?.replace(/\s+/g, '')}clrStock`;
-            console.log("metalStockKey:", metalStockKey);
-            if (!metalStockKey) return '#FF0000'; // Return red if metalStockKey is undefined
-            
-            // Access the metal stock
-            const metalStock = data?.Metalcolorstock?.[metalStockKey];
-            console.log("metalStock:", metalStock);
-
-            // Check stock values for 0 or null
-            if (metalStock === null || metalStock === 0) {
-              return '#FF0000'; // Red if out of stock or null
-            }
-
-            return '#0B8D08'; // Green if in stock
-          }
-
-          if (data?.stock !== null && data?.stock !== undefined) {
-            return data.stock > 0 ? '#0B8D08' : '#FF0000'; // Green if in stock, red if out of stock
-          }
-
-          return '#0B8D08'; // Default fallback color
-        })()
-      }}
-      className="text-[14px] font-medium leading-[24px]"
-    >
-      {(() => {
-        if (selectedEnamelColor) {
-          const cleanedEnamelColor = selectedEnamelColor.toLowerCase().replace(/_/g, '');
-          const metalColor = metalColors[selectedColor]?.replace(/\s+/g, '');
-
-          if (!metalColor) return "Out of Stock"; // Return "Out of Stock" if metalColor is undefined
-
-          const enamelMetalStockKey = `${cleanedEnamelColor}${metalColor}clrStock`;
-          const enamelMetalStock = data?.Enamelcolorstock?.[cleanedEnamelColor]?.[enamelMetalStockKey] || 0;
-
-          return enamelMetalStock > 0 ? "In Stock" : "Out of Stock";
-        }
-
-        if (selectedColor >= 0) {
-          const metalStockKey = `${metalColors[selectedColor]?.replace(/\s+/g, '')}clrStock`;
-
-          if (!metalStockKey) return "Out of Stock"; // Return "Out of Stock" if metalStockKey is undefined
-
-          // Access the metal stock
-          const metalStock = data?.Metalcolorstock?.[metalStockKey];
-
-          // Check stock values for 0 or null
-          if (metalStock === null || metalStock === 0) {
-            return "Out of Stock"; // Out of stock if undefined, null, or zero
-          }
-
-          return metalStock > 0 ? "In Stock" : "Out of Stock";
-        }
-
-        if (data?.stock !== null && data?.stock !== undefined) {
-          return data?.stock > 0 ? "In Stock" : "Out of Stock";
-        }
-
-        return "In Stock"; // Default fallback
-      })()}
-    </span>
-  </div>
-</div> */}
+                              
 
                     <div className="instockcon">
                     <div className="instockconflex">
@@ -2565,203 +2315,64 @@ function ProductDetails({ data }) {
 
 
 
-                                    {/* metal options */}
-
-                                    {/* <div>
-                                        {Object.keys(data.MetalColor).length > 0 && (
-                                            <div className="metal-color-options">
-                                                <h3 className='text-[20px] font-[600] font-Poppins'>Metal Color</h3>
-                                                {Object.keys(data.MetalColor).map((key, index) => {
-                                                    // Remove "clr" from the end of color name
-                                                    const label = key.replace(/clr$/i, '');
-
-                                                    return (
-                                                        <div key={index} className='flex items-center text-[16px] font-Poppins py-1'>
-                                                            <input
-                                                                type="radio"
-                                                                name='colorcode'
-                                                                id={`color-${key}`}
-                                                                value={key}
-                                                                checked={selectedColor === index}
-                                                                onChange={() => handleColorChange(index) || setSelectedColor(index)}
-                                                            />
-                                                            <label
-                                                                className='pl-2 cursor-pointer'
-                                                                htmlFor={`color-${key}`}
-                                                            >
-                                                                {label}
-                                                            </label>
-                                                        </div>
-                                                    );
-                                                })}
-                                            </div>
-                                        )}
-                                    </div> */}
-                                    {/* <div className='metaloptionproduct'>
-                                        {Object.keys(data.MetalColor).length > 0 && (
-                                            <>
-                                                <div className='metaltitle'>
-                                                    <h3>Metal Color :</h3>
-                                                </div>
-                                                <div className='metalmaincolor'>
-                                                    {Object.keys(data.MetalColor).map((key, index) => {
-                                                        // Remove "clr" from the end of color name
-                                                        const label = key.replace(/clr$/i, '');
-                                                        const isSelected = selectedColor === index;
-
-                                                        return (
-                                                            <div key={index} className={`metalcolor ${isSelected ? 'selected' : ''}`}>
-                                                                <input
-                                                                    type="radio"
-                                                                    name='colorcode'
-                                                                    id={`color-${key}`}
-                                                                    value={key}
-                                                                    checked={isSelected}
-                                                                    onChange={() => handleColorChange(index) || setSelectedColor(index)}
-                                                                    className='hidden' // Hide the default radio button
-                                                                />
-                                                                <label
-                                                                    htmlFor={`color-${key}`}
-                                                                    className='flex items-center flex-col cursor-pointer'
-                                                                >
-                                                                    <span className={`metalcolorcon ${key} ${isSelected ? 'selected' : ''}`}></span>
-                                                                    <span className='ml-2'>{label}</span>
-                                                                </label>
+                                        {
+                                            shouldShowMetalColors && (
+                                                <div className='metaloptionproduct'>
+                                                    {Object.keys(data.MetalColor).length > 0 && (
+                                                        <>
+                                                            <div className='metaltitle flex items-center'>
+                                                                <h3 className='!text-sm !text-[#D7A295]'>Metal Color :</h3>
                                                             </div>
-                                                        );
-                                                    })}
+                                                            <div className='metalmaincolor'>
+                                                                {['YellowGoldclr', 'RoseGoldclr', 'WhiteGoldclr'].map((key, index) => {
+                                                                    // Check if the color exists and has images
+                                                                    const images = data.MetalColor[key] || [];
+                                                                    const hasImages = images.length > 0;
+
+                                                                    // If the color has no images, return null
+                                                                    if (!hasImages) {
+                                                                        return null;
+                                                                    }
+
+                                                                    // Remove "clr" from the end of the color name
+                                                                    const label = key.replace(/clr$/i, '');
+                                                                    const isSelected = selectedColor === index; // Compare with fixed index
+
+                                                                    return (
+                                                                        <div key={key} className={`metalcolor ${isSelected ? 'selected' : ''}`}>
+                                                                            <input
+                                                                                type="radio"
+                                                                                name='colorcode'
+                                                                                id={`color-${key}`}
+                                                                                value={key}
+                                                                                checked={isSelected}
+                                                                                onChange={() => handleColorChange(index)} // Use fixed index for selection
+                                                                                className='hidden' // Hide the default radio button
+                                                                            />
+                                                                            <label
+                                                                                htmlFor={`color-${key}`}
+                                                                                className='flex items-center flex-col cursor-pointer'
+                                                                            >
+                                                                                <span className={`metalcolorcon ${key} ${isSelected ? 'selected' : ''}`}></span>
+                                                                                <span className='ml-2'>{label}</span>
+                                                                            </label>
+                                                                        </div>
+                                                                    );
+                                                                })}
+                                                            </div>
+                                                        </>
+                                                    )}
                                                 </div>
-                                            </>
-                                        )}
-                                    </div> */}
-{/* workign code  */}
-
-                                    {/* {
-                                        shouldShowMetalColors && (
-                                            <div className='metaloptionproduct'>
-                                                {Object.keys(data.MetalColor).length > 0 && (
-                                                    <>
-                                                        <div className='metaltitle'>
-                                                            <h3>Metal Color :</h3>
-                                                        </div>
-                                                        <div className='metalmaincolor'>
-                                                            {Object.keys(data.MetalColor).map((key, index) => {
-                                                                // Remove "clr" from the end of color name
-                                                                const label = key.replace(/clr$/i, '');
-                                                                const isSelected = selectedColor === index;
-
-                                                                return (
-                                                                    <div key={index} className={`metalcolor ${isSelected ? 'selected' : ''}`}>
-                                                                        <input
-                                                                            type="radio"
-                                                                            name='colorcode'
-                                                                            id={`color-${key}`}
-                                                                            value={key}
-                                                                            checked={isSelected}
-                                                                            onChange={() => handleColorChange(index)}
-                                                                            className='hidden' // Hide the default radio button
-                                                                        />
-                                                                        <label
-                                                                            htmlFor={`color-${key}`}
-                                                                            className='flex items-center flex-col cursor-pointer'
-                                                                        >
-                                                                            <span className={`metalcolorcon ${key} ${isSelected ? 'selected' : ''}`}></span>
-                                                                            <span className='ml-2'>{label}</span>
-                                                                        </label>
-                                                                    </div>
-                                                                );
-                                                            })}
-                                                        </div>
-                                                    </>
-                                                )}
-                                            </div>
-
-                                        )
-                                    } */}
-{/* workign code  */}
-            {
-                shouldShowMetalColors && (
-                    <div className='metaloptionproduct'>
-                        {Object.keys(data.MetalColor).length > 0 && (
-                            <>
-                                <div className='metaltitle'>
-                                    <h3>Metal Color :</h3>
-                                </div>
-                                <div className='metalmaincolor'>
-                                    {['YellowGoldclr', 'RoseGoldclr', 'WhiteGoldclr'].map((key, index) => {
-                                        // Check if the color exists and has images
-                                        const images = data.MetalColor[key] || [];
-                                        const hasImages = images.length > 0;
-
-                                        // If the color has no images, return null
-                                        if (!hasImages) {
-                                            return null;
+                                            )
                                         }
 
-                                        // Remove "clr" from the end of the color name
-                                        const label = key.replace(/clr$/i, '');
-                                        const isSelected = selectedColor === index; // Compare with fixed index
-
-                                        return (
-                                            <div key={key} className={`metalcolor ${isSelected ? 'selected' : ''}`}>
-                                                <input
-                                                    type="radio"
-                                                    name='colorcode'
-                                                    id={`color-${key}`}
-                                                    value={key}
-                                                    checked={isSelected}
-                                                    onChange={() => handleColorChange(index)} // Use fixed index for selection
-                                                    className='hidden' // Hide the default radio button
-                                                />
-                                                <label
-                                                    htmlFor={`color-${key}`}
-                                                    className='flex items-center flex-col cursor-pointer'
-                                                >
-                                                    <span className={`metalcolorcon ${key} ${isSelected ? 'selected' : ''}`}></span>
-                                                    <span className='ml-2'>{label}</span>
-                                                </label>
-                                            </div>
-                                        );
-                                    })}
-                                </div>
-                            </>
-                        )}
-                    </div>
-                )
-            }
 
 
 
-
-                                    {/* enamel option */}
-
-                                    {/* {shouldShowEnamel && (
-                                        <div className="enamelotion pt-3">
-                                            <div className='enameltitle'>
-                                                <h3 className="text-[20px] font-[600] font-Poppins">Enamel Color : </h3>
-                                            </div>
-                                            <div className="enamelselect text-[16px] font-Poppins py-1">
-                                                <select
-                                                    name="enamelColors"
-                                                    id="enamelColors"
-                                                    className="border"
-                                                    onChange={(e) => setSelectedEnamelColor(e.target.value)}
-                                                    value={selectedEnamelColor}
-                                                >
-                                                    <option value="">Select Enamel Color</option>
-                                                    {availableEnamelColors.map((color) => (
-                                                        <option key={color._id} value={color._id}>
-                                                            {color.enamelColorName}
-                                                        </option>
-                                                    ))}
-                                                </select>
-                                            </div>
-                                        </div>
-                                    )} */}
                                     {shouldShowEnamel && (
                                         <div className="enamelotion pt-3">
-                                            <div className='enameltitle'>
-                                                <h3 className="text-[20px] font-[600] font-Poppins">Enamel Color : </h3>
+                                            <div className='enameltitle flex items-center'>
+                                                <h3 className="text-sm font-[600] font-Poppins !text-[#D7A295]">Enamel Color : </h3>
                                             </div>
                                             <div className="enamelselect text-[16px] font-Poppins py-1">
                                                 <select
@@ -2786,8 +2397,8 @@ function ProductDetails({ data }) {
                                     {/* combination of enamel */}
                                     {shouldShowCombinations && (
                                         <div className="enamelotion pt-3">
-                                            <div className='enameltitle'>
-                                                <h3 className="text-[20px] font-[600] font-Poppins">Combination : </h3>
+                                            <div className='enameltitle flex items-center'>
+                                                <h3 className="!text-sm font-[600] !text-[#D7A295] font-Poppins">Combination : </h3>
                                             </div>
                                             <div className="enamelselect text-[16px] font-Poppins py-1">
                                                 <select
@@ -2808,317 +2419,99 @@ function ProductDetails({ data }) {
                                         </div>
                                     )}
 
-                                    {/* chain options */}
-                                    {/* {shouldShowChainOptions && (
+                               
 
-                                        <div className='pt-3'>
-                                            <h3 className='text-[20px] font-[600] font-Poppins'>Chain</h3>
-                                            <div className='radio-option  text-[16px] font-Poppins py-1'>
-                                                <input
-                                                    type='radio'
-                                                    id='withChain'
-                                                    name='chainOption'
-                                                    value='with'
-                                                    onChange={() => toggleChainOption('with')}
-                                                    checked={showWithChain}
-                                                />
-                                                <label htmlFor='withChain' className='pl-2 cursor-pointer'>
-                                                    With 1 gm Chain ( 13 inches) (+₹ 7,200)
-                                                </label>
-                                            </div>
-                                            <div className='radio-option text-[16px] font-Poppins py-1'>
-                                                <input
-                                                    type='radio'
-                                                    id='withoutChain'
-                                                    name='chainOption'
-                                                    value='without'
-                                                    onChange={() => toggleChainOption('without')}
-                                                    checked={!showWithChain}
-                                                />
-                                                <label htmlFor='withoutChain' className='pl-2 cursor-pointer'>
-                                                    Without Chain
-                                                </label>
-                                            </div>
+                                {shouldShowChainOptions && (
+                                    <div className="chainotionproduct flex items-center">
+                                        <div className="chainopiontitle">
+                                            <h3 className='!text-sm !text-[#D7A295]'>Chain Type :</h3>
                                         </div>
-                                    )} */}
 
-
-
-                                    {/* {shouldShowChainOptions && (
-                                        <div className='chainotionproduct'>
-                                            <div className='chainopiontitle'>
-                                                <h3>Chain Type :</h3>
-                                            </div>
-
-                                            <div className='chainotionproductflex'>
-                                                <div className='withchainoption'>
-                                                    <div className='withchainoptioncon text-[14px] font-Poppins py-1'>
-                                                        <input
-                                                        className='hidden'
-                                                            type='radio'
-                                                            id='withChain'
-                                                            name='chainOption'
-                                                            value='with'
-                                                            onChange={() => toggleChainOption('with')}
-                                                            checked={showWithChain}
-                                                        />
-                                                        <label htmlFor='withChain' className=' cursor-pointer'>
-                                                            <div className={`tagwithchain ${showWithChain ? 'border border-[#006039]' : 'border-none'}`}>
-
+                                        <div className="chainotionproductflex">
+                                            {/* With Chain Option */}
+                                            <div className="withchainoption">
+                                                <div className="withchainoptioncon text-[14px] font-Poppins py-1">
+                                                    <input
+                                                        className="hidden"
+                                                        type="radio"
+                                                        id="withChain"
+                                                        name="chainOption"
+                                                        value="with"
+                                                        onChange={() => toggleChainOption("with")}
+                                                        checked={showWithChain === true}
+                                                    />
+                                                    <label htmlFor="withChain" className="cursor-pointer">
+                                                        <div className={`tagwithchain ${showWithChain === true ? "border border-[#dcb699]" : "border-none"}`}>
                                                             With Chain
-                                                            </div>
-                                                            <div className={`chain-options mt-2 flex gap-2 ${showWithChain ? 'visible' : 'hidden'}`}>
-                                                                <label className={`chain-size-label cursor-pointer flex `}>
-                                                                    <input
-                                                                        type="radio"
-                                                                        name="chainSize"
-                                                                        value="13inch"
-                                                                        onChange={handleChainSizeChange}
-                                                                        checked={selectedChainSize === '13inch'}
-                                                                    />
-                                                                    <span className={`chainboxtsec chain-size-text ${selectedChainSize === '13inch' ? '!font-[600] !bg-[#a8eeb6] border border-[#006039]' : ''}`}>
-                                                                        {selectedChainSize === '13inch' ? '' : ''}
-                                                                        13 inches
-                                                                    </span>
-                                                                </label>
-                                                                <label className={`chain-size-label cursor-pointer flex `}>
-                                                                    <input
-                                                                        type="radio"
-                                                                        name="chainSize"
-                                                                        value="18inch"
-                                                                        onChange={handleChainSizeChange}
-                                                                        checked={selectedChainSize === '18inch'}
-                                                                    />
-                                                                    <span className={`chainboxtsec chain-size-text ${selectedChainSize === '18inch' ? '!font-[600] !bg-[#a8eeb6] border border-[#006039]' : ''}`}>
-                                                                        {selectedChainSize === '18inch' ? '' : ''}
-                                                                        18 inches
-                                                                    </span>
-                                                                </label>
-                                                            </div>
-
-
-                                                            {/* <div className={`withchainimgcon  ${showWithChain ? 'mt-[2px]' : 'mt-[22px]'} `}>
-                                                                <img src={withchainimg} alt="" />
-                                                            </div> */}
-                                                        {/* </label>
-                                                    </div>
-
+                                                        </div>
+                                                        <div className={`chain-options mt-2 flex gap-2 ${showWithChain ? "visible" : "hidden"}`}>
+                                                            {productType === "gold" && (
+                                                                <>
+                                                                    <label className={`chain-size-label cursor-pointer flex`}>
+                                                                        <input
+                                                                            type="radio"
+                                                                            name="chainSize"
+                                                                            value="13inch"
+                                                                            onChange={handleChainSizeChange}
+                                                                            checked={selectedChainSize === "13inch"}
+                                                                        />
+                                                                        <span
+                                                                            className={`chainboxtsec chain-size-text ${
+                                                                                selectedChainSize === "13inch"
+                                                                                    ? "!font-[600] !text-white !bg-[#dcb699] border border-[#dcb699]/30"
+                                                                                    : ""
+                                                                            }`}
+                                                                        >
+                                                                            13 inches
+                                                                        </span>
+                                                                    </label>
+                                                                    <label className={`chain-size-label cursor-pointer flex`}>
+                                                                        <input
+                                                                            type="radio"
+                                                                            name="chainSize"
+                                                                            value="18inch"
+                                                                            onChange={handleChainSizeChange}
+                                                                            checked={selectedChainSize === "18inch"}
+                                                                        />
+                                                                        <span
+                                                                            className={`chainboxtsec chain-size-text ${
+                                                                                selectedChainSize === "18inch"
+                                                                                    ? "!font-[600] !text-white !bg-[#dcb699] border border-[#dcb699]/30"
+                                                                                    : ""
+                                                                            }`}
+                                                                        >
+                                                                            18 inches
+                                                                        </span>
+                                                                    </label>
+                                                                </>
+                                                            )}
+                                                        </div>
+                                                    </label>
                                                 </div>
-                                                <div className='withchainoption'>
-                                                    <div className='withchainoptioncon text-[14px] font-Poppins py-1'>
-                                                        <input
-                                                            className='hidden'
-                                                            type='radio'
-                                                            id='withoutChain'
-                                                            name='chainOption'
-                                                            value='without'
-                                                            onChange={() => toggleChainOption('without')}
-                                                            checked={!showWithChain}
-                                                        />
-                                                        <label htmlFor='withoutChain' className=' cursor-pointer'>
-                                                            <div className={`tagwithchain ${!showWithChain ? 'border border-[#006039]' : 'border-none'}`}>
-
-                                                            
-                                                            Without Chain
-                                                            </div> */}
-                                                            {/* <div className='withchainimgcon mt-[22px]'>
-                                                                <img src={withoutchainimg} alt="" />
-                                                            </div> */}
-                                                        {/* </label>
-                                                    </div>
-
-                                                </div>
-
-
-
                                             </div>
 
+                                            {/* Without Chain Option */}
+                                            <div className="withchainoption">
+                                                <div className="withchainoptioncon text-[14px] font-Poppins py-1">
+                                                    <input
+                                                        className="hidden"
+                                                        type="radio"
+                                                        id="withoutChain"
+                                                        name="chainOption"
+                                                        value="without"
+                                                        onChange={() => toggleChainOption("without")}
+                                                        checked={showWithChain === false}
+                                                    />
+                                                    <label htmlFor="withoutChain" className="cursor-pointer">
+                                                        <div className={`tagwithchain  ${showWithChain === false  ? "border border-[#dcb699]" : "border-none"}`}>
+                                                            Without Chain
+                                                        </div>
+                                                    </label>
+                                                </div>
+                                            </div>
                                         </div>
-
-                                    )} */} 
-
-{/* {shouldShowChainOptions && (
-    <div className="chainotionproduct">
-        <div className="chainopiontitle">
-            <h3>Chain Type :</h3>
-        </div>
-
-        <div className="chainotionproductflex">
-            
-            <div className="withchainoption">
-                <div className="withchainoptioncon text-[14px] font-Poppins py-1">
-                    <input
-                        className="hidden"
-                        type="radio"
-                        id="withChain"
-                        name="chainOption"
-                        value="with"
-                        onChange={() => toggleChainOption("with")}
-                        checked={showWithChain}
-                    />
-                    <label htmlFor="withChain" className="cursor-pointer">
-                        <div className={`tagwithchain ${showWithChain ? "border border-[#006039]" : "border-none"}`}>
-                            With Chain
-                        </div>
-                        <div className={`chain-options mt-2 flex gap-2 ${showWithChain ? "visible" : "hidden"}`}>
-                            
-                            <label className={`chain-size-label cursor-pointer flex`}>
-                                <input
-                                    type="radio"
-                                    name="chainSize"
-                                    value="13inch"
-                                    onChange={handleChainSizeChange}
-                                    checked={selectedChainSize === "13inch"}
-                                />
-                                <span
-                                    className={`chainboxtsec chain-size-text ${
-                                        selectedChainSize === "13inch"
-                                            ? "!font-[600] !bg-[#a8eeb6] border border-[#006039]"
-                                            : ""
-                                    }`}
-                                >
-                                    13 inches
-                                </span>
-                            </label>
-                            <label className={`chain-size-label cursor-pointer flex`}>
-                                <input
-                                    type="radio"
-                                    name="chainSize"
-                                    value={productType === "gold" ? "18inch" : "16inch"}
-                                    onChange={handleChainSizeChange}
-                                    checked={
-                                        selectedChainSize === (productType === "gold" ? "18inch" : "16inch")
-                                    }
-                                />
-                                <span
-                                    className={`chainboxtsec chain-size-text ${
-                                        selectedChainSize === (productType === "gold" ? "18inch" : "16inch")
-                                            ? "!font-[600] !bg-[#a8eeb6] border border-[#006039]"
-                                            : ""
-                                    }`}
-                                >
-                                    {productType === "gold" ? "18 inches" : "16 inches"}
-                                </span>
-                            </label>
-                        </div>
-                    </label>
-                </div>
-            </div>
-
-            
-            <div className="withchainoption">
-                <div className="withchainoptioncon text-[14px] font-Poppins py-1">
-                    <input
-                        className="hidden"
-                        type="radio"
-                        id="withoutChain"
-                        name="chainOption"
-                        value="without"
-                        onChange={() => toggleChainOption("without")}
-                        checked={!showWithChain}
-                    />
-                    <label htmlFor="withoutChain" className="cursor-pointer">
-                        <div className={`tagwithchain ${!showWithChain ? "border border-[#006039]" : "border-none"}`}>
-                            Without Chain
-                        </div>
-                    </label>
-                </div>
-            </div>
-        </div>
-    </div>
-)} */}
-
-{shouldShowChainOptions && (
-    <div className="chainotionproduct">
-        <div className="chainopiontitle">
-            <h3>Chain Type :</h3>
-        </div>
-
-        <div className="chainotionproductflex">
-            {/* With Chain Option */}
-            <div className="withchainoption">
-                <div className="withchainoptioncon text-[14px] font-Poppins py-1">
-                    <input
-                        className="hidden"
-                        type="radio"
-                        id="withChain"
-                        name="chainOption"
-                        value="with"
-                        onChange={() => toggleChainOption("with")}
-                        checked={showWithChain}
-                    />
-                    <label htmlFor="withChain" className="cursor-pointer">
-                        <div className={`tagwithchain ${showWithChain ? "border border-[#006039]" : "border-none"}`}>
-                            With Chain
-                        </div>
-                        <div className={`chain-options mt-2 flex gap-2 ${showWithChain ? "visible" : "hidden"}`}>
-                            {productType === "gold" && (
-                                <>
-                                    <label className={`chain-size-label cursor-pointer flex`}>
-                                        <input
-                                            type="radio"
-                                            name="chainSize"
-                                            value="13inch"
-                                            onChange={handleChainSizeChange}
-                                            checked={selectedChainSize === "13inch"}
-                                        />
-                                        <span
-                                            className={`chainboxtsec chain-size-text ${
-                                                selectedChainSize === "13inch"
-                                                    ? "!font-[600] !bg-[#a8eeb6] border border-[#006039]"
-                                                    : ""
-                                            }`}
-                                        >
-                                            13 inches
-                                        </span>
-                                    </label>
-                                    <label className={`chain-size-label cursor-pointer flex`}>
-                                        <input
-                                            type="radio"
-                                            name="chainSize"
-                                            value="18inch"
-                                            onChange={handleChainSizeChange}
-                                            checked={selectedChainSize === "18inch"}
-                                        />
-                                        <span
-                                            className={`chainboxtsec chain-size-text ${
-                                                selectedChainSize === "18inch"
-                                                    ? "!font-[600] !bg-[#a8eeb6] border border-[#006039]"
-                                                    : ""
-                                            }`}
-                                        >
-                                            18 inches
-                                        </span>
-                                    </label>
-                                </>
-                            )}
-                        </div>
-                    </label>
-                </div>
-            </div>
-
-            {/* Without Chain Option */}
-            <div className="withchainoption">
-                <div className="withchainoptioncon text-[14px] font-Poppins py-1">
-                    <input
-                        className="hidden"
-                        type="radio"
-                        id="withoutChain"
-                        name="chainOption"
-                        value="without"
-                        onChange={() => toggleChainOption("without")}
-                        checked={!showWithChain}
-                    />
-                    <label htmlFor="withoutChain" className="cursor-pointer">
-                        <div className={`tagwithchain ${!showWithChain ? "border border-[#006039]" : "border-none"}`}>
-                            Without Chain
-                        </div>
-                    </label>
-                </div>
-            </div>
-        </div>
-    </div>
-)}
+                                    </div>
+                                )}
 
 
 
@@ -3134,35 +2527,46 @@ function ProductDetails({ data }) {
 
 
 
-                                    <div className='flex items-center mt-5 gap-[20px] pr-3'>
-                                        <div className='cartqtycon overflow-hidden'>
-                                            <button onClick={decrementCount} className="text-black font-bold rounded-l px-4 py-2 shadow-lg hover:opacity-75 transition duration-300 ease-in-out">-</button>
-                                            <span className="bg-white text-black font-medium px-4 py-[9.1px] font-Poppins overflow-hidden">
-                                                {count}
-                                            </span>
-                                            <button onClick={incrementCount}
-                                                className="text-black font-bold rounded-br rounded-tr px-4 py-2 shadow-lg hover:opacity-75 transition duration-300 ease-in-out"
-                                            >+ </button>
-                                        </div>
-
-                                        <div
-                                            className={`${styles.button} mt-2 rounded-[4px] !h-[45px] flex items-center !bg-[#01463A]`}
-                                            onClick={() => addToCartHandler(data._id)}
-                                        >
-                                            <span className="text-[#fff] flex items-center font-Poppins">
-                                                Add to cart <AiOutlineShoppingCart className="ml-1" />
-                                            </span>
-                                        </div>
-                                    </div>
-
-                                    <div
-                                        className={`${styles.button} productbuynowbtn mt-2 rounded-[4px]  flex items-center `}
-                                        onClick={() => addToCartHandler(data._id, true)}
+                                    <div className="w-80 flex items-center gap-3 my-3">
+                                    <div className="flex items-center bg-[#F8F3F0] rounded-full overflow-hidden border border-[#E8D5CE]">
+                                    <button
+                                        onClick={decrementCount}
+                                        className="text-[#B8956F] font-bold w-10 h-10 flex items-center justify-center hover:bg-[#E8D5CE] transition duration-200"
                                     >
-                                        <span className="flex items-center font-Poppins">
-                                            Buy Now
-                                        </span>
+                                        <Minus className="h-3 w-3" />
+                                    </button>
+                                    <span className="text-[#8B4513] font-semibold px-4 py-2 min-w-[50px] text-center text-sm">{count}</span>
+                                    <button
+                                        onClick={incrementCount}
+                                        className="text-[#B8956F] font-bold w-10 h-10 flex items-center justify-center hover:bg-[#E8D5CE] transition duration-200"
+                                    >
+                                        <Plus className="h-3 w-3" />
+                                    </button>
                                     </div>
+
+                                    <button
+                                    className="flex-1 bg-[#D8B4A0] text-white px-5 py-2.5 rounded-full hover:bg-[#C9A08A] transition duration-200 ease-in-out font-medium text-sm shadow-sm"
+                                    onClick={() => addToCartHandler(data._id)}
+                                    >
+                                    <span className="flex items-center justify-center gap-2">
+                                        Add to Cart <ShoppingCart className="h-4 w-4" />
+                                    </span>
+                                    </button>
+                                </div>
+                                    
+
+                                 
+                                    <div className='w-80'>
+
+                
+                                    <Button
+                                    className="w-full border border-[#D8B4A0] text-[#D7A295] bg-white hover:bg-[#F8F3F0] rounded-full py-2.5 transition duration-200 ease-in-out font-medium text-sm"
+                                    onClick={() => addToCartHandler(data._id, true)}
+                                    >
+                                        Buy Now
+                                    </Button>
+                                    </div>
+
 
 
                                     {/* add to wishlist */}
@@ -3171,11 +2575,11 @@ function ProductDetails({ data }) {
                                         {
                                             click ?
 
-                                                <div className='productaddtowishflex cursor-pointer ' onClick={() => removeFromWishlistHandler(data)}>
+                                                <div className='productaddtowishflex cursor-pointer !text-[#D7A295]' onClick={() => removeFromWishlistHandler(data)}>
                                                     <AiFillHeart
                                                         size={24}
                                                         className='cursor-pointer '
-                                                        color={click ? "red" : "#333"}
+                                                        color={click ? "red" : "#D7A295"}
 
                                                         title='Remove from wishlist'
                                                     />
@@ -3184,11 +2588,11 @@ function ProductDetails({ data }) {
 
                                                 </div>
                                                 :
-                                                <div className='productaddtowishflex cursor-pointer ' onClick={() => addToWishlistHandler(data)}>
+                                                <div className='productaddtowishflex cursor-pointer !text-[#D7A295]' onClick={() => addToWishlistHandler(data)}>
                                                     <AiOutlineHeart
                                                         size={24}
 
-                                                        color={click ? "red" : "#333"}
+                                                        color={click ? "red" : "#D7A295"}
 
                                                         title='Add to wishlist'
 
@@ -3202,7 +2606,7 @@ function ProductDetails({ data }) {
                                     {/* share product */}
                                     <div className='shareproductlist'>
                                         <div className='sharelisttitle'>
-                                            <h3>Share this product :</h3>
+                                            <h3 className=''>Share this product :</h3>
 
                                         </div>
 
@@ -3239,20 +2643,25 @@ function ProductDetails({ data }) {
 
 
 
-                                    {/* <div className={`${styles.button} mt-6 !w-[190px] p-4 !rounded !h-[40px]`} onClick={handleMessageSubmit}>
-                                        <span className='text-white flex items-center'> Send Message <AiOutlineMessage className='ml-2' /></span>
-                                    </div> */}
+                                    
 
-                                        <div className='checkdel mt-3'>
-                                        <input type="text" placeholder='enter your pincode' value={pincode} onChange={(e)=>setpincode(e.target.value)}/>
-
-                                        <button className='checkdelbtn' onClick={()=>{calculateEDD()}}>Check </button>
-                                        {isLoading ? (
-                                            <p>Loading...</p>
-                                         ) : (
-                                         showResult && <p className='text-[14px]'>Estimated Delivery: {estimatedDeliveryRange}  </p>
-                                         )}
-                                         </div>
+                                         <div className="flex items-center mt-4 gap-2 flex-1 min-w-[200px] max-w-[340px]">
+                                        <MapPin size={16} className="text-[#D7A295]" />
+                                        <Input
+                                            type="text"
+                                            placeholder="Check delivery time"
+                                            value={pincode}
+                                            onChange={(e) => setpincode(e.target.value)}
+                                            className="flex-1 !w-[220px] h-8 text-sm border-[#D7A295]/30 focus:!border-[#D7A295]/80"
+                                        />
+                                        <Button
+                                            onClick={calculateEDD}
+                                            className="bg-[#D7A295] hover:bg-[#C9958A] text-white h-8 px-3 text-sm"
+                                            disabled={isLoading}
+                                        >
+                                            {isLoading ? "..." : "Check"}
+                                        </Button>
+                                        </div>
 
                                 </div>
 
@@ -3273,6 +2682,484 @@ function ProductDetails({ data }) {
     )
 }
 
+
+// const ProductDetailsInfo = ({ data ,shouldShowChainOptions,active,setActive,reviewSectionRef }) => {
+//     console.log(data, "see the data")
+//     const [expanded, setExpanded] = useState(true);
+
+//     const [categoriesData, setCategoriesData] = useState([]);
+//     const [loading, setLoading] = useState(true);
+
+//     // Fetch categories from the API
+//     useEffect(() => {
+//         const fetchCategories = async () => {
+//             try {
+//                 const response = await axios.get(`${server}/get-allcategories`);
+//                 // Filter categories based on type (gold or silver)
+//                 const filteredGoldCategories = response.data.categories.filter(category => category.type === 'gold');
+//                 setCategoriesData(filteredGoldCategories); // Store gold categories
+//             } catch (error) {
+//                 console.error('Error fetching categories:', error);
+//                 alert('Failed to fetch categories');
+//             } finally {
+//                 setLoading(false);
+//             }
+//         };
+
+//         fetchCategories();
+//     }, []);
+
+
+//     console.log(categoriesData,"categoriesData-------------------")
+//     const productCategory = data?.category;
+//     const productType = categoriesData.some(category => 
+//         category.title.toLowerCase().includes(productCategory.toLowerCase()) && category.type === 'gold'
+//     ) ? 'gold' : 'silver';
+
+
+//     return (
+//         <div className='bg-[#fcfcfc] shadow-lg  border-[0.1px] border-[#f8f8f8] mb-5 px-10 800px:px-2 py-2 rounded pb-5 productdetailspageresp'>
+//             <div className="w-full flex justify-between border-b pt-10 pb-2">
+//                 <div className="relative">
+//                     <h5 className={`${active === 1 ? "text-[#1BB8E5] font-[700]" : "text-[#000]"} text-[16px]  px-1 leading-5 cursor-pointer 800px:text-[20px] font-Poppins `} onClick={() => setActive(1)} >Product Details</h5>
+//                     {/* {
+//                     active === 1 ?
+//                      (
+//                         <div className={`${styles.active_indicator}`} />
+//                     ) : null} */}
+//                 </div>
+//                 <div className="relative">
+//                     <h5 className={`${active === 2 ? "text-[#1BB8E5] font-[700]" : "text-[#000]"} text-[16px] px-1 leading-5 cursor-pointer 800px:text-[20px] font-Poppins`} onClick={() => setActive(2)}>Product Reviews</h5>
+
+//                 </div>
+
+//             </div>
+//             {
+//                 active === 1 ?
+//                     <>
+//                         <div className='mb-3 productdetailspagerespcon'>
+//                             <h1 className={`text-[18px] font-[600] font-Poppins text-[#333] pt-1`}>{data.name}</h1>
+//                             <p className="font-Poppins pt-1">{data.description}</p>
+//                             <h3 className={`text-[#727386] text-left  text-[15px] font-Poppins pt-1`}>{data.skuid}</h3>
+
+//                         </div>
+
+//                         {/* table section */}
+
+//                         <div className='flex flex-wrap  gap-5'>
+
+//                             <div className="bg-[#5DC2B0] w-[300px] font-Poppins mb-3 rounded-[4px] productdetailresptable">
+//                                 <div className="t1sec px-[12.5px] py-[16px] gap-2 flex items-center">
+//                                     <span><AiOutlineGold /></span>
+                                    // {
+                                    // categoriesData
+                                    //     .filter(category => category.title.toLowerCase().includes(productCategory.toLowerCase())) // Match by title or another attribute
+                                    //     .length > 0 ? (
+                                    //     categoriesData
+                                    //         .filter(category => category.title.toLowerCase().includes(productCategory.toLowerCase()))
+                                    //         .map((category) => (
+                                    //         <span className="font-[500]" key={category._id}>
+                                    //             Gold
+                                    //         </span>
+                                    //         ))
+                                    //     ) : (
+                                    //     <span className="font-[500]">Silver</span>
+                                    //     )
+                                    // }
+//                                 </div>
+//                                 <div className="tsec2 flex font-Poppins">
+//                                     <div className='w-[200px] bg-[#b6f0e5] mr-[1.5px] px-[10px] py-[10px]'>
+                                        // <div className='pb-[8px] font-[600] '>Weight</div>
+                                        // <p className='text-[#4f3267] text-[13px]'> {data?.goldWeight ? data.goldWeight.weight : "Not Updated"} </p>
+//                                     </div>
+//                                     <div className='w-[200px] bg-[#b6f0e5] mr-[1.5px] px-[10px] py-[10px]'>
+                                        // <div className='pb-[8px] font-[600] '>Purity</div>
+                                        // <p className='text-[#4f3267] text-[13px]'>{data?.goldWeight ? data.goldWeight.purity : "18 kt"}</p>
+//                                     </div>
+//                                 </div>
+//                             </div>
+// {/* 
+//                             <div className="bg-[#5DC2B0] w-[300px] font-Poppins mb-3 rounded-[4px] productdetailresptable">
+//                                 <div className="t1sec px-[12.5px] py-[16px] gap-2 flex items-center">
+//                                     <span><IoDiamondOutline /></span>
+//                                     <span className='font-[500]'>Diamond</span>
+//                                 </div>
+//                                 <div className="tsec2 flex font-Poppins">
+//                                     <div className='w-[200px] bg-[#b6f0e5] mr-[1.5px] px-[10px] py-[10px]'>
+                                        // <div className='pb-[8px] font-[600] '>Weight</div>
+                                        // <p className='text-[#4f3267] text-[13px]'>{data?.diamondWeight ? data.diamondWeight.weight : "Not Updated"} </p>
+//                                     </div>
+//                                     <div className='w-[200px] bg-[#b6f0e5] mr-[1.5px] px-[10px] py-[10px]'>
+                                        // <div className='pb-[8px] font-[600] '>Quality</div>
+                                        // <p className='text-[#4f3267] text-[13px]'>{data?.diamondWeight ? data.diamondWeight.quality : " GH-VS"}</p>
+//                                     </div>
+//                                 </div>
+//                             </div> */}
+
+//                             {/* Render the main container only if there is valid weight or quality */}
+                            // {(data?.diamondWeight?.weight && data?.diamondWeight?.weight !== "NA" && data?.diamondWeight?.weight !== null) || 
+                            // (data?.diamondWeight?.quality && data?.diamondWeight?.quality !== "NA" && data?.diamondWeight?.quality !== null) ? (
+                            // <div className="bg-[#5DC2B0] w-[300px] font-Poppins mb-3 rounded-[4px] productdetailresptable">
+                            //     <div className="t1sec px-[12.5px] py-[16px] gap-2 flex items-center">
+                            //     <span><IoDiamondOutline /></span>
+                            //     <span className="font-[500]">Diamond</span>
+                            //     </div>
+                                
+                            //     <div className="tsec2 flex font-Poppins">
+                            //     {/* Conditional rendering for Weight */}
+                            //     {data?.diamondWeight?.weight && data?.diamondWeight?.weight !== "NA" && data?.diamondWeight?.weight !== null ? (
+                            //         <div className="w-[200px] bg-[#b6f0e5] mr-[1.5px] px-[10px] py-[10px]">
+                            //         <div className="pb-[8px] font-[600]">Weight</div>
+                            //         <p className="text-[#4f3267] text-[13px]">
+                            //             {data?.diamondWeight?.weight || "Not Updated"}
+                            //         </p>
+                            //         </div>
+                            //     ) : null}
+
+                            //     {/* Conditional rendering for Quality */}
+                            //     {data?.diamondWeight?.quality && data?.diamondWeight?.quality !== "NA" && data?.diamondWeight?.quality !== null ? (
+                            //         <div className="w-[200px] bg-[#b6f0e5] mr-[1.5px] px-[10px] py-[10px]">
+                            //         <div className="pb-[8px] font-[600]">Quality</div>
+                            //         <p className="text-[#4f3267] text-[13px]">
+                            //             {data?.diamondWeight?.quality || "GH-VS"}
+                            //         </p>
+                            //         </div>
+                            //     ) : null}
+                            //     </div>
+                            // </div>
+                            // ) : null}
+
+
+//                             <div className="bg-[#5DC2B0] w-[300px] font-Poppins mb-3 rounded-[4px] productdetailresptable">
+//                                 <div className="t1sec px-[12.5px] py-[16px] gap-2 flex items-center">
+//                                     <span><RxDimensions /></span>
+//                                     <span className='font-[500]'>Dimension</span>
+//                                 </div>
+//                                 <div className="tsec2 flex font-Poppins">
+//                                     <div className='w-[200px] bg-[#b6f0e5] mr-[1.5px] px-[10px] py-[10px]'>
+//                                         <div className='pb-[8px] font-[600] '>Height</div>
+//                                         <p className='text-[#4f3267] text-[13px]'> {data?.dimension ? data.dimension.height : "Not Updated"}</p>
+//                                     </div>
+//                                     <div className='w-[200px] bg-[#b6f0e5] mr-[1.5px] px-[10px] py-[10px]'>
+//                                         <div className='pb-[8px] font-[600] '>Width</div>
+//                                         <p className='text-[#4f3267] text-[13px]'>{data?.dimension ? data.dimension.width : "Not Updated"} </p>
+//                                     </div>
+//                                 </div>
+//                             </div>
+
+                            // {shouldShowChainOptions && 
+                            // <div className="bg-[#5DC2B0] w-[300px] font-Poppins mb-3 rounded-[4px] productdetailresptable">
+                            // <div className="t1sec px-[12.5px] py-[16px] gap-2 flex items-center">
+                            //     <span><GiHeartNecklace /></span>
+                            //     <span className='font-[500]'>Chain </span>
+                            // </div>
+                            // <div className="tsec2 !h-auto flex font-Poppins">
+                            //     <div className='w-[200px] bg-[#b6f0e5] !h-auto mr-[1.5px] px-[10px] py-[2px]'>
+                            //         <div className='pb-[2px] font-[600] '>Length</div>
+                            //         {/* <p className='text-[#4f3267] text-[13px]'>13 inch</p>
+                            //         <p className='text-[#4f3267] text-[13px]'>18 inch</p> */}
+                            //         {productType === 'gold' ? (
+                            //             <>
+                            //                 <p className="text-[#4f3267] text-[13px]">13 inch</p>
+                            //                 <p className="text-[#4f3267] text-[13px]">18 inch</p>
+                            //             </>
+                            //             ) : productType === 'silver' ? (
+                            //             <>
+                            //                 <p className="text-[#4f3267] text-[13px]">18 inch</p>
+                            //             </>
+                            //             ) : null}
+
+                            //     </div>
+                            //     <div className={`w-[200px] ${productType === 'gold' ? 'h-auto' :'!h-[70px]' } bg-[#b6f0e5]  mr-[1.5px] px-[10px] py-[2px]`}>
+                            //         <div className='pb-[2px] font-[600] '>Weight</div>
+                            //         {
+                            //             productType === 'gold' ?
+                            //             <>
+                            //             <p className='text-[#4f3267] text-[13px]'> 1gms </p>
+                            //             <p className='text-[#4f3267] text-[13px]'> 2gms </p>
+                            //             </>
+                            //             :
+                            //             <>
+                            //             <p className='text-[#4f3267]  text-[12px]' > approx 2.5 - 3gms </p>
+
+                            //             </>
+
+                            //         }
+                                    
+
+                            //     </div>
+                            // </div>
+                            // </div>
+
+                            
+                            // }
+
+                            
+
+//                         </div>
+//                         {/* table section */}
+
+
+
+
+//                         <div className="!bg-[#5DC2B0] w-full font-Poppins mb-3 mt-4">
+//                             <Accordion expanded={expanded} onChange={() => setExpanded(!expanded)} >
+//                                 <AccordionSummary
+//                                     expandIcon={<ExpandMoreIcon />}
+//                                     aria-controls="panel1-content"
+//                                     id="panel1-header"
+//                                     className='!bg-[#68c7b6] rounded-[8px]'
+//                                 >
+//                                     <div className=" w-full  t1sec px-[12.5px] py-[16px] gap-2 flex items-center">
+//                                         <span><MdFeaturedPlayList /></span>
+//                                         <span className='font-[500]'>Features</span>
+//                                     </div>
+//                                 </AccordionSummary>
+//                                 <AccordionDetails className="bg-[#d1fbf3]">
+//                                     <div className="tsec2 flex flex-col font-Poppins">
+//                                         <div className='w-[320px] bg-[#d1fbf3] mb-[1.5px] px-[10px] py-[10px] flex gap-[10px] items-center featurestsec'>
+//                                             <div className='font-[500] '><GiMaterialsScience /></div>
+//                                             <p className='text-[#4f3267] text-[15px]'> Hypoallergenic Material</p>
+//                                         </div>
+//                                         <div className='w-[320px] bg-[#d1fbf3] mb-[1.5px] px-[10px] py-[10px] flex gap-[10px] items-center featurestsec'>
+//                                             <div className='font-[500] '><MdHealthAndSafety /></div>
+//                                             <p className='text-[#4f3267] text-[15px]'>Quality and Safety First</p>
+//                                         </div>
+//                                         <div className='w-[320px] bg-[#d1fbf3] mb-[1.5px] px-[10px] py-[10px] flex gap-[10px] items-center featurestsec'>
+//                                             <div className='font-[500] '><FaChild /></div>
+//                                             <p className='text-[#4f3267] text-[15px]'>Age-Appropriate Styles</p>
+//                                         </div>
+//                                         <div className='w-[320px] bg-[#d1fbf3] mb-[1.5px] px-[10px] py-[10px] flex gap-[10px] items-center featurestsec'>
+//                                             <div className='font-[500] '><GiHeartNecklace /></div>
+//                                             <p className='text-[#4f3267] text-[15px]'>Everyday Use Jewelry</p>
+//                                         </div>
+//                                         <div className='w-[320px] bg-[#d1fbf3] mb-[1.5px] px-[10px] py-[10px] flex gap-[10px] items-center featurestsec'>
+//                                             <div className='font-[500] '><TbBrandMinecraft /></div>
+//                                             <p className='text-[#4f3267] text-[15px]'>Crafted with Love</p>
+//                                         </div>
+//                                        {
+//                                         productType === "gold" &&
+//                                         <div className='w-[320px] bg-[#d1fbf3] mb-[1.5px] px-[10px] py-[10px] flex gap-[10px] items-center featurestsec'>
+//                                         <div className='font-[500] '><TbCertificate /></div>
+//                                         <p className='text-[#4f3267] text-[14px]'>Natural Diamonds with SGL Certificate</p>
+//                                         </div>
+//                                        }
+//                                         <div className='w-[320px] bg-[#d1fbf3] mb-[1.5px] px-[10px] py-[10px] flex gap-[10px] items-center featurestsec'>
+//                                             <div className='font-[500] '><MdOutlineAppRegistration /></div>
+//                                             <p className='text-[#4f3267] text-[15px]'>Design Application No. {data.designno}</p>
+//                                         </div>
+
+
+
+
+//                                     </div>
+//                                 </AccordionDetails>
+//                             </Accordion>
+
+
+//                         </div>
+
+
+
+//                         <div className="w-full mt-3 moreinfoproduct bg-white rounded-lg shadow-sm">
+//                             <div className="moreinfosec py-[20px] flex flex-wrap justify-center gap-4 md:gap-10">
+//                                 <div className="flex flex-col justify-center items-center text-center w-1/2 md:w-auto">
+//                                     <span className="flex justify-center">
+//                                         <span
+//                                             className="w-[50px] h-[50px] flex justify-center items-center"
+//                                             style={{ backgroundColor: '#e8ffda', borderRadius: '50%' }}
+//                                         >
+//                                             <MdOutlineVerified size={25} />
+//                                         </span>
+//                                     </span>
+//                                     <span className="font-Poppins text-[1rem]">
+//                                         100% Certified
+//                                     </span>
+//                                 </div>
+
+//                                 <div className="flex flex-col justify-center items-center text-center w-1/2 md:w-auto">
+//                                     <span className="flex justify-center">
+//                                         <span
+//                                             className="w-[50px] h-[50px] flex justify-center items-center"
+//                                             style={{ backgroundColor: '#dbecff', borderRadius: '50%' }}
+//                                         >
+//                                             <RiRefund2Line size={25} />
+//                                         </span>
+//                                     </span>
+//                                     <span className="font-Poppins text-[1rem]">
+//                                         7 Days Money-Back
+//                                     </span>
+//                                 </div>
+
+//                                 <div className="flex flex-col justify-center items-center text-center w-1/2 md:w-auto">
+//                                     <span className="flex justify-center">
+//                                         <span
+//                                             className="w-[50px] h-[50px] flex justify-center items-center"
+//                                             style={{ backgroundColor: '#fff9ca', borderRadius: '50%' }}
+//                                         >
+//                                             <RiExchangeFundsLine size={25} />
+//                                         </span>
+//                                     </span>
+//                                     <span className="font-Poppins text-[1rem]">
+//                                     Exchange Facility
+//                                     </span>
+//                                 </div>
+
+//                                 {/* <div className="flex flex-col justify-center items-center text-center w-1/2 md:w-auto">
+//                                     <span className="flex justify-center items-center">
+//                                         <span
+//                                             className="w-[50px] h-[50px] flex justify-center items-center"
+//                                             style={{ backgroundColor: '#ffe1e3', borderRadius: '50%' }}
+//                                         >
+//                                             <CiCalendarDate size={25} />
+//                                         </span>
+//                                     </span>
+//                                     <span className="font-Poppins text-[1rem]">
+//                                         One Year Warranty
+//                                     </span>
+//                                 </div> */}
+//                             </div>
+
+//                             <p className="text-center text-[15px] font-[300] pb-4 font-Poppins text-[#333] mt-3">
+//                                 Learn more about our{' '}
+//                                 <Link className="text-[#4d9dbd]" to="/terms-and-conditions">
+//                                     TERMS & POLICIES
+//                                 </Link>
+//                             </p>
+//                         </div>
+
+//                     </>
+//                     : null
+//             }
+
+
+//             {
+//                 active === 2
+//                     ?
+                    //      <div ref={reviewSectionRef} className="w-full h-[50vh] py-3 flex flex-col items-center">
+                    //      <div className="w-full h-full overflow-y-auto px-4 space-y-4">
+                    //     {
+                    //         data &&
+                    //         [...data.reviews]
+                    //           .sort((a, b) => new Date(b.CreatedAt) - new Date(a.CreatedAt))
+                    //           .map((item, index) => (
+                    //             <div key={index} className='w-full flex my-1'>
+                    //                 {/* <img src={`${backend_url}/${item.user.avatar}`} className='w-[60px] h-[60px] rounded-full' alt="" /> */}
+                    //                 {/* <img 
+                    //                     src={
+                    //                         item?.user.avatar?.url &&
+                    //                         item?.user.avatar.url.match(/https:\/\/res\.cloudinary\.com\/ddaef5aw1\/image\/upload\/v[0-9]+/)
+                    //                         ? item?.user.avatar.url
+                    //                             .replace(/https:\/\/res\.cloudinary\.com\/ddaef5aw1\/image\/upload\/v[0-9]+/, `${imgdburl}/uploads/images`)
+                    //                             .replace("/avatars/", "/products/")
+                    //                         : item?.user.avatar?.url
+                    //                         ? `${imgdburl}${user.avatar.url}`.replace("/avatars/", "/products/")
+                    //                         : "Not Uploaded."
+                    //                     } 
+                    //                     className="w-[60px] h-[60px] rounded-full" 
+                                        
+                    //                     />
+                    //                     {
+                    //                         !item?.user.avatar?.url && (
+                    //                             <FaUserAlt className="w-[60px] h-[60px] text-gray-500" />
+                    //                         )
+                    //                         } */}
+
+                    //                                     {item?.user.avatar && item?.user.avatar.match(/https:\/\/res\.cloudinary\.com\/ddaef5aw1\/image\/upload\/v[0-9]+/) ? (
+                    //                                     <img 
+                    //                                         src={item?.user.avatar
+                    //                                         .replace(/https:\/\/res\.cloudinary\.com\/ddaef5aw1\/image\/upload\/v[0-9]+/, `${imgdburl}/uploads/images`)
+                    //                                         .replace("/avatars/", "/products/")
+                    //                                         }
+                    //                                         className="w-[50px] h-[50px] rounded-full object-cover border"
+                    //                                         alt="User Avatar"
+                    //                                     />
+                    //                                     ) : item?.user.avatar ? (
+                    //                                     <img 
+                    //                                         src={`${imgdburl}${item?.user.avatar}`.replace("/avatars/", "/products/")}
+                    //                                         className="w-[50px] h-[50px] rounded-full object-cover border"
+                    //                                         alt="User Avatar"
+                    //                                     />
+                    //                                     ) : (
+                    //                                     <div className="w-[60px] h-[60px] rounded-full bg-gray-300 flex items-center justify-center text-gray-700 font-semibold text-lg border">
+                    //                                         {item?.user?.name
+                    //                                         ? item.user.name
+                    //                                             .split(" ")
+                    //                                             .map((n) => n[0])
+                    //                                             .slice(0, 2)
+                    //                                             .join("")
+                    //                                             .toUpperCase()
+                    //                                         : "NA"}
+                    //                                     </div>
+                    //                                     )}
+
+
+                    //                 <div className='pl-3'>
+                    //                     <h1 className='font-[500] capitalize'>{item.user.name}</h1>
+                    //                     <p className="text-gray-500 text-xs">
+                    //                         {new Date(item.CreatedAt).toLocaleDateString('en-GB')}
+                    //                         </p>
+                    //                     <Ratings rating={item.rating} />
+                    //                     {/* <div className='w-full flex mt-2 gap-4'>
+
+                    //                         <img src={review1img} alt="" className='w-[200px] h-[200px] border object-fill shadow rounded-[5px]' />
+                    //                         <img src={review2img} alt="" className='w-[200px] h-[200px] border object-fill shadow rounded-[5px]' />
+                    //                     </div> */}
+
+                    //         {item?.images?.length > 0 && (
+                    //                             <div className='w-full flex mt-2 gap-4 flex-wrap'>
+                    //                                 {item.images.map((img, i) => (
+                    //                                      <Zoom
+                    //                                      key={i}
+                    //                                      zoomMargin={40}
+                    //                                      defaultStyles={{ overlay: { zIndex: 1000 } }}
+                    //                                      onZoom={() => setIsZoomed(true)}
+                    //                                      onUnzoom={() => setIsZoomed(false)}
+                    //                                    >
+                    //                                     <img 
+                    //                                         key={i} 
+                    //                                         src={`${imgdburl}${img.url}`} 
+                    //                                         alt={`Review Image ${i + 1}`} 
+                    //                                         className='!cursor-pointer w-[150px] h-[150px] border object-cover shadow rounded-[5px]' 
+                    //                                     />
+                    //                                     </Zoom>
+                    //                                 ))}
+                    //                             </div>
+                    //                         )}
+                    //                     <p className='w-[70%] mt-1'>{item.comment}</p>
+
+                    //                 </div>
+
+
+                    //             </div>
+                    //         ))
+                    //     }
+
+                    //     <div className="w-full flex  justify-center">
+                    //         {
+                    //             data && data.reviews.length === 0 && (
+                    //                 <h5>No Reviews have for this product</h5>
+                    //             )
+                    //         }
+
+
+                    //     </div>
+                    // </div>
+                    // </div>
+
+//                     :
+//                     null
+//             }
+
+
+
+
+//         </div>
+
+
+
+//     )
+// }
 
 const ProductDetailsInfo = ({ data ,shouldShowChainOptions,active,setActive,reviewSectionRef }) => {
     console.log(data, "see the data")
@@ -3307,448 +3194,617 @@ const ProductDetailsInfo = ({ data ,shouldShowChainOptions,active,setActive,revi
         category.title.toLowerCase().includes(productCategory.toLowerCase()) && category.type === 'gold'
     ) ? 'gold' : 'silver';
 
+    const serviceFeatures = [
+        {
+            icon: Shield,
+            title: "100% Certified",
+            description: "Authentic guaranteed quality products",
+        },
+        {
+            icon: RotateCcw,
+            title: "7 Days Money-Back",
+            description: "Hassle-free return policy available",
+        },
+        {
+            icon: Package,
+            title: "Exchange Facility",
+            description: "Easy product exchange service",
+        },
+        {
+            icon: Truck,
+            title: "4-5 Days Delivery",
+            description: "Fast nationwide shipping service",
+        },
+        ]
+
+
+const features = [
+    { icon: Shield, text: "Hypoallergenic Material" },
+    { icon: Star, text: "Quality and Safety First" },
+    { icon: Baby, text: "Age-Appropriate Styles" },
+    { icon: Heart, text: "Everyday Use Jewelry" },
+    { icon: Sparkles, text: "Crafted with Love" },
+    ...(productType === "gold" ? [{ icon: Award, text: "Natural Diamonds with SGL Certificate" }] : []),
+    { icon: FileText, text: `Design Application No. ${data.designno}` },
+  ]
+
+  const ageGroup = data?.ageGroup || {};
+
+  const ageGroupData = [
+    { key: "infants", label: "Infants", icon: Baby, description: "0-3 years", show: ageGroup.infants },
+    { key: "kids", label: "Kids", icon: Baby, description: "3-12 years", show: ageGroup.kids },
+    { key: "mom", label: "Mom", icon: Heart, description: "For mothers", show: ageGroup.mom },
+    { key: "teens", label: "Teens", icon: UserCheck, description: "12-19 years", show: ageGroup.teens },
+  ];
+
+  const visibleAgeGroups = ageGroupData.filter((group) => group.show);
+
+  if (visibleAgeGroups.length === 0) return null;
+  
+   const guarantees = [
+    {
+      icon: Heart,
+      title: "Happiness Guaranteed",
+      description: "100% satisfaction or your money back",
+      details:
+        "We stand behind every piece with our unconditional happiness guarantee. If you're not completely satisfied, return it within 30 days for a full refund.",
+    },
+    {
+      icon: Award,
+      title: "SGL Certified",
+      description: "Authentic gemstone certification",
+      details:
+        "Every diamond and precious stone comes with SGL (Solitaire Gemological Laboratory) certification, ensuring authenticity, quality, and accurate grading.",
+    },
+    {
+      icon: Shield,
+      title: "Quality Assurance",
+      description: "Premium craftsmanship guaranteed",
+      details:
+        "Each piece undergoes rigorous quality checks by our master craftsmen. We use only the finest materials and time-tested techniques.",
+    },
+    {
+      icon: CheckCircle,
+      title: "Lifetime Support",
+      description: "Ongoing care and maintenance",
+      details:
+        "Enjoy complimentary cleaning, inspection, and minor repairs for the lifetime of your jewelry. We're here to keep your treasures sparkling.",
+    },
+  ]// don't render accordion if no data
+
+   const SparkleEffect = () => {
+      return (
+        <div className="absolute inset-0 pointer-events-none overflow-hidden z-0">
+          {[...Array(20)].map((_, i) => {
+            const left = Math.random() * 100
+            const top = Math.random() * 100
+            return (
+              <motion.div
+                key={i}
+                className="absolute"
+                style={{
+                  left: `${left}%`,
+                  top: `${top}%`,
+                }}
+                initial={{
+                  opacity: 0,
+                  scale: 0,
+                }}
+                animate={{
+                  opacity: [0, 1, 0],
+                  scale: [0, 1, 0],
+                }}
+                transition={{
+                  duration: Math.random() * 2 + 1,
+                  repeat: Number.POSITIVE_INFINITY,
+                  repeatType: "loop",
+                  delay: Math.random() * 5,
+                }}
+              >
+                <Sparkles className="text-amber-300 w-4 h-4" />
+              </motion.div>
+            )
+          })}
+        </div>
+      )
+    }
 
     return (
-        <div className='bg-[#fcfcfc] shadow-lg  border-[0.1px] border-[#f8f8f8] mb-5 px-10 800px:px-2 py-2 rounded pb-5 productdetailspageresp'>
-            <div className="w-full flex justify-between border-b pt-10 pb-2">
-                <div className="relative">
-                    <h5 className={`${active === 1 ? "text-[#1BB8E5] font-[700]" : "text-[#000]"} text-[16px]  px-1 leading-5 cursor-pointer 800px:text-[20px] font-Poppins `} onClick={() => setActive(1)} >Product Details</h5>
-                    {/* {
-                    active === 1 ?
-                     (
-                        <div className={`${styles.active_indicator}`} />
-                    ) : null} */}
+     <div className="w-full rounded-xl overflow-hidden ">
+      <div className="grid lg:grid-cols-2 gap-8 py-8 items-center">
+        {/* Left Side - Service Features */}
+        <div className="space-y-6">
+          <div className="grid grid-cols-2 gap-4">
+            {serviceFeatures.map((feature, index) => (
+              <div
+                key={index}
+                className="bg-white/70 backdrop-blur-sm p-5 rounded-xl border border-[#F4E7E2] hover:shadow-md transition-all duration-300 hover:scale-105 group"
+              >
+                <div className="flex flex-col items-center text-center space-y-3">
+                  <div className="w-12 h-12 bg-gradient-to-br from-[#F4E7E2] to-white rounded-full flex items-center justify-center shadow-sm group-hover:shadow-md transition-all duration-300">
+                    <feature.icon className="w-6 h-6 text-[#D7A295] group-hover:text-[#B87C6C] transition-colors duration-300" />
+                  </div>
+                  <div>
+                    <h4 className="font-semibold text-[#9A6A5E] text-sm mb-1">{feature.title}</h4>
+                    <p className="text-xs text-[#9A6A5E]/80 leading-relaxed">{feature.description}</p>
+                  </div>
                 </div>
-                <div className="relative">
-                    <h5 className={`${active === 2 ? "text-[#1BB8E5] font-[700]" : "text-[#000]"} text-[16px] px-1 leading-5 cursor-pointer 800px:text-[20px] font-Poppins`} onClick={() => setActive(2)}>Product Reviews</h5>
+              </div>
+            ))}
+          </div>
+        </div>
 
-                </div>
-
+        {/* Right Side - Accordion */}
+       <div className="space-y-4">
+        <Accordion type="single" collapsible className="w-full ">
+        <AccordionItem
+        value="details"
+        className="border border-[#F4E7E2] mb-3 rounded-lg overflow-hidden bg-white shadow-sm"
+        >
+        <AccordionTrigger className="hover:no-underline px-4 py-3 group">
+            <div className="flex items-center">
+            <div className="w-8 h-8 bg-[#F4E7E2] rounded-full flex items-center justify-center mr-3 group-hover:bg-[#D7A295] transition-colors duration-300">
+                <List className="w-4 h-4 text-[#9A6A5E] group-hover:text-white transition-colors duration-300" />
             </div>
-            {
-                active === 1 ?
-                    <>
-                        <div className='mb-3 productdetailspagerespcon'>
-                            <h1 className={`text-[18px] font-[600] font-Poppins text-[#333] pt-1`}>{data.name}</h1>
-                            <p className="font-Poppins pt-1">{data.description}</p>
-                            <h3 className={`text-[#727386] text-left  text-[15px] font-Poppins pt-1`}>{data.skuid}</h3>
+            <span className="text-[#9A6A5E] group-hover:text-[#B87C6C] transition-colors duration-300">
+                details
+            </span>
+            </div>
+        </AccordionTrigger>
+        <AccordionContent className="px-6 pb-6 pt-2">
+                <div className="space-y-3">
+                {/* Basic Info */}
+                <div className="bg-gradient-to-br from-[#FEFCFB] to-[#F9F5F3] rounded-xl p-6 border border-[#F4E7E2] shadow-sm">
+                    <div className="flex items-start justify-between ">
+                    <div className="flex-1">
+                        <h2 className="text-md font-bold text-[#9A6A5E] mb-2 leading-tight">{data.name}</h2>
+                        <p className="text-xs text-[#9A6A5E]/70 font-mono tracking-wide">SKU: {data.skuid}</p>
+                    </div>
+                    <div className="ml-4">
+                        <span className="inline-flex items-center px-4 py-2 rounded-full bg-gradient-to-r from-[#9A6A5E] to-[#B87C6C] text-white text-sm font-semibold shadow-md">
+                        {categoriesData.filter((category) =>
+                            category.title.toLowerCase().includes(productCategory.toLowerCase()),
+                        ).length > 0
+                            ? "Gold Collection"
+                            : "Silver Collection"}
+                        </span>
+                    </div>
+                    </div>
+                </div>
 
+                
+
+                <div className="bg-white rounded-lg p-4 border border-[#F4E7E2]">
+                    <div className="flex items-center mb-4">
+                    <AiOutlineGold className="w-5 h-5 text-[#9A6A5E] mr-2"/>
+                    <h3 className="font-semibold text-[#9A6A5E] "> {categoriesData.filter((category) =>
+                            category.title.toLowerCase().includes(productCategory.toLowerCase()),
+                        ).length > 0
+                            ? "Gold"
+                            : "Silver"}</h3>
+
+                    </div>
+                    
+                    <div className="grid grid-cols-2 gap-4">
+                    <div>
+                        <h4 className="font-medium text-[#9A6A5E] mb-1">Weight</h4>
+                        <p className="text-[#9A6A5E]/80 text-sm">
+                        {data?.goldWeight ? data.goldWeight.weight : "Not Updated"}
+                        </p>
+                    </div>
+                    <div>
+                        <h4 className="font-medium text-[#9A6A5E] mb-1">Purity</h4>
+                        <p className="text-[#9A6A5E]/80 text-sm">
+                        {data?.goldWeight ? data.goldWeight.purity : "18 kt"}
+                        </p>
+                    </div>
+                    </div>
+                </div>
+
+
+                {/* Diamond Details */}
+                {((data?.diamondWeight?.weight &&
+                    data?.diamondWeight?.weight !== "NA" &&
+                    data?.diamondWeight?.weight !== null) ||
+                    (data?.diamondWeight?.quality &&
+                    data?.diamondWeight?.quality !== "NA" &&
+                    data?.diamondWeight?.quality !== null)) && (
+                    <div className="bg-[#F4E7E2] rounded-lg p-4">
+                    <div className="flex items-center mb-4">
+                        <IoDiamondOutline className="w-5 h-5 text-[#9A6A5E] mr-2" />
+                        <h3 className="font-semibold text-[#9A6A5E]">Diamond</h3>
+                    </div>
+                    <div className="grid grid-cols-2 gap-4">
+                        {data?.diamondWeight?.weight &&
+                        data?.diamondWeight?.weight !== "NA" &&
+                        data?.diamondWeight?.weight !== null && (
+                            <div>
+                            <h4 className="font-medium text-[#9A6A5E] mb-1">Weight</h4>
+                            <p className="text-[#9A6A5E]/80 text-sm">{data?.diamondWeight?.weight || "Not Updated"}</p>
+                            </div>
+                        )}
+                        {data?.diamondWeight?.quality &&
+                        data?.diamondWeight?.quality !== "NA" &&
+                        data?.diamondWeight?.quality !== null && (
+                            <div>
+                            <h4 className="font-medium text-[#9A6A5E] mb-1">Quality</h4>
+                            <p className="text-[#9A6A5E]/80 text-sm">{data?.diamondWeight?.quality || "GH-VS"}</p>
+                            </div>
+                        )}
+                    </div>
+                    </div>
+                )}
+
+                {/* Dimensions */}
+                <div className="bg-white rounded-lg p-4 border border-[#F4E7E2]">
+                    <div className="flex items-center mb-4">
+                    <RxDimensions className="w-5 h-5 text-[#9A6A5E] mr-2"/>
+                    <h3 className="font-semibold text-[#9A6A5E] ">Dimensions</h3>
+
+                    </div>
+                    
+                    <div className="grid grid-cols-2 gap-4">
+                    <div>
+                        <h4 className="font-medium text-[#9A6A5E] mb-1">Height</h4>
+                        <p className="text-[#9A6A5E]/80 text-sm">
+                        {data?.dimension ? data.dimension.height : "Not Updated"}
+                        </p>
+                    </div>
+                    <div>
+                        <h4 className="font-medium text-[#9A6A5E] mb-1">Width</h4>
+                        <p className="text-[#9A6A5E]/80 text-sm">
+                        {data?.dimension ? data.dimension.width : "Not Updated"}
+                        </p>
+                    </div>
+                    </div>
+                </div>
+
+                {/* Chain Options */}
+                {shouldShowChainOptions && (
+                    <div className="bg-[#F4E7E2] rounded-lg p-4">
+                    <div className="flex items-center mb-4">
+                        <GiHeartNecklace className="w-5 h-5 text-[#9A6A5E] mr-2" />
+                        <h3 className="font-semibold text-[#9A6A5E]">Chain</h3>
+                    </div>
+                    <div className="grid grid-cols-2 gap-4">
+                        <div>
+                        <h4 className="font-medium text-[#9A6A5E] mb-2">Length</h4>
+                        {productType === "gold" ? (
+                            <div className="space-y-1">
+                            <p className="text-[#9A6A5E]/80 text-sm">13 inch</p>
+                            <p className="text-[#9A6A5E]/80 text-sm">18 inch</p>
+                            </div>
+                        ) : productType === "silver" ? (
+                            <p className="text-[#9A6A5E]/80 text-sm">18 inch</p>
+                        ) : null}
                         </div>
-
-                        {/* table section */}
-
-                        <div className='flex flex-wrap  gap-5'>
-
-                            <div className="bg-[#5DC2B0] w-[300px] font-Poppins mb-3 rounded-[4px] productdetailresptable">
-                                <div className="t1sec px-[12.5px] py-[16px] gap-2 flex items-center">
-                                    <span><AiOutlineGold /></span>
-                                    {
-                                    categoriesData
-                                        .filter(category => category.title.toLowerCase().includes(productCategory.toLowerCase())) // Match by title or another attribute
-                                        .length > 0 ? (
-                                        categoriesData
-                                            .filter(category => category.title.toLowerCase().includes(productCategory.toLowerCase()))
-                                            .map((category) => (
-                                            <span className="font-[500]" key={category._id}>
-                                                Gold
-                                            </span>
-                                            ))
-                                        ) : (
-                                        <span className="font-[500]">Silver</span>
-                                        )
-                                    }
-                                </div>
-                                <div className="tsec2 flex font-Poppins">
-                                    <div className='w-[200px] bg-[#b6f0e5] mr-[1.5px] px-[10px] py-[10px]'>
-                                        <div className='pb-[8px] font-[600] '>Weight</div>
-                                        <p className='text-[#4f3267] text-[13px]'> {data?.goldWeight ? data.goldWeight.weight : "Not Updated"} </p>
-                                    </div>
-                                    <div className='w-[200px] bg-[#b6f0e5] mr-[1.5px] px-[10px] py-[10px]'>
-                                        <div className='pb-[8px] font-[600] '>Purity</div>
-                                        <p className='text-[#4f3267] text-[13px]'>{data?.goldWeight ? data.goldWeight.purity : "18 kt"}</p>
-                                    </div>
-                                </div>
+                        <div>
+                        <h4 className="font-medium text-[#9A6A5E] mb-2">Weight</h4>
+                        {productType === "gold" ? (
+                            <div className="space-y-1">
+                            <p className="text-[#9A6A5E]/80 text-sm">1gms</p>
+                            <p className="text-[#9A6A5E]/80 text-sm">2gms</p>
                             </div>
-{/* 
-                            <div className="bg-[#5DC2B0] w-[300px] font-Poppins mb-3 rounded-[4px] productdetailresptable">
-                                <div className="t1sec px-[12.5px] py-[16px] gap-2 flex items-center">
-                                    <span><IoDiamondOutline /></span>
-                                    <span className='font-[500]'>Diamond</span>
-                                </div>
-                                <div className="tsec2 flex font-Poppins">
-                                    <div className='w-[200px] bg-[#b6f0e5] mr-[1.5px] px-[10px] py-[10px]'>
-                                        <div className='pb-[8px] font-[600] '>Weight</div>
-                                        <p className='text-[#4f3267] text-[13px]'>{data?.diamondWeight ? data.diamondWeight.weight : "Not Updated"} </p>
-                                    </div>
-                                    <div className='w-[200px] bg-[#b6f0e5] mr-[1.5px] px-[10px] py-[10px]'>
-                                        <div className='pb-[8px] font-[600] '>Quality</div>
-                                        <p className='text-[#4f3267] text-[13px]'>{data?.diamondWeight ? data.diamondWeight.quality : " GH-VS"}</p>
-                                    </div>
-                                </div>
-                            </div> */}
-
-                            {/* Render the main container only if there is valid weight or quality */}
-                            {(data?.diamondWeight?.weight && data?.diamondWeight?.weight !== "NA" && data?.diamondWeight?.weight !== null) || 
-                            (data?.diamondWeight?.quality && data?.diamondWeight?.quality !== "NA" && data?.diamondWeight?.quality !== null) ? (
-                            <div className="bg-[#5DC2B0] w-[300px] font-Poppins mb-3 rounded-[4px] productdetailresptable">
-                                <div className="t1sec px-[12.5px] py-[16px] gap-2 flex items-center">
-                                <span><IoDiamondOutline /></span>
-                                <span className="font-[500]">Diamond</span>
-                                </div>
-                                
-                                <div className="tsec2 flex font-Poppins">
-                                {/* Conditional rendering for Weight */}
-                                {data?.diamondWeight?.weight && data?.diamondWeight?.weight !== "NA" && data?.diamondWeight?.weight !== null ? (
-                                    <div className="w-[200px] bg-[#b6f0e5] mr-[1.5px] px-[10px] py-[10px]">
-                                    <div className="pb-[8px] font-[600]">Weight</div>
-                                    <p className="text-[#4f3267] text-[13px]">
-                                        {data?.diamondWeight?.weight || "Not Updated"}
-                                    </p>
-                                    </div>
-                                ) : null}
-
-                                {/* Conditional rendering for Quality */}
-                                {data?.diamondWeight?.quality && data?.diamondWeight?.quality !== "NA" && data?.diamondWeight?.quality !== null ? (
-                                    <div className="w-[200px] bg-[#b6f0e5] mr-[1.5px] px-[10px] py-[10px]">
-                                    <div className="pb-[8px] font-[600]">Quality</div>
-                                    <p className="text-[#4f3267] text-[13px]">
-                                        {data?.diamondWeight?.quality || "GH-VS"}
-                                    </p>
-                                    </div>
-                                ) : null}
-                                </div>
-                            </div>
-                            ) : null}
-
-
-                            <div className="bg-[#5DC2B0] w-[300px] font-Poppins mb-3 rounded-[4px] productdetailresptable">
-                                <div className="t1sec px-[12.5px] py-[16px] gap-2 flex items-center">
-                                    <span><RxDimensions /></span>
-                                    <span className='font-[500]'>Dimension</span>
-                                </div>
-                                <div className="tsec2 flex font-Poppins">
-                                    <div className='w-[200px] bg-[#b6f0e5] mr-[1.5px] px-[10px] py-[10px]'>
-                                        <div className='pb-[8px] font-[600] '>Height</div>
-                                        <p className='text-[#4f3267] text-[13px]'> {data?.dimension ? data.dimension.height : "Not Updated"}</p>
-                                    </div>
-                                    <div className='w-[200px] bg-[#b6f0e5] mr-[1.5px] px-[10px] py-[10px]'>
-                                        <div className='pb-[8px] font-[600] '>Width</div>
-                                        <p className='text-[#4f3267] text-[13px]'>{data?.dimension ? data.dimension.width : "Not Updated"} </p>
-                                    </div>
-                                </div>
-                            </div>
-
-                            {shouldShowChainOptions && 
-                            <div className="bg-[#5DC2B0] w-[300px] font-Poppins mb-3 rounded-[4px] productdetailresptable">
-                            <div className="t1sec px-[12.5px] py-[16px] gap-2 flex items-center">
-                                <span><GiHeartNecklace /></span>
-                                <span className='font-[500]'>Chain </span>
-                            </div>
-                            <div className="tsec2 !h-auto flex font-Poppins">
-                                <div className='w-[200px] bg-[#b6f0e5] !h-auto mr-[1.5px] px-[10px] py-[2px]'>
-                                    <div className='pb-[2px] font-[600] '>Length</div>
-                                    {/* <p className='text-[#4f3267] text-[13px]'>13 inch</p>
-                                    <p className='text-[#4f3267] text-[13px]'>18 inch</p> */}
-                                    {productType === 'gold' ? (
-                                        <>
-                                            <p className="text-[#4f3267] text-[13px]">13 inch</p>
-                                            <p className="text-[#4f3267] text-[13px]">18 inch</p>
-                                        </>
-                                        ) : productType === 'silver' ? (
-                                        <>
-                                            <p className="text-[#4f3267] text-[13px]">18 inch</p>
-                                        </>
-                                        ) : null}
-
-                                </div>
-                                <div className={`w-[200px] ${productType === 'gold' ? 'h-auto' :'!h-[70px]' } bg-[#b6f0e5]  mr-[1.5px] px-[10px] py-[2px]`}>
-                                    <div className='pb-[2px] font-[600] '>Weight</div>
-                                    {
-                                        productType === 'gold' ?
-                                        <>
-                                        <p className='text-[#4f3267] text-[13px]'> 1gms </p>
-                                        <p className='text-[#4f3267] text-[13px]'> 2gms </p>
-                                        </>
-                                        :
-                                        <>
-                                        <p className='text-[#4f3267]  text-[12px]' > approx 2.5 - 3gms </p>
-
-                                        </>
-
-                                    }
-                                    
-
-                                </div>
-                            </div>
-                            </div>
-
-                            
-                            }
-
-                            
-
-                        </div>
-                        {/* table section */}
-
-
-
-
-                        <div className="!bg-[#5DC2B0] w-full font-Poppins mb-3 mt-4">
-                            <Accordion expanded={expanded} onChange={() => setExpanded(!expanded)} >
-                                <AccordionSummary
-                                    expandIcon={<ExpandMoreIcon />}
-                                    aria-controls="panel1-content"
-                                    id="panel1-header"
-                                    className='!bg-[#68c7b6] rounded-[8px]'
-                                >
-                                    <div className=" w-full  t1sec px-[12.5px] py-[16px] gap-2 flex items-center">
-                                        <span><MdFeaturedPlayList /></span>
-                                        <span className='font-[500]'>Features</span>
-                                    </div>
-                                </AccordionSummary>
-                                <AccordionDetails className="bg-[#d1fbf3]">
-                                    <div className="tsec2 flex flex-col font-Poppins">
-                                        <div className='w-[320px] bg-[#d1fbf3] mb-[1.5px] px-[10px] py-[10px] flex gap-[10px] items-center featurestsec'>
-                                            <div className='font-[500] '><GiMaterialsScience /></div>
-                                            <p className='text-[#4f3267] text-[15px]'> Hypoallergenic Material</p>
-                                        </div>
-                                        <div className='w-[320px] bg-[#d1fbf3] mb-[1.5px] px-[10px] py-[10px] flex gap-[10px] items-center featurestsec'>
-                                            <div className='font-[500] '><MdHealthAndSafety /></div>
-                                            <p className='text-[#4f3267] text-[15px]'>Quality and Safety First</p>
-                                        </div>
-                                        <div className='w-[320px] bg-[#d1fbf3] mb-[1.5px] px-[10px] py-[10px] flex gap-[10px] items-center featurestsec'>
-                                            <div className='font-[500] '><FaChild /></div>
-                                            <p className='text-[#4f3267] text-[15px]'>Age-Appropriate Styles</p>
-                                        </div>
-                                        <div className='w-[320px] bg-[#d1fbf3] mb-[1.5px] px-[10px] py-[10px] flex gap-[10px] items-center featurestsec'>
-                                            <div className='font-[500] '><GiHeartNecklace /></div>
-                                            <p className='text-[#4f3267] text-[15px]'>Everyday Use Jewelry</p>
-                                        </div>
-                                        <div className='w-[320px] bg-[#d1fbf3] mb-[1.5px] px-[10px] py-[10px] flex gap-[10px] items-center featurestsec'>
-                                            <div className='font-[500] '><TbBrandMinecraft /></div>
-                                            <p className='text-[#4f3267] text-[15px]'>Crafted with Love</p>
-                                        </div>
-                                       {
-                                        productType === "gold" &&
-                                        <div className='w-[320px] bg-[#d1fbf3] mb-[1.5px] px-[10px] py-[10px] flex gap-[10px] items-center featurestsec'>
-                                        <div className='font-[500] '><TbCertificate /></div>
-                                        <p className='text-[#4f3267] text-[14px]'>Natural Diamonds with SGL Certificate</p>
-                                        </div>
-                                       }
-                                        <div className='w-[320px] bg-[#d1fbf3] mb-[1.5px] px-[10px] py-[10px] flex gap-[10px] items-center featurestsec'>
-                                            <div className='font-[500] '><MdOutlineAppRegistration /></div>
-                                            <p className='text-[#4f3267] text-[15px]'>Design Application No. {data.designno}</p>
-                                        </div>
-
-
-
-
-                                    </div>
-                                </AccordionDetails>
-                            </Accordion>
-
-
-                        </div>
-
-
-
-                        <div className="w-full mt-3 moreinfoproduct bg-white rounded-lg shadow-sm">
-                            <div className="moreinfosec py-[20px] flex flex-wrap justify-center gap-4 md:gap-10">
-                                <div className="flex flex-col justify-center items-center text-center w-1/2 md:w-auto">
-                                    <span className="flex justify-center">
-                                        <span
-                                            className="w-[50px] h-[50px] flex justify-center items-center"
-                                            style={{ backgroundColor: '#e8ffda', borderRadius: '50%' }}
-                                        >
-                                            <MdOutlineVerified size={25} />
-                                        </span>
-                                    </span>
-                                    <span className="font-Poppins text-[1rem]">
-                                        100% Certified
-                                    </span>
-                                </div>
-
-                                <div className="flex flex-col justify-center items-center text-center w-1/2 md:w-auto">
-                                    <span className="flex justify-center">
-                                        <span
-                                            className="w-[50px] h-[50px] flex justify-center items-center"
-                                            style={{ backgroundColor: '#dbecff', borderRadius: '50%' }}
-                                        >
-                                            <RiRefund2Line size={25} />
-                                        </span>
-                                    </span>
-                                    <span className="font-Poppins text-[1rem]">
-                                        7 Days Money-Back
-                                    </span>
-                                </div>
-
-                                <div className="flex flex-col justify-center items-center text-center w-1/2 md:w-auto">
-                                    <span className="flex justify-center">
-                                        <span
-                                            className="w-[50px] h-[50px] flex justify-center items-center"
-                                            style={{ backgroundColor: '#fff9ca', borderRadius: '50%' }}
-                                        >
-                                            <RiExchangeFundsLine size={25} />
-                                        </span>
-                                    </span>
-                                    <span className="font-Poppins text-[1rem]">
-                                    Exchange Facility
-                                    </span>
-                                </div>
-
-                                {/* <div className="flex flex-col justify-center items-center text-center w-1/2 md:w-auto">
-                                    <span className="flex justify-center items-center">
-                                        <span
-                                            className="w-[50px] h-[50px] flex justify-center items-center"
-                                            style={{ backgroundColor: '#ffe1e3', borderRadius: '50%' }}
-                                        >
-                                            <CiCalendarDate size={25} />
-                                        </span>
-                                    </span>
-                                    <span className="font-Poppins text-[1rem]">
-                                        One Year Warranty
-                                    </span>
-                                </div> */}
-                            </div>
-
-                            <p className="text-center text-[15px] font-[300] pb-4 font-Poppins text-[#333] mt-3">
-                                Learn more about our{' '}
-                                <Link className="text-[#4d9dbd]" to="/terms-and-conditions">
-                                    TERMS & POLICIES
-                                </Link>
-                            </p>
-                        </div>
-
-                    </>
-                    : null
-            }
-
-
-            {
-                active === 2
-                    ?
-                         <div ref={reviewSectionRef} className="w-full h-[50vh] py-3 flex flex-col items-center">
-                         <div className="w-full h-full overflow-y-auto px-4 space-y-4">
-                        {
-                            data &&
-                            [...data.reviews]
-                              .sort((a, b) => new Date(b.CreatedAt) - new Date(a.CreatedAt))
-                              .map((item, index) => (
-                                <div key={index} className='w-full flex my-1'>
-                                    {/* <img src={`${backend_url}/${item.user.avatar}`} className='w-[60px] h-[60px] rounded-full' alt="" /> */}
-                                    {/* <img 
-                                        src={
-                                            item?.user.avatar?.url &&
-                                            item?.user.avatar.url.match(/https:\/\/res\.cloudinary\.com\/ddaef5aw1\/image\/upload\/v[0-9]+/)
-                                            ? item?.user.avatar.url
-                                                .replace(/https:\/\/res\.cloudinary\.com\/ddaef5aw1\/image\/upload\/v[0-9]+/, `${imgdburl}/uploads/images`)
-                                                .replace("/avatars/", "/products/")
-                                            : item?.user.avatar?.url
-                                            ? `${imgdburl}${user.avatar.url}`.replace("/avatars/", "/products/")
-                                            : "Not Uploaded."
-                                        } 
-                                        className="w-[60px] h-[60px] rounded-full" 
-                                        
-                                        />
-                                        {
-                                            !item?.user.avatar?.url && (
-                                                <FaUserAlt className="w-[60px] h-[60px] text-gray-500" />
-                                            )
-                                            } */}
-
-                                                        {item?.user.avatar && item?.user.avatar.match(/https:\/\/res\.cloudinary\.com\/ddaef5aw1\/image\/upload\/v[0-9]+/) ? (
-                                                        <img 
-                                                            src={item?.user.avatar
-                                                            .replace(/https:\/\/res\.cloudinary\.com\/ddaef5aw1\/image\/upload\/v[0-9]+/, `${imgdburl}/uploads/images`)
-                                                            .replace("/avatars/", "/products/")
-                                                            }
-                                                            className="w-[50px] h-[50px] rounded-full object-cover border"
-                                                            alt="User Avatar"
-                                                        />
-                                                        ) : item?.user.avatar ? (
-                                                        <img 
-                                                            src={`${imgdburl}${item?.user.avatar}`.replace("/avatars/", "/products/")}
-                                                            className="w-[50px] h-[50px] rounded-full object-cover border"
-                                                            alt="User Avatar"
-                                                        />
-                                                        ) : (
-                                                        <div className="w-[60px] h-[60px] rounded-full bg-gray-300 flex items-center justify-center text-gray-700 font-semibold text-lg border">
-                                                            {item?.user?.name
-                                                            ? item.user.name
-                                                                .split(" ")
-                                                                .map((n) => n[0])
-                                                                .slice(0, 2)
-                                                                .join("")
-                                                                .toUpperCase()
-                                                            : "NA"}
-                                                        </div>
-                                                        )}
-
-
-                                    <div className='pl-3'>
-                                        <h1 className='font-[500] capitalize'>{item.user.name}</h1>
-                                        <p className="text-gray-500 text-xs">
-                                            {new Date(item.CreatedAt).toLocaleDateString('en-GB')}
-                                            </p>
-                                        <Ratings rating={item.rating} />
-                                        {/* <div className='w-full flex mt-2 gap-4'>
-
-                                            <img src={review1img} alt="" className='w-[200px] h-[200px] border object-fill shadow rounded-[5px]' />
-                                            <img src={review2img} alt="" className='w-[200px] h-[200px] border object-fill shadow rounded-[5px]' />
-                                        </div> */}
-
-                            {item?.images?.length > 0 && (
-                                                <div className='w-full flex mt-2 gap-4 flex-wrap'>
-                                                    {item.images.map((img, i) => (
-                                                         <Zoom
-                                                         key={i}
-                                                         zoomMargin={40}
-                                                         defaultStyles={{ overlay: { zIndex: 1000 } }}
-                                                         onZoom={() => setIsZoomed(true)}
-                                                         onUnzoom={() => setIsZoomed(false)}
-                                                       >
-                                                        <img 
-                                                            key={i} 
-                                                            src={`${imgdburl}${img.url}`} 
-                                                            alt={`Review Image ${i + 1}`} 
-                                                            className='!cursor-pointer w-[150px] h-[150px] border object-cover shadow rounded-[5px]' 
-                                                        />
-                                                        </Zoom>
-                                                    ))}
-                                                </div>
-                                            )}
-                                        <p className='w-[70%] mt-1'>{item.comment}</p>
-
-                                    </div>
-
-
-                                </div>
-                            ))
-                        }
-
-                        <div className="w-full flex  justify-center">
-                            {
-                                data && data.reviews.length === 0 && (
-                                    <h5>No Reviews have for this product</h5>
-                                )
-                            }
-
-
+                        ) : (
+                            <p className="text-[#9A6A5E]/80 text-sm">approx 2.5 - 3gms</p>
+                        )}
                         </div>
                     </div>
                     </div>
+                )}
+                </div>
+            </AccordionContent>
+        </AccordionItem>
 
-                    :
-                    null
-            }
+        <AccordionItem
+          value="features"
+          className="border border-[#F4E7E2] mb-3 rounded-lg overflow-hidden bg-white shadow-sm"
+        >
 
+            <AccordionTrigger className="hover:no-underline px-4 py-3 group">
+            <div className="flex items-center">
+            <div className="w-8 h-8 bg-[#F4E7E2] rounded-full flex items-center justify-center mr-3 group-hover:bg-[#D7A295] transition-colors duration-300">
+                <Star className="w-4 h-4 text-[#9A6A5E] group-hover:text-white transition-colors duration-300" />
+            </div>
+            <span className="text-[#9A6A5E] group-hover:text-[#B87C6C] transition-colors duration-300">
+                Features
+            </span>
+            </div>
+        </AccordionTrigger>
+          
+          <AccordionContent className="px-6 pb-5 pt-4 bg-[#FEFCFB]">
+            <div className="grid gap-1.5">
+              {features.map((feature, index) => {
+                const IconComponent = feature.icon
+                return (
+                  <div
+                    key={index}
+                    className="!cursor-pointer flex items-center gap-4 px-4 py-3 bg-white rounded-lg border border-[#F4E7E2] hover:border-[#D7A295] transition-colors duration-200"
+                  >
+                    <div className="w-8 h-8 bg-[#F4E7E2] rounded-full flex items-center justify-center flex-shrink-0">
+                      <IconComponent className="w-4 h-4 text-[#9A6A5E]" />
+                    </div>
+                    <p className="text-[#9A6A5E] text-sm font-medium">{feature.text}</p>
+                  </div>
+                )
+              })}
+            </div>
+          </AccordionContent>
+            </AccordionItem>
+
+        <AccordionItem
+          value="age-group"
+          className="border border-[#F4E7E2] mb-3 rounded-lg overflow-hidden bg-white shadow-sm"
+
+        >
+          <AccordionTrigger className="hover:no-underline px-4 py-3 group">
+            <div className="flex items-center">
+            <div className="w-8 h-8 bg-[#F4E7E2] rounded-full flex items-center justify-center mr-3 group-hover:bg-[#D7A295] transition-colors duration-300">
+                <Users className="w-4 h-4 text-[#9A6A5E] group-hover:text-white transition-colors duration-300" />
+            </div>
+            <span className="text-[#9A6A5E] group-hover:text-[#B87C6C] transition-colors duration-300">
+                Age Group
+            </span>
+            </div>
+          </AccordionTrigger>
+          <AccordionContent className="px-6 pb-6 pt-4 bg-[#FEFDFB]">
+            <div className="grid gap-3">
+              {visibleAgeGroups.map((group) => {
+                const IconComponent = group.icon;
+                return (
+                  <div
+                    key={group.key}
+                    className="flex items-center gap-4 px-4 py-3 bg-white rounded-lg border border-[#F0E6E3] hover:border-[#D7A295] transition-colors duration-200"
+                  >
+                    <div className="w-8 h-8 bg-[#F9F3F1] rounded-full flex items-center justify-center flex-shrink-0">
+                      <IconComponent className="w-4 h-4 text-[#D7A295]" />
+                    </div>
+                    <div className="flex-1">
+                      <p className="text-[#D7A295] text-sm font-semibold">{group.label}</p>
+                      <p className="text-[#D7A295]/70 text-xs">{group.description}</p>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </AccordionContent>
+        </AccordionItem>
+
+        <AccordionItem
+          value="guarantee"
+         className="border border-[#F4E7E2] mb-3 rounded-lg overflow-hidden bg-white shadow-sm"
+
+        >
+          <AccordionTrigger className="hover:no-underline px-4 py-3 group">
+             <div className="flex items-center">
+            <div className="w-8 h-8 bg-[#F4E7E2] rounded-full flex items-center justify-center mr-3 group-hover:bg-[#D7A295] transition-colors duration-300">
+                <Shield className="w-4 h-4 text-[#9A6A5E] group-hover:text-white transition-colors duration-300" />
+            </div>
+            <span className="text-[#9A6A5E] group-hover:text-[#B87C6C] transition-colors duration-300">
+               Quality Guarantee
+            </span>
+            </div>
+          </AccordionTrigger>
+          <AccordionContent className="px-6 pb-6 pt-4 bg-[#FEFDFB]">
+            <div className="grid gap-4">
+              {guarantees.map((guarantee, index) => {
+                const IconComponent = guarantee.icon
+                return (
+                  <div
+                    key={index}
+                    className="flex items-start gap-4 p-4 bg-white rounded-lg border border-[#F0E6E3] hover:border-[#D7A295] transition-colors duration-200"
+                  >
+                    <div className="w-10 h-10 bg-[#F9F3F1] rounded-full flex items-center justify-center flex-shrink-0 mt-1">
+                      <IconComponent className="w-5 h-5 text-[#D7A295]" />
+                    </div>
+                    <div className="flex-1">
+                      <h4 className="text-[#D7A295] text-sm font-bold mb-1">{guarantee.title}</h4>
+                      <p className="text-[#D7A295]/80 text-xs font-medium mb-2">{guarantee.description}</p>
+                      <p className="text-[#D7A295]/70 text-xs leading-relaxed">{guarantee.details}</p>
+                    </div>
+                  </div>
+                )
+              })}
+
+              {/* Certification Badge */}
+              <div className="mt-4 p-4 bg-gradient-to-r from-[#F9F3F1] to-[#F0E6E3] rounded-lg border border-[#D7A295]/20">
+                <div className="flex items-center justify-evenly gap-4">
+                  <img src="https://www.tinytiaraa.com/assets/first-Dsg0_80p.svg" alt="GJEPC Certification" className="h-12 w-auto" />
+                  <img src="https://www.tinytiaraa.com/assets/third-CBytz535.svg" alt="GJEPC Certification" className="h-12 w-auto" />
+                  <img src="https://www.tinytiaraa.com/assets/fourth-BinWpgKg.svg" alt="GJEPC Certification" className="h-12 w-auto" />
+                 
+                </div>
+              </div>
+            </div>
+          </AccordionContent>
+        </AccordionItem>
+        </Accordion>
 
 
 
         </div>
+      </div>
+
+
+
+
+
+        {/* review section  */}
+
+       <div ref={reviewSectionRef} className="relative w-full min-h-[50vh] py-6 sm:py-8 lg:py-10 bg-gradient-to-t from-[#F4E7E2] via-[#F9F6F4] to-white">
+      <SparkleEffect />
+
+
+
+      {/* Elegant Header */}
+      <div className="text-center mb-6 sm:mb-8 lg:mb-10 px-4">
+  <div className="inline-flex flex-wrap justify-center items-center gap-2 sm:gap-3 px-4 sm:px-6 py-2 sm:py-3 bg-white rounded-full shadow-lg border border-[#E8D5CE] max-w-full">
+    <Quote className="w-4 h-4 sm:w-5 sm:h-5 text-[#D7A295]" />
+    <h2 className="text-base sm:text-lg md:text-xl font-serif text-[#8B4513] whitespace-nowrap">
+      Customer Reviews ({data.reviews.length})
+    </h2>
+    <Quote className="w-4 h-4 sm:w-5 sm:h-5 text-[#D7A295] rotate-180" />
+  </div>
+</div>
+
+
+      <div className="w-full max-h-[50vh] overflow-y-auto px-3 sm:px-4 lg:px-6 space-y-4 sm:space-y-6 lg:space-y-8">
+        {data &&
+          [...data.reviews]
+            .sort((a, b) => new Date(b.CreatedAt).getTime() - new Date(a.CreatedAt).getTime())
+            .map((item, index) => (
+              <div key={index} className="relative">
+                {/* Decorative Line - Hidden on mobile */}
+                <div className="hidden sm:block absolute left-6 lg:left-8 top-12 lg:top-16 bottom-0 w-px bg-gradient-to-b from-[#D7A295] via-[#E8D5CE] to-transparent"></div>
+
+                <Card className="sm:ml-12 lg:ml-16 border border-[#E8D5CE] shadow-lg hover:shadow-xl transition-all duration-300 bg-white">
+                  <CardContent className="relative px-4 sm:px-6 lg:px-8 py-4 sm:py-5">
+                    
+                    <div className="space-y-3 sm:space-y-4">
+                      {/* User Info */}
+                      <div className="flex items-start sm:items-center gap-3 sm:gap-4 lg:gap-6 flex-col sm:flex-row">
+                        <div className="relative sm:-ml-16 lg:-ml-20 self-center sm:self-auto">
+                           {item?.user.avatar && item?.user.avatar.match(/https:\/\/res\.cloudinary\.com\/ddaef5aw1\/image\/upload\/v[0-9]+/) ? (
+                                     <img 
+                                         src={item?.user.avatar
+                                         .replace(/https:\/\/res\.cloudinary\.com\/ddaef5aw1\/image\/upload\/v[0-9]+/, `${imgdburl}/uploads/images`)
+                                         .replace("/avatars/", "/products/")
+                                         }
+                                         className="w-16 h-16 rounded-full object-cover border-4 border-white shadow-lg"
+                                         alt="User Avatar"
+                                     />
+                                     ) : item?.user.avatar ? (
+                                     <img 
+                                         src={`${imgdburl}${item?.user.avatar}`.replace("/avatars/", "/products/")}
+                                        className="w-16 h-16 rounded-full object-cover border-4 border-white shadow-lg"
+                                         alt="User Avatar"
+                                     />
+                                     ) : (
+                                     <div className="w-16 h-16 rounded-full bg-gradient-to-br from-[#D7A295] to-[#C9958A] flex items-center justify-center text-white font-bold text-xl border-4 border-white shadow-lg">
+                                         {item?.user?.name
+                                         ? item.user.name
+                                             .split(" ")
+                                             .map((n) => n[0])
+                                             .slice(0, 2)
+                                             .join("")
+                                             .toUpperCase()
+                                         : "NA"}
+                                     </div>
+                                     )}
+                        
+
+                          <div className="absolute -bottom-1 -right-1 w-4 h-4 sm:w-5 sm:h-5 lg:w-6 lg:h-6 bg-[#D7A295] rounded-full flex items-center justify-center">
+                            <Quote className="w-2 h-2 sm:w-2.5 sm:h-2.5 lg:w-3 lg:h-3 text-white" />
+                          </div>
+                        </div>
+
+                        <div className="w-full flex-1 text-center sm:text-left">
+                          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-2 gap-2">
+                            <h3 className="font-serif text-lg sm:text-xl text-[#8B4513] capitalize">
+                              {item.user.name}
+                            </h3>
+                            <Badge
+                              variant="outline"
+                              className="border-[#D7A295] text-[#8B4513] text-xs self-center sm:self-auto"
+                            >
+                              <Calendar className="w-2.5 h-2.5 sm:w-3 sm:h-3 mr-1" />
+                              {new Date(item.CreatedAt).toLocaleDateString("en-GB")}
+                            </Badge>
+                          </div>
+                          <div className="flex justify-center sm:justify-start">
+                            <Ratings rating={item.rating} />
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Review Content */}
+                      <div className="relative">
+                        <div className="absolute -left-2 sm:-left-4 -top-1 sm:-top-2 text-3xl sm:text-4xl lg:text-6xl text-[#D7A295]/20 font-serif">
+                          "
+                        </div>
+                        <p className="text-gray-700 leading-relaxed text-sm sm:text-base lg:text-lg font-light italic pl-4 sm:pl-6 lg:pl-8 pr-4 sm:pr-6">
+                          {item.comment}
+                        </p>
+                        <div className="absolute -right-2 sm:-right-4 -bottom-1 sm:-bottom-2 text-3xl sm:text-4xl lg:text-6xl text-[#D7A295]/20 font-serif rotate-180">
+                          "
+                        </div>
+                      </div>
+
+                      {/* Review Images */}
+                      {item?.images?.length > 0 && (
+                        <div className="space-y-3 sm:space-y-4">
+                          <div className="flex items-center gap-2">
+                            <div className="w-6 sm:w-8 h-px bg-[#D7A295]"></div>
+                            <span className="text-xs sm:text-sm font-serif text-[#8B4513]">Customer Photos</span>
+                            <div className="flex-1 h-px bg-[#E8D5CE]"></div>
+                          </div>
+                          <div className="flex gap-2 sm:gap-3 lg:gap-4 flex-wrap justify-center sm:justify-start">
+                            {item.images.map((img, i) => (
+                              <div key={i} className="relative group">
+                                <Zoom
+                                  zoomMargin={40}
+                                  defaultStyles={{ overlay: { zIndex: 1000 } }}
+                                  onZoom={() => setIsZoomed(true)}
+                                  onUnzoom={() => setIsZoomed(false)}
+                                >
+                                  <img
+                                    src={`${imgdburl}${img.url}`} 
+                                    alt={`Review Image ${i + 1}`}
+                                    className="relative z-10 !cursor-pointer w-20 h-20 sm:w-24 sm:h-24 lg:w-28 lg:h-28 object-cover rounded-lg border-2 border-[#E8D5CE] hover:border-[#D7A295] transition-all duration-300 hover:scale-105 shadow-md"
+                                  />
+                                </Zoom>
+                                <div className="absolute z-0 inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 rounded-lg transition-opacity duration-300" />
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                     {/* Decorative corner shape */}
+                  <svg
+                    className="absolute bottom-0 right-0 w-20 h-20 text-[#F4E7E2] dark:text-[#3A322E] opacity-50"
+                    viewBox="0 0 100 100"
+                    fill="currentColor"
+                    preserveAspectRatio="none"
+                  >
+                    <path d="M0,100 L100,100 L100,0 Z" />
+                  </svg>
+                  </CardContent>
+                </Card>
+              </div>
+            ))}
+
+        {/* No Reviews Message */}
+        <div className="w-full flex justify-center py-8 sm:py-12 lg:py-16">
+          {data && data.reviews.length === 0 && (
+            <div className="text-center space-y-4 sm:space-y-6 px-4">
+              <div className="w-16 h-16 sm:w-20 sm:h-20 lg:w-24 lg:h-24 bg-gradient-to-br from-[#D7A295] to-[#C9958A] rounded-full flex items-center justify-center mx-auto shadow-lg">
+                <User className="w-8 h-8 sm:w-10 sm:h-10 lg:w-12 lg:h-12 text-white" />
+              </div>
+              <div className="space-y-2">
+                <h5 className="text-xl sm:text-2xl font-serif text-[#8B4513]">No Reviews Yet</h5>
+                <p className="text-sm sm:text-base text-gray-600 font-light">
+                  Share your experience with this exquisite piece
+                </p>
+              </div>
+              <div className="w-24 sm:w-32 h-px bg-gradient-to-r from-transparent via-[#D7A295] to-transparent mx-auto"></div>
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+
+
+
+
+
+        
+      </div>
 
 
 
     )
 }
+
+
 export default ProductDetails

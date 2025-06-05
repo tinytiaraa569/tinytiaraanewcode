@@ -58,6 +58,10 @@ function Home() {
   }, []); // Runs once when the component mounts
 
 
+  useEffect(() => {
+      window.scrollTo(0, 0)
+    }, [])
+
 
   return (
     <div>

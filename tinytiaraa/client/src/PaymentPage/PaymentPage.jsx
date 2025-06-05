@@ -1255,7 +1255,7 @@ useEffect(() => {
 
 
     return (
-        <div className='w-full bg-[#fafafa;] pb-8'>
+        <div className='w-full bg-gradient-to-b from-[#ecd0c6]/10 to-white pb-8'>
              {isLoading && (
                 <div className="fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center z-50">
                     <div className="text-white text-xl">Loading...</div>
@@ -1469,7 +1469,7 @@ useEffect(() => {
                         </div>
 
                         <div className='flex justify-end '>
-                            <div className={`${selectedPaymentMethod !== 'paypal' ? 'button-wrapperdiv' : ''}`} >
+                            <div className={`${selectedPaymentMethod !== 'paypal' ? 'button-wrapperdiv' : ''} bg-gradient-to-r from-[#D8B4A0] to-[#D7A295] hover:opacity-90 text-white`} >
                                 {selectedPaymentMethod === 'razorpay' && (
                                     <button onClick={handleRazorpayPayment}>Pay With Razorpay</button>
                                 )}

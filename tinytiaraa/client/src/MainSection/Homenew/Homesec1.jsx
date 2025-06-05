@@ -4,9 +4,11 @@ import { motion, AnimatePresence } from "framer-motion"
 import { Swiper, SwiperSlide } from "swiper/react"
 import { Pagination, Navigation, Autoplay, EffectFade } from "swiper/modules"
 import { ArrowRight, ChevronLeft, ChevronRight } from "lucide-react"
-import home2banner from './homebanner/2img.jpg'
-import home3banner from './homebanner/3img.jpg'
-import home4banner from './homebanner/4img.jpg'
+import home1banner from './homebanner/1img.webp'
+
+import home2banner from './homebanner/2img.webp'
+import home3banner from './homebanner/3img.webp'
+import home4banner from './homebanner/4img.webp'
 
 
 import "swiper/css"
@@ -22,7 +24,7 @@ const sliderData = [
     title: "Precious  Treasures",
     description:
       "Delicate and beautiful jewelry designed specifically for your little ones. Our baby collection features safe materials and adorable designs.",
-    image: "https://media.istockphoto.com/id/1383963893/photo/cute-baby-girl-feeling-happy-trying-on-a-lot-of-finger-rings-and-bracelets-bijou-jewelry.jpg?s=612x612&w=0&k=20&c=X-MdFegJ4g4yzPXzls8855IiwqusfKIphMMgHSgnhtA=",
+    image: home1banner,
     buttonText: "Explore Collection",
     color: "from-rose-100 to-pink-200",
     textColor: "text-rose-900",
@@ -101,7 +103,7 @@ const HomeSec1 = () => {
       >
         {sliderData.map((slide, index) => (
           <SwiperSlide key={slide.id}>
-            <div className="relative h-[550px] md:h-[650px] lg:h-[700px] w-full flex items-center overflow-hidden">
+            <div className="relative h-[550px] md:h-[650px] lg:h-[700px] 2xl:h-[760px] w-full flex items-center overflow-hidden">
               <div className={cn("absolute inset-0 z-0 bg-gradient-to-r transition-opacity duration-1000", slide.color)} />
               <motion.div
                 initial={{ scale: 1.1, opacity: 0.7 }}
@@ -150,7 +152,7 @@ const HomeSec1 = () => {
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.6, delay: 0.3 }}
-                        className="text-base md:text-lg text-gray-700 mb-8 max-w-md"
+                        className="text-base md:text-lg text-gray-700 mb-8 max-w-lg"
                       >
                         {slide.description}
                       </motion.p>
@@ -163,7 +165,7 @@ const HomeSec1 = () => {
                         <Button
                           size="lg"
                           className={cn(
-                            "bg-white text-gray-900 border border-gray-200 hover:bg-gray-100 group shadow-lg",
+                            "bg-white text-gray-900 border border-gray-200 hover:bg-gray-100 group shadow-lg rounded-md",
                             "transition-all duration-300 hover:shadow-xl"
                           )}
                         >
@@ -232,7 +234,7 @@ const HomeSec1 = () => {
             onClick={() => swiperRef.current?.slideTo(index)}
             className={cn(
               "w-10 h-2 rounded-full transition-all duration-300",
-              activeIndex === index ? "bg-gray-800 w-16" : "bg-gray-300 hover:bg-gray-400"
+              activeIndex === index ? "bg-[#D7A295] w-16" : "bg-gray-300 hover:bg-gray-400"
             )}
             aria-label={`Go to slide ${index + 1}`}
           />

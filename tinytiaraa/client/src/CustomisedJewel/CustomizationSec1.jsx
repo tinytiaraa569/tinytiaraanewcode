@@ -2,6 +2,10 @@
 import { useEffect, useRef } from "react"
 import { motion, useInView, useAnimation } from "framer-motion"
 import { Button } from "@/components/ui/button"
+import customimg1 from './customsec1img/custom1.webp'
+import customimg2 from './customsec1img/custom2.webp'
+import customimg3 from './customsec1img/custom3.webp'
+
 
 const Customizationsec1 = () => {
   const controls = useAnimation()
@@ -17,7 +21,7 @@ const Customizationsec1 = () => {
   return (
     <div ref={ref}>
       <motion.section
-        className="relative h-[550px] md:h-[650px] lg:h-[700px] overflow-hidden"
+        className="relative h-[550px] md:h-[650px] lg:h-[700px] 2xl:h-[760px] overflow-hidden"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.8 }}
@@ -184,7 +188,7 @@ const Customizationsec1 = () => {
                   >
                     <div
                       className="w-full h-full bg-cover bg-center"
-                      style={{ backgroundImage: `url('https://i.pinimg.com/736x/71/3f/7a/713f7aa6b569f79fecdbb10b7349aeec.jpg')` }}
+                      style={{ backgroundImage: `url(${customimg1})` }}
                     />
                   </motion.div>
 
@@ -198,7 +202,7 @@ const Customizationsec1 = () => {
                   >
                     <div
                       className="w-full h-full bg-cover bg-center"
-                      style={{ backgroundImage: `url('https://i.pinimg.com/736x/16/ec/f5/16ecf598349cf53a445b2ea45072ec10.jpg')` }}
+                      style={{ backgroundImage: `url(${customimg2})` }}
                     />
                   </motion.div>
 
@@ -211,7 +215,7 @@ const Customizationsec1 = () => {
                   >
                     <div
                       className="w-full h-full bg-cover bg-center"
-                      style={{ backgroundImage: `url('https://i.pinimg.com/736x/46/b5/02/46b502687f7111de1e945383c342aa9a.jpg')` }}
+                      style={{ backgroundImage: `url(${customimg3})` }}
                     />
                   </motion.div>
                 </div>

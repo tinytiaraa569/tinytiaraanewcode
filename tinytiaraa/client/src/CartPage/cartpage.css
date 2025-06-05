@@ -8,6 +8,7 @@
     display: flex;
     justify-content: center;
     gap: 40px;
+    font-family: "Poppins", sans-serif !important;
 
 }
 
@@ -190,18 +191,9 @@
     text-align: center;
     margin-right: 8px;
     height: 48px;
-    gap: 30px;
     text-align: left;
 }
 
-.phoneicon {
-    margin-right: 5px;
-    display: inline-block;
-    vertical-align: middle;
-    cursor: pointer;
-    width: 24px;
-    height: 24px;
-}
 
 .phonenumber {
     display: inline-block;
@@ -218,23 +210,8 @@
     letter-spacing: 0.55px;
 }
 
-.emailicon {
-    margin-right: 5px;
-    display: inline-block;
-    vertical-align: middle;
-    cursor: pointer;
-    width: 24px;
-    height: 24px;
-}
 
-.chaticon {
-    margin-right: 5px;
-    display: inline-block;
-    vertical-align: middle;
-    cursor: pointer;
-    width: 24px;
-    height: 24px;
-}
+
 
 .textclr {
     font-weight: 400;
@@ -337,7 +314,7 @@
     /* text-transform: uppercase; */
     padding: 8px 12px;
     height: 40px;
-    border: 1px solid #e7e7e9;
+    border: 1px solid #D8B4A0;
     outline: none;
     font-family: Poppins, sans-serif;
     width: 100%;
@@ -352,8 +329,6 @@
     font-size: 13px;
     line-height: 24px;
     letter-spacing: 0.55px;
-    background-color: #006039;
-    color: white;
     height: 40px;
     border: none;
 
@@ -396,14 +371,9 @@
 
 .checkout {
     margin-top: 20px;
-    background-color: #006039;
     color: white;
 }
-.checkout:hover {
-    
-    background-color: #098d58;
-    
-}
+
 .secure-checkout {
     display: flex;
     justify-content: center;
