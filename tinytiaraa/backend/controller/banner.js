@@ -80,7 +80,7 @@ const generateRandomString = (length) => {
 // }));
 
 router.post('/home-create-banners', catchAsyncErrors(async (req, res, next) => {
-    const { title, link, images } = req.body;
+    const { title, link, images,desc,btntext,collectionname ,color ,textColor } = req.body;
 
     // Check if title and images are provided
     if (!title || !images || images.length === 0) {
@@ -138,6 +138,11 @@ router.post('/home-create-banners', catchAsyncErrors(async (req, res, next) => {
         title,
         link,
         images: processedImages,
+        desc,
+        btntext,
+        color ,
+        textColor,
+        collectionname,
         order: maxOrder + 1  // Set the correct order value
     });
 
@@ -198,7 +203,7 @@ router.get('/get-banner/:id', catchAsyncErrors(async (req, res, next) => {
 
 
 router.put('/update-banner/:id', catchAsyncErrors(async (req, res, next) => {
-    const { title, link, images } = req.body;
+    const { title, link, images , desc,btntext,collectionname ,color , textColor,} = req.body;
 
     // Find the existing banner
     const banner = await Banner.findById(req.params.id);
@@ -268,6 +273,13 @@ router.put('/update-banner/:id', catchAsyncErrors(async (req, res, next) => {
     banner.title = title;
     banner.link = link;
     banner.images = updatedImages;
+
+    banner.desc =desc,
+    banner.btntext =btntext,
+    banner.collectionname =collectionname
+    banner.color =color
+    banner.textColor =textColor
+
 
     await banner.save();
 

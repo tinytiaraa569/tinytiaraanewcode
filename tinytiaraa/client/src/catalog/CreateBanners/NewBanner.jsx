@@ -13,6 +13,17 @@ function NewBanner() {
     const navigate = useNavigate();
     const { id } = useParams();
     const [title, setTitle] = useState('');
+    const [desc, setDesc] = useState('');
+    const [btntext, setBtntext] = useState('');
+    const [collectionname, setCollectionname] = useState('');
+
+   const [gradientFrom, setGradientFrom] = useState("#f43f5e")
+const [gradientTo, setGradientTo] = useState("#ec4899")
+const [textColor, setTextColor] = useState("#7f1d1d")
+
+
+    
+
     const [link, setLink] = useState('');
     const [images, setImages] = useState([]);
     const [isDragging, setIsDragging] = useState(false);
@@ -34,7 +45,22 @@ function NewBanner() {
                     setTitle(banner.title);
                     setLink(banner.link);
                     setImages(banner.images);
-                })
+                    setDesc(banner?.desc)
+                    setBtntext(banner?.btntext)
+                    setCollectionname(banner?.collectionname)
+
+                     // Extract hex codes from Tailwind-like string format
+                    const colorMatch = banner?.color?.match(/from-\[#(.*?)\]\s+to-\[#(.*?)\]/);
+                    if (colorMatch) {
+                        setGradientFrom(`#${colorMatch[1]}`);
+                        setGradientTo(`#${colorMatch[2]}`);
+                    }
+
+                    const textColorMatch = banner?.textColor?.match(/text-\[#(.*?)\]/);
+                    if (textColorMatch) {
+                        setTextColor(`#${textColorMatch[1]}`);
+                    }
+                    })
                 .catch((error) => {
                     console.error('Error fetching banner by ID:', error);
                     setErrors({ fetchError: 'Could not fetch banner details' });
@@ -88,6 +114,8 @@ function NewBanner() {
     };
 
     const handleSubmit = async (e) => {
+        const color = `from-[${gradientFrom}] to-[${gradientTo}]`
+        const textColorClass = `text-[${textColor}]`
         e.preventDefault();
         const newErrors = {};
 
@@ -105,7 +133,7 @@ function NewBanner() {
             // Prepare banner data with URLs instead of Base64
             console.log(images,"see the images")
             setIsUploading(true);
-            const bannerData = { title, link, images};
+            const bannerData = { title, link, images,desc,btntext,collectionname , color,textColor: textColorClass,};
            
 
             try {
@@ -147,6 +175,8 @@ function NewBanner() {
             }
         }
     };
+
+
 
     return (
         <div>
@@ -201,6 +231,87 @@ function NewBanner() {
                                     />
                                 </div>
                             </div>
+
+                            <div className='flex justify-center w-[100%] m-3 gap-4'>
+                                 <div className="mb-2 w-[45%]">
+                                    <label className="block text-sm text-gray-600 mb-2">Collection (Optional)</label>
+                                    <input
+                                        type="text"
+                                        className="w-full border border-gray-300 rounded-md px-3 py-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-600"
+                                        placeholder="Enter collection name"
+                                        value={collectionname}
+                                        onChange={(e) => setCollectionname(e.target.value)}
+                                    />
+                                </div>
+                                 <div className="mb-2 w-[45%]">
+                                    <label className="block text-sm text-gray-600 mb-2">Button text (Optional)</label>
+                                    <input
+                                        type="text"
+                                        className="w-full border border-gray-300 rounded-md px-3 py-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-600"
+                                        placeholder="Enter button text "
+                                        value={btntext}
+                                        onChange={(e) => setBtntext(e.target.value)}
+                                    />
+                                </div>
+
+                            </div>
+
+                            <div className='flex justify-center w-[100%] m-3 gap-4'>
+                                <div className="mb-2 w-[92%]">
+                                    <label className="block text-sm text-gray-600 mb-2">Description text (Optional)</label>
+                                    <textarea
+                                        className="w-full border border-gray-300 rounded-md px-3 py-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-600"
+                                        placeholder="Enter button text "
+                                        value={desc}
+                                        onChange={(e) => setDesc(e.target.value)}
+                                    >
+                                    
+
+                                    </textarea>
+                                </div>
+
+
+                            </div>
+
+
+                           <div className="flex justify-center w-full m-3 gap-4">
+                            <div className='flex w-[45%]'>
+
+                                <div className="mb-2 w-full">
+                                    <label className="block text-sm text-gray-600 mb-2">Gradient From Color</label>
+                                    <input
+                                    type="color"
+                                    className="w-36 h-10 border border-gray-300 rounded-md cursor-pointer"
+                                    value={gradientFrom}
+                                    onChange={(e) => setGradientFrom(e.target.value)}
+                                    />
+                                </div>
+
+                                <div className="mb-2 w-full">
+                                    <label className="block text-sm text-gray-600 mb-2">Gradient To Color</label>
+                                    <input
+                                    type="color"
+                                    className="w-36 h-10 border border-gray-300 rounded-md cursor-pointer"
+                                    value={gradientTo}
+                                    onChange={(e) => setGradientTo(e.target.value)}
+                                    />
+                                </div>
+                            </div>
+
+
+                                <div className="mb-2 w-[45%]">
+                                    <label className="block text-sm text-gray-600 mb-2">Text Color</label>
+                                    <input
+                                    type="color"
+                                    className="w-36 h-10 border border-gray-300 rounded-md cursor-pointer"
+                                    value={textColor}
+                                    onChange={(e) => setTextColor(e.target.value)}
+                                    />
+                                </div>
+                                </div>
+
+
+                            
 
                             {/* Image Upload Section */}
                             <div className="m-3 mx-auto w-[90%]">

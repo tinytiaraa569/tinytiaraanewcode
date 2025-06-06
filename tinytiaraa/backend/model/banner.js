@@ -5,8 +5,25 @@ const bannerSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
+    desc:{
+        type: String,
+
+    },
+    btntext:{
+        type: String,
+
+    },
+    collectionname:{
+        type: String,
+    },
     link: {
         type: String,
+    },
+    color:{
+ type: String,
+    },
+    textColor:{
+ type: String,
     },
     images: [
         {

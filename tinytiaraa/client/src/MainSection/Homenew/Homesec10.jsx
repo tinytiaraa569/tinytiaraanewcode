@@ -140,6 +140,12 @@ import { motion, useAnimation, AnimatePresence } from "framer-motion"
 import { Upload, Calculator, Hammer, Gift, Play, Pause, ChevronLeft, ChevronRight, Sparkles } from "lucide-react"
 import { useState, useEffect, useRef } from "react"
 import { useNavigate } from "react-router-dom"
+import step1img from './homesec10/step1img.webp'
+import step2img from './homesec10/step2img.webp'
+import step3img from './homesec10/step3img.webp'
+
+import step4img from './homesec10/step4img.webp'
+
 
 const customizationSteps = [
   {
@@ -149,7 +155,7 @@ const customizationSteps = [
     desc: "Share your unique design ideas with us! Simply upload your sketches, images, or inspirations.",
     detailedDesc:
       "Upload your design files in various formats including JPG, PNG, PDF, or AI. Our design team will review your submission within 24 hours and provide professional feedback and suggestions to optimize your design for manufacturing.",
-    img: "https://tiny-tiaraanew.vercel.app/assets/custom1-jdw046Gz.png",
+    img: step1img,
     angle: 0,
   },
   {
@@ -159,7 +165,8 @@ const customizationSteps = [
     desc: "We'll provide a clear and transparent estimate based on your preferences.",
     detailedDesc:
       "Receive a detailed breakdown of costs including materials, labor, and finishing. Our transparent pricing ensures no hidden fees, and we offer flexible payment plans for orders above $500.",
-    img: "https://tiny-tiaraanew.vercel.app/assets/custom2-DvBWwcFP.png",
+    img: step2img,
+
     angle: 90,
   },
   {
@@ -167,9 +174,10 @@ const customizationSteps = [
     title: "Jewelry Manufacturing",
     icon: <Hammer size={18} className="text-white" />,
     desc: "Our expert artisans will handcraft your design with the finest materials.",
+    img: step3img,
+    
     detailedDesc:
       "Your jewelry is handcrafted by certified artisans using ethically sourced materials. Each piece undergoes rigorous quality control and is made to be hypoallergenic and safe for daily wear.",
-    img: "https://tiny-tiaraanew.vercel.app/assets/custom3-3JRh4BJb.png",
     angle: 180,
     
   },
@@ -180,7 +188,7 @@ const customizationSteps = [
     desc: "Quality checks completed and delivered to your address with care.",
     detailedDesc:
       "Your finished jewelry undergoes final quality inspection before being carefully packaged and shipped. Includes worldwide shipping, 1-year warranty, and 30-day satisfaction guarantee.",
-    img: "https://tiny-tiaraanew.vercel.app/assets/custom4-CCQqaQLS.png",
+    img: step4img,
     angle: 270,
   },
 ]
@@ -554,7 +562,7 @@ export default function CircularImprovedProfessional() {
                           whileHover={{ scale: 1.05 }}
                           src={selectedStepData.img || "/placeholder.svg"}
                           alt={selectedStepData.title}
-                          className={`w-full object-cover rounded-lg shadow-md ${isMobile ? "h-48" : "h-32"}`}
+                          className={`w-full object-cover rounded-lg shadow-md ${isMobile ? "h-56" : "h-32"}`}
                         />
                       </div>
                     </div>

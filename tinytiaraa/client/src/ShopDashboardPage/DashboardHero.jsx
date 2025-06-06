@@ -296,7 +296,7 @@ function DashboardHero() {
       }, [])
 
     return (
-        <div className=" min-w-[82%] flex-grow px-8 py-5  bg-[#f0f8ff]"> {/* Light blue background */}
+        <div className=" min-w-[82%] flex-grow px-8 py-5  bg-[#f0f8ff] !font-poppins"> {/* Light blue background */}
         <h2 className='text-[22px] font-[500]'>Dashboard Overview</h2>
         <nav aria-label="Breadcrumb" className="text-sm text-gray-600 mb-4 mt-1">
         

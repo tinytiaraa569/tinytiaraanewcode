@@ -256,6 +256,14 @@ function CreateBanner() {
                   <a href={banner.link} className="text-blue-500 hover:underline">
                     /{banner.link}
                   </a>
+                  
+                  </div>
+
+                  <div className="space-y-1">
+                    <p className="text-xs font-semibold">Btntext : <span className="text-xs font-normal">{banner?.btntext || 'N/A'}</span></p>
+
+                    <p className="text-xs font-semibold">Collection :  <span className="text-xs font-normal">{banner?.collectionname || 'N/A'}</span></p>
+
                   </div>
 
                   <div className="mt-1 flex items-center justify-between">
