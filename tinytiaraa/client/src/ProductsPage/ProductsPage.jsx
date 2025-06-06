@@ -6,8 +6,10 @@ import "./productpage.css";
 import { RiCloseFill } from "react-icons/ri"; // Import the cross icon
 import { IoSearchOutline } from "react-icons/io5";
 // import { categoriesData } from "@/static/data";
-import bannerimg from "./banner.jpg";
-import allproductbanner from "./allproductbanner.jpg";
+
+import newtest2 from "./newtest2.jpg";
+
+
 
 import { FiChevronDown, FiChevronUp } from "react-icons/fi";
 
@@ -1004,6 +1006,7 @@ const [isFilterOpen, setIsFilterOpen] = useState(false)
     return false;
   });
 
+
  
 
   return (
@@ -1015,25 +1018,9 @@ const [isFilterOpen, setIsFilterOpen] = useState(false)
 
      <div>
       {selectedCategory ? (
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.5 }}
-          className="relative h-[200px] sm:h-[250px] lg:h-[300px] overflow-hidden"
-        >
-          <img
-            loading="eager" // Changed from lazy for above-the-fold images
-            src={`${imgdburl}${selectedCategory.productbanner.url}`}
-            alt={selectedCategory.title}
-            className="w-full h-full object-cover"
-            onError={(e) => {
-              e.target.onerror = null;
-              e.target.src = "https://i.pinimg.com/736x/15/f0/48/15f0482998fd3ec56a836cfe4145a009.jpg";
-            }}
-          />
-        </motion.div>
-      ) : (
-        <div className="relative h-[200px] sm:h-[250px] lg:h-[300px] overflow-hidden bg-gradient-to-t from-[#F4E7E2] via-[#F9F6F4] to-white dark:from-gray-900 dark:via-gray-800 dark:to-gray-700">
+      
+
+         <div className="relative h-[180px] sm:h-[250px] lg:h-[300px] overflow-hidden bg-gradient-to-t from-[#F4E7E2] via-[#F9F6F4] to-white dark:from-gray-900 dark:via-gray-800 dark:to-gray-700">
           <motion.div 
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -1042,9 +1029,51 @@ const [isFilterOpen, setIsFilterOpen] = useState(false)
           >
             <img
               loading="eager"
-              src="https://t3.ftcdn.net/jpg/03/68/92/66/240_F_368926684_Y4Fr8MQpDmNZsZPyu5ehbBc35rLcalHy.jpg"
+               src={`${imgdburl}${selectedCategory.productbanner.url}`}
+               alt={selectedCategory.title}
              
               className="w-full h-full object-cover"
+            />
+            <div className="absolute inset-0 bg-black/30 dark:bg-black/50" />
+          </motion.div>
+
+          <div className="relative z-10 h-full flex items-center justify-center px-4 sm:px-6 lg:px-8">
+            <div className="text-center max-w-4xl mx-auto">
+              <div className="space-y-3 sm:space-y-4">
+                <motion.h1
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ duration: 0.5 }}
+                  className="text-2xl sm:text-3xl lg:text-5xl font-bold text-[#ffffff] drop-shadow-lg"
+                >
+                  {selectedCategory?.title}
+                </motion.h1>
+
+                <motion.p
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ duration: 0.5, delay: 0.2 }}
+                  className="text-sm sm:text-base lg:text-lg text-white/90 drop-shadow-md max-w-2xl mx-auto leading-relaxed"
+                >
+                  {selectedCategory?.subTitle}
+                </motion.p>
+              </div>
+            </div>
+          </div>
+        </div>
+      ) : (
+        <div className="relative h-[180px] sm:h-[250px] lg:h-[300px] overflow-hidden bg-gradient-to-t from-[#F4E7E2] via-[#F9F6F4] to-white dark:from-gray-900 dark:via-gray-800 dark:to-gray-700">
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.8 }}
+            className="absolute inset-0"
+          >
+            <img
+              loading="eager"
+              src={newtest2}
+             
+              className="w-full h-full object-center sm:object-center"
             />
             <div className="absolute inset-0 bg-black/30 dark:bg-black/50" />
           </motion.div>
