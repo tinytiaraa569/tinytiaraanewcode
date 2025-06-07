@@ -1,11 +1,12 @@
 "use client"
 
 import { motion, useScroll, useTransform } from "framer-motion"
-import { useRef } from "react"
+import React, { forwardRef, useRef, useImperativeHandle } from "react"
 import { Sparkles, GalleryThumbnailsIcon as Gallery, Shield, Hammer } from "lucide-react"
 
-export default function Aboutsec2() {
+const Aboutsec2 = forwardRef((props, ref) => {
   const containerRef = useRef(null)
+    useImperativeHandle(ref, () => containerRef.current)
   const { scrollYProgress } = useScroll({
     target: containerRef,
     offset: ["start start", "end start"],
@@ -16,7 +17,7 @@ export default function Aboutsec2() {
   const scale = useTransform(scrollYProgress, [0, 1], [1, 1.2])
 
   return (
-    <div className="w-full  overflow-hidden" >
+    <div className="w-full  overflow-hidden"  ref={containerRef}>
       {/* Strengths Section */}
       <section className="py-20 relative px-6 md:px-12 overflow-hidden bg-gradient-to-t from-[#F4E7E2] via-[#F9F6F4] to-white">
         <div className="container mx-auto px-4">
@@ -123,4 +124,6 @@ export default function Aboutsec2() {
       </section>
     </div>
   )
-}
+})
+
+export default Aboutsec2

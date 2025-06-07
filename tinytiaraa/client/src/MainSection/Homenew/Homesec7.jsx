@@ -114,9 +114,9 @@ const Homesec7 = () => {
                 className="text-base text-gray-600 leading-relaxed max-w-2xl mx-auto"
                 variants={fadeInUp}
               >
-                “The earrings were really pretty, looked just as they are pictured.
-                My 4-year-old loved her pink hearts. I will definitely be ordering
-                more items from Inseason.”
+                “Loved the earrings from Tiny Tiaraa — exactly as pictured and so pretty!
+                  My 4-year-old adored her pink hearts and wore them right away.
+                  Great quality and super cute designs for little ones!”
               </motion.p>
               <Link
                 to="/reviews"

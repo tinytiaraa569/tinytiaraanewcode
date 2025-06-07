@@ -4,7 +4,7 @@ import { motion, useInView, useAnimation } from "framer-motion"
 import { Button } from "@/components/ui/button"
 import contactbannerimg from './contactbanner.webp'
 
-const ContactSec1 = () => {
+const ContactSec1 = ({onDiscoverClick}) => {
   const controls = useAnimation()
   const ref = useRef(null)
   const isInView = useInView(ref, { once: true, threshold: 0.1 })
@@ -217,8 +217,9 @@ const ContactSec1 = () => {
                     className="bg-white text-[#B67F6D] hover:bg-white/90 px-8 py-6 rounded-full text-lg shadow-md transition-all hover:shadow-lg"
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.98 }}
+                    onClick={onDiscoverClick}
                   >
-                    Discover Our Story
+                    Get in Touch
                   </Button>
                 </motion.div>
               </motion.div>

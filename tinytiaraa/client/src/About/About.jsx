@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useRef } from 'react'
 
 import { Helmet } from 'react-helmet-async'
 import Aboutsec1 from './Aboutsec1'
@@ -8,9 +8,16 @@ import Aboutsec4 from './Aboutsec4'
 
 
 function About() {
+  const sec2Ref = useRef(null);
   useEffect(() => {
       window.scrollTo(0, 0);
     }, []);
+
+
+
+  const scrollToSection2 = () => {
+    sec2Ref.current?.scrollIntoView({ behavior: 'smooth' });
+  };
   return (
     <div>
       <Helmet>
@@ -20,8 +27,8 @@ function About() {
         <link rel="canonical" href="/about" />
 
       </Helmet>
-    <Aboutsec1 />
-    <Aboutsec2 />
+    <Aboutsec1 onDiscoverClick={scrollToSection2}/>
+    <Aboutsec2 ref={sec2Ref}/>
     <Aboutsec3 />
     <Aboutsec4 />
 

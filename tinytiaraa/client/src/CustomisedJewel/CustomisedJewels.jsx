@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useRef } from 'react'
 import { Helmet } from 'react-helmet-async'
 import Customizationsec1 from './CustomizationSec1'
 import Customizationsec2 from './Customizationsec2'
@@ -7,9 +7,16 @@ import Customizationsec4 from './Customizationsec4'
 import Customizationsec5 from './Customizationsec5'
 
 function CustomisedJewels() {
+  const customsec2Ref = useRef(null);
   useEffect(() => {
     window.scrollTo(0, 0)
   }, [])
+  
+    const scrollToSection2 = () => {
+    if (customsec2Ref.current) {
+      customsec2Ref.current.scrollIntoView({ behavior: "smooth" });
+    }
+  };
   
   return (
     <div>
@@ -23,8 +30,8 @@ function CustomisedJewels() {
       </Helmet>
 
 
-      <Customizationsec1 />
-      <Customizationsec2 />
+      <Customizationsec1 onDiscoverClick={scrollToSection2}/>
+      <Customizationsec2 ref={customsec2Ref}/>
       <Customizationsec3 />
       <Customizationsec4 />
       <Customizationsec5 />

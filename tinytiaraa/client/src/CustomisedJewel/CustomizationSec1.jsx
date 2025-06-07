@@ -7,7 +7,7 @@ import customimg2 from './customsec1img/custom2.webp'
 import customimg3 from './customsec1img/custom3.webp'
 
 
-const Customizationsec1 = () => {
+const Customizationsec1 = ({onDiscoverClick}) => {
   const controls = useAnimation()
   const ref = useRef(null)
   const isInView = useInView(ref, { once: true, threshold: 0.1 })
@@ -163,8 +163,9 @@ const Customizationsec1 = () => {
                   className="cursor-pointer bg-[#B67F6D] text-white hover:bg-[#D7A295] px-8 py-6 rounded-md text-lg shadow-md transition-all hover:shadow-lg"
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.98 }}
+                  onClick={onDiscoverClick}
                 >
-                  Discover Our Story
+                  Design With Love
                 </Button>
               </motion.div>
             </motion.div>

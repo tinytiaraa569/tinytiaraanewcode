@@ -2358,7 +2358,11 @@ function Navbar() {
                  const response = await axios.get(`${server}/get-allcategories`);
                 //   Assuming your API response has a `categories` key
                  const filteredData = response.data.categories;
-                 setCategoriesData(filteredData);
+                 const sortedData = filteredData?.sort(
+                    (a, b) => new Date(a.createdAt) - new Date(b.createdAt)
+                  );
+
+                 setCategoriesData(sortedData);
              } catch (error) {
                  console.error('Error fetching categories:', error);
                  alert('Failed to fetch categories');

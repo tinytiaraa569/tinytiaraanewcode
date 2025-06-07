@@ -1,12 +1,14 @@
 "use client"
-import { useRef } from "react"
+import React ,{ forwardRef, useRef } from "react"
 import { motion, useInView, AnimatePresence } from "framer-motion"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Diamond } from "lucide-react"
 
-const Customizationsec2 = () => {
+const Customizationsec2 = forwardRef((props,ref) => {
   const containerRef = useRef(null)
+  
+
   const isInView = useInView(containerRef, { once: true, amount: 0.2 })
 
   const steps = [
@@ -61,7 +63,7 @@ const Customizationsec2 = () => {
   }
 
   return (
-    <section className="py-24 relative overflow-hidden">
+    <section className="py-24 relative overflow-hidden" ref={ref}>
       {/* Background */}
       <div className="absolute inset-0 bg-gradient-to-t from-[#F4E7E2] via-[#F9F6F4] to-white dark:from-[#3A322E] dark:via-[#2A2624] dark:to-[#1F1D1B] -z-10" />
 
@@ -183,5 +185,6 @@ const Customizationsec2 = () => {
     </section>
   )
 }
+)
 
 export default Customizationsec2

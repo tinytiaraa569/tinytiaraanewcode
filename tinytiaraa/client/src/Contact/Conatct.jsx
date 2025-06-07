@@ -1,14 +1,21 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useRef } from 'react'
 
 import { Helmet } from 'react-helmet-async'
 import ContactSec1 from './Contactsec1'
 import ContactSec2 from './Contactsec2'
-import ContactSec3 from './Contactsec3'
+import ContactSec3 from './Contactsec3';
 
 function Conatct() {
-  useEffect(() => {
-    window.scrollTo(0, 0)
-  }, [])
+  const contactsec2Ref = useRef(null);
+    useEffect(() => {
+      window.scrollTo(0, 0)
+    }, [])
+    
+      const scrollToSection2 = () => {
+      if (contactsec2Ref.current) {
+        contactsec2Ref.current.scrollIntoView({ behavior: "smooth" });
+      }
+    };
   return (
     <div>
        <Helmet>
@@ -19,9 +26,9 @@ function Conatct() {
 
       </Helmet>
   
-      <ContactSec1 />
+      <ContactSec1 onDiscoverClick={scrollToSection2}/>
       <ContactSec2 />
-      <ContactSec3 />
+      <ContactSec3 ref={contactsec2Ref}/>
 
 
     </div>

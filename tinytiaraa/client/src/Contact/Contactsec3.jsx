@@ -1,5 +1,5 @@
 
-import { useState } from "react"
+import { useState,forwardRef, useRef } from "react"
 import { motion } from "framer-motion"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -12,7 +12,7 @@ import axios from "axios"
 import { server } from "@/server"
 import swal from "sweetalert";
 import { FaFacebookF, FaInstagram, FaRegEnvelope, FaWhatsapp } from "react-icons/fa"
-export default function ContactSec3() {
+const ContactSec3 = forwardRef((props,ref) => {
  const {
     register,
     handleSubmit,
@@ -39,7 +39,7 @@ export default function ContactSec3() {
  
 
   return (
-    <section className="py-24 relative overflow-hidden ">
+    <section className="py-14 sm:py-20 relative overflow-hidden " ref={ref}>
       {/* Animated background shapes */}
       <motion.div
         animate={{
@@ -245,4 +245,6 @@ export default function ContactSec3() {
       </div>
     </section>
   )
-}
+})
+
+export default ContactSec3

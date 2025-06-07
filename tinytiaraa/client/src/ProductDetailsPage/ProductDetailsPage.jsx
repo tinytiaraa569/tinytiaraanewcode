@@ -52,11 +52,11 @@ function ProductDetailsPage() {
     }, [productName]);
 
     return (
-        <div>
+        <>
             {data && <ProductDetails data={data} />}
             {data && <SuggestedProduct data={data} />}
             {data && <RecentlyViewedProducts recentlyViewed={recentlyViewed} />}
-        </div>
+        </>
     );
 }
 

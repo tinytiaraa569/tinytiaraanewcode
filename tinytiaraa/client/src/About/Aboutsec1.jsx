@@ -4,7 +4,7 @@ import { motion, useInView, useAnimation } from "framer-motion"
 import { Button } from "@/components/ui/button"
 import aboutimg from './about.webp'
 
-const Aboutsec1 = () => {
+const Aboutsec1 = ({onDiscoverClick}) => {
   const controls = useAnimation()
   const ref = useRef(null)
   const isInView = useInView(ref, { once: true, threshold: 0.1 })
@@ -178,6 +178,7 @@ const Aboutsec1 = () => {
                   className="bg-[#B67F6D] text-white hover:bg-[#D7A295] px-8 py-6 rounded-full text-lg shadow-md transition-all hover:shadow-lg"
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.98 }}
+                  onClick={onDiscoverClick}
                 >
                   Discover Our Story
                 </Button>
