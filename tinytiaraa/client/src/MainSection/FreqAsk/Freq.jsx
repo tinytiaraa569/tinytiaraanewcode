@@ -123,6 +123,7 @@ function CustomizedAccordions() {
   const handleChange = (panel) => (event, newExpanded) => {
     setExpanded(newExpanded ? panel : false);
   };
+  const freqImages = [freq1, freq2, freq3, freq4, freq5 ,freq6, freq7, freq8, freq9, freq10];
 
   return (
     <div className="freqques py-10 md:py-16 relative px-4 sm:px-6 md:px-12 overflow-hidden bg-gradient-to-t from-[#F4E7E2]/10 via-[#F9F6F4] to-white">
@@ -190,7 +191,7 @@ function CustomizedAccordions() {
                       ][i - 1]}
                     </Typography>
                     <img
-                      src={eval(`freq${i}`)}
+                      src={freqImages[i - 1]}
                       alt=""
                       className="w-8 h-8 mr-4"
                     />
@@ -239,7 +240,8 @@ function CustomizedAccordions() {
                       ][i - 6]}
                     </Typography>
                     <img
-                      src={eval(`freq${i}`)}
+                      src={freqImages[i - 1]}
+
                       alt=""
                       className="w-8 h-8 mr-4"
                     />

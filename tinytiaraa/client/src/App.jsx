@@ -126,7 +126,6 @@ import AboutMain from './About/AboutMain';
 import CustomizationMain from './CustomisedJewel/CustomizationMain';
 import ContactMain from './Contact/ContactMain';
 import FloatingSocial from './floatingsocial/FloatingSocial';
-import Faqs from './Faqs/Faqs';
 import CustomizedAccordions from './MainSection/FreqAsk/Freq';
 
 
