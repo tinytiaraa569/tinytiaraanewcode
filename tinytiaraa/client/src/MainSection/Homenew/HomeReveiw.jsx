@@ -1,6 +1,6 @@
 "use client"
 
-import { useRef, useMemo, useState } from "react"
+import { useRef, useMemo, useState ,forwardRef} from "react"
 import { motion } from "framer-motion"
 import { Swiper, SwiperSlide } from "swiper/react"
 import "swiper/css"
@@ -12,7 +12,7 @@ import { imgdburl } from "@/server";
 import Zoom from "react-medium-image-zoom";
 import "react-medium-image-zoom/dist/styles.css";
 
-const HomeReview = () => {
+const HomeReview =  forwardRef((props,ref) =>  {
   const swiperRef = useRef(null)
   const [isHovering, setIsHovering] = useState(false)
   const { products = [] } = useSelector((state) => state.products);
@@ -74,7 +74,7 @@ const HomeReview = () => {
   }
 
   return (
-    <div className="relative w-full py-10 px-4 md:px-10 font-sans bg-gradient-to-t from-[#F4E7E2] via-[#F9F6F4] to-white overflow-hidden">
+    <div ref={ref} className="relative w-full py-10 px-4 md:px-10 font-sans bg-gradient-to-t from-[#F4E7E2] via-[#F9F6F4] to-white overflow-hidden">
       {/* Animated Background Pattern */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         {/* Sparkle Effects */}
@@ -388,6 +388,6 @@ const HomeReview = () => {
       `}</style>
     </div>
   )
-}
+})
 
 export default HomeReview

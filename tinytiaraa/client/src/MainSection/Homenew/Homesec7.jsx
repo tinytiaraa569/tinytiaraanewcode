@@ -1,13 +1,17 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import ttclubvideo from './ttclub.mp4';
 import logoimg from './logo.png';
 import { Card, CardContent } from '@/components/ui/card';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import firstimg from './homebanner7/firstimg.webp'
 import secondimg from './homebanner7/secondimg.webp'
 
 import thirdimg from './homebanner7/thirdimg.webp'
+import { useSelector } from 'react-redux';
+import { Button } from '@/components/ui/button';
+import axios from 'axios';
+import { server } from '@/server';
 
 
 const fadeInUp = {
@@ -28,7 +32,29 @@ const scaleUp = {
   },
 };
 
-const Homesec7 = () => {
+const Homesec7 = ({onDiscoverClick}) => {
+ 
+
+  const navigate = useNavigate()
+
+const [totalReviews, setTotalReviews] = useState(0);
+
+  useEffect(() => {
+    const fetchTotalReviews = async () => {
+      try {
+        const { data } = await axios.get(`${server}/product/get-total-reviews`);
+        console.log("Total reviews from backend:", data.totalReviews);
+        setTotalReviews(data?.totalReviews); 
+      } catch (error) {
+        console.error("Failed to fetch total reviews", error);
+      }
+    };
+
+    fetchTotalReviews();
+  }, []);
+
+
+  
   return (
     <div className="flex flex-col lg:flex-row min-h-screen">
       {/* Left Section */}
@@ -108,7 +134,7 @@ const Homesec7 = () => {
                 className="text-4xl font-extrabold tracking-tight text-[#9A7B74]"
                 variants={fadeInUp}
               >
-                1000+ <span className="[#D8B4A0] text-2xl font-semibold">Reviews</span>
+               {totalReviews ? `${totalReviews}+` : '2000+'}    <span className="[#D8B4A0] text-2xl font-semibold">Reviews</span>
               </motion.h1>
               <motion.p
                 className="text-base text-gray-600 leading-relaxed max-w-2xl mx-auto"
@@ -118,13 +144,13 @@ const Homesec7 = () => {
                   My 4-year-old adored her pink hearts and wore them right away.
                   Great quality and super cute designs for little ones!”
               </motion.p>
-              <Link
-                to="/reviews"
-                className="relative inline-block mt-4 text-sm font-semibold uppercase tracking-wide text-[#9A7B74] group"
+              <div
+                onClick={onDiscoverClick}
+                className="cursor-pointer relative inline-block mt-4 text-sm font-semibold uppercase tracking-wide text-[#9A7B74] group"
               >
                 See All Reviews
                 <span className="block h-[2px] w-1/2 bg-[#9A7B74] mx-auto mt-1 transition-all duration-300 group-hover:w-full"></span>
-              </Link>
+              </div>
             </CardContent>
             </motion.div>
           </Card>
@@ -174,13 +200,13 @@ const Homesec7 = () => {
                 Our jewelry collections offer whimsical charms and elegant pieces,
                 ensuring every child finds something that matches their unique style.
               </motion.p>
-              <Link
-                to="/safety"
-                className="relative inline-block mt-2 text-sm font-semibold uppercase tracking-wide text-[#9A7B74] group"
+              <div
+                onClick={()=> navigate("/children-safety-jewellery-policy")}
+                className="cursor-pointer relative inline-block mt-2 text-sm font-semibold uppercase tracking-wide text-[#9A7B74] group"
               >
                 Learn about safety
                 <span className="block h-[2px] w-1/2 bg-[#9A7B74] mx-auto mt-1 transition-all duration-300 group-hover:w-full"></span>
-              </Link>
+              </div>
             </CardContent>
           </motion.div>
 
@@ -223,13 +249,13 @@ const Homesec7 = () => {
                 Craftsmanship is our core. Every piece is meticulously handcrafted with
                 quality materials, ensuring beauty, safety, and comfort for children.
               </motion.p>
-              <Link
-                to="/safety"
-                className="relative inline-block mt-2 text-sm font-semibold uppercase tracking-wide text-[#9A7B74] group"
+              <div
+                onClick={()=> navigate("/products")}
+                className="cursor-pointer relative inline-block mt-2 text-sm font-semibold uppercase tracking-wide text-[#9A7B74] group"
               >
                 Learn about material
                 <span className="block h-[2px] w-1/2 bg-[#9A7B74] mx-auto mt-1 transition-all duration-300 group-hover:w-full"></span>
-              </Link>
+              </div>
             </CardContent>
             </motion.div>
           </Card>

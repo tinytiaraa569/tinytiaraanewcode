@@ -30,7 +30,7 @@ const ScrollToTopButton = () => {
 
   return (
     <button
-      className={`scroll-to-top-button !text-white bg-gradient-to-r from-[#C8A79B] to-[#8A6D63] hover:from-[#BF9283] hover:to-[#7D6259] ${visible ? 'visible' : 'hidden'}`}
+      className={`scroll-to-top-button !text-white bg-gradient-to-r from-[#D8B4A0] to-[#D7A295] hover:from-[#BF9283] hover:to-[#7D6259] ${visible ? 'visible' : 'hidden'}`}
       onClick={scrollToTop}
     >
       <RiArrowUpSLine size={24} />

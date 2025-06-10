@@ -1,8 +1,11 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import './Termscon.css'
 import { Helmet } from 'react-helmet-async'
 
 function TermsCon() {
+    useEffect(() => {
+            window.scrollTo(0, 0);
+          }, []);
   return (
     <div className='TermsConpage'>
          <Helmet>

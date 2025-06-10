@@ -1,6 +1,9 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 
 function Goldinsurance() {
+    useEffect(() => {
+            window.scrollTo(0, 0);
+          }, []);
   return (
     <div className='TermsConpage'>
     <div className='TermsConAdjust'>

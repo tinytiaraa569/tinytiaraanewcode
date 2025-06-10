@@ -126,6 +126,8 @@ import AboutMain from './About/AboutMain';
 import CustomizationMain from './CustomisedJewel/CustomizationMain';
 import ContactMain from './Contact/ContactMain';
 import FloatingSocial from './floatingsocial/FloatingSocial';
+import Faqs from './Faqs/Faqs';
+import CustomizedAccordions from './MainSection/FreqAsk/Freq';
 
 
 
@@ -408,6 +410,10 @@ function App() {
           <Route path='/return-policy' element={<ReturnPolicy />} />
           <Route path='/affiliate-program-commission-policy' element={<Affiliatepolicy />} />
           <Route path='/gold-jewellery-insurance-policy' element={<Goldinsurance />} />
+
+
+          <Route path='/faqs' element={<CustomizedAccordions />} />
+
           <Route path='/blogs' element={<Blogs />} />
 
 

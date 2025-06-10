@@ -3933,6 +3933,29 @@ router.put("/edit-fake-review/:productId/:reviewId", isSeller, catchAsyncErrors(
     }
 }));
 
+// GET total reviews count
+router.get('/get-total-reviews', catchAsyncErrors(async (req, res, next) => {
+  try {
+    // Only select the 'reviews' field from all products
+    const products = await Product.find({}, { reviews: 1 });
+
+    // Calculate total reviews
+    const totalReviews = products.reduce((acc, product) => {
+      const count = Array.isArray(product.reviews) ? product.reviews.length : 0;
+      return acc + count;
+    }, 0);
+
+    res.status(200).json({
+      success: true,
+      totalReviews,
+    });
+  } catch (error) {
+    console.error('Error fetching total reviews:', error);
+    return next(new ErrorHandler(error, 500));
+  }
+}));
+
+
 
 
 module.exports = router

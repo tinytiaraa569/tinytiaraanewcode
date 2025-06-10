@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import SliderSection from './Slider'
 import Categories from './Categories'
 import Shippingpage from './Shippingpage'
@@ -31,6 +31,8 @@ import HomeReferral from './Homenew/HomeReferral'
 
 function MainSection() {
   const navigate = useNavigate();
+  const reviewsec2Ref = useRef(null);
+
 
   const [showText, setShowText] = useState(true);
 
@@ -47,6 +49,16 @@ function MainSection() {
     navigate('/spinandwin'); // Navigate to Spin and Win page
   };
 
+    useEffect(() => {
+      window.scrollTo(0, 0)
+    }, [])
+    
+      const scrollToSection2 = () => {
+      if (reviewsec2Ref.current) {
+        reviewsec2Ref.current.scrollIntoView({ behavior: "smooth" });
+      }
+    };
+
   return (
     <div>
       {/* <SliderSection /> */}  <HomeSec1 />
@@ -57,7 +69,7 @@ function MainSection() {
       {/* <Categories />   <Homesec4 />  */}
       {/* <MorePage />  */} <Homesec5 /> 
       {/* <NewArrivals /> */}  <Homesec6 />
-      {/* <Customise /> */}    <Homesec7 />
+      {/* <Customise /> */}    <Homesec7 onDiscoverClick={scrollToSection2}/>
       {/* <Safety />  */}
         <Homesec8 />
 
@@ -65,7 +77,7 @@ function MainSection() {
 
       {/* <Slidertext /> */}   <Homesec9 />
       {/* <CustomizedAccordions /> */} 
-      <HomeReview />
+      <HomeReview ref={reviewsec2Ref}/>
       <HomeReferral />
       {/* <Homesec11 /> */}
       {/* <Review />   

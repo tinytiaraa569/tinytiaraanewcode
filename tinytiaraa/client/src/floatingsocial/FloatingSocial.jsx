@@ -162,7 +162,7 @@ const FloatingSocialMedia = () => {
           <TooltipTrigger asChild>
             <motion.button
               onClick={toggleOpen}
-              className="w-12 h-12 bg-gradient-to-r from-[#C8A79B] to-[#8A6D63] hover:from-[#BF9283] hover:to-[#7D6259] rounded-full flex items-center justify-center shadow-xl hover:shadow-2xl transition-all duration-300 relative overflow-hidden"
+              className="w-12 h-12 bg-gradient-to-r from-[#D8B4A0] to-[#D7A295] hover:from-[#BF9283] hover:to-[#7D6259] rounded-full flex items-center justify-center shadow-xl hover:shadow-2xl transition-all duration-300 relative overflow-hidden"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               animate={{

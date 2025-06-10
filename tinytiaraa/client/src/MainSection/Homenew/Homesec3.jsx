@@ -310,7 +310,7 @@ const Homesec3 = ({products}) => {
 
   return (
     <motion.div
-      className="relative w-full py-10 px-4 lg:px-16 bg-gradient-to-t from-[#F4E7E2] via-[#F9F6F4] to-white overflow-hidden"
+      className="relative w-full py-10 px-4 lg:px-12 bg-gradient-to-t from-[#F4E7E2] via-[#F9F6F4] to-white overflow-hidden"
       initial="hidden"
       whileInView="visible"
       viewport={{ once: true }}
@@ -400,7 +400,7 @@ const Homesec3 = ({products}) => {
 
                       <Swiper
                         modules={[Navigation]}
-                        spaceBetween={24}
+                        spaceBetween={18}
                         slidesPerView="auto"
                         onSwiper={onSwiperInit}
                         onSlideChange={handleSlideChange}
@@ -415,7 +415,7 @@ const Homesec3 = ({products}) => {
                        
                       >
                         {paginatedData.map((product, idx) => (
-                          <SwiperSlide key={`product-${idx}`} style={{ width: "265px", height: "auto" }}>
+                          <SwiperSlide key={`product-${idx}`}   className="!w-[240px] sm:!w-[265px] h-auto">
                             <motion.div
                               variants={fadeInUp}
                               custom={idx}

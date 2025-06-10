@@ -4,50 +4,60 @@ import { Badge } from "@/components/ui/badge"
 import { Quote, ChevronLeft, ChevronRight } from "lucide-react"
 import { useEffect, useRef, useState } from "react"
 import { Star, Sparkles } from "lucide-react"
+import customimg1 from './customsec3img/1img.webp'
+import customimg2 from './customsec3img/2img.webp'
+import customimg3 from './customsec3img/3img.webp'
+import customimg4 from './customsec3img/4img.webp'
+import customimg5 from './customsec3img/5img.webp'
+
+
+
 
 // Base showcase data that will be used across all variations
 export const showcaseItems = [
   {
-    image: "https://i.pinimg.com/736x/8e/93/c1/8e93c182c0bf76dfe80c2e63fd5ffc46.jpg",
+    image: customimg1,
     review:
-      "The attention to detail in my custom engagement ring exceeded all expectations. Every facet was perfectly crafted, and the design process was seamless from start to finish.",
-    customer: "Sarah Mitchell",
+      "Got this tiny gold nazariya customised for my newborn with an evil eye in the centre – super cute & full of positive vibes 😍 Neat finish, soft thread, perfect size! Packaging bhi bohot sundar tha. Thank you Tiny Tiaraa 💛 Will order again!",
+    customer: "Anushka",
     rating: 5,
-    piece: "Custom Diamond Engagement Ring",
+    piece: "Custom Evil Eye Nazariya",
   },
   {
-    image: "https://i.pinimg.com/736x/57/9b/b2/579bb2a44b1f860eef4eaa5aa6e61941.jpg",
+    image: customimg2,
     review:
-      "Working with this team to create my grandmother's vintage-inspired necklace was an incredible experience. They captured the essence perfectly while adding modern elegance.",
-    customer: "Emily Rodriguez",
+    "This anchor pendant from Tiny Tiaraa is sooo adorable! ⚓💖 I ordered it for my nephew and he absolutely loved it. Quality is fab, packaging is cute, and delivery was on time. Totally worth it! 🌈✨ Thank u Tiny Tiaraa 💫",
+    customer: "Anita Kanade",
     rating: 5,
-    piece: "Vintage-Inspired Pearl Necklace",
+    piece: "Silver Anchor Pendant",
   },
   {
-    image: "https://i.pinimg.com/736x/98/1b/5b/981b5b89cf5eec11cd88675d9885fabc.jpg",
+    image: customimg3,
     review:
-      "The custom bracelet design process was collaborative and professional. The final piece is absolutely stunning and receives compliments everywhere I wear it.",
-    customer: "Jessica Chen",
+      "Loved these tiny gold studs from Tiny Tiaraa! 😍 Perfect fit, super cute & comfy. Packaging was beautiful too 💛💙",
+    customer: "Smitha Thakkar",
     rating: 5,
-    piece: "Bespoke Gold Bracelet",
+    piece: "Gold Earrings",
   },
   {
-    image: "https://i.pinimg.com/736x/0d/78/03/0d7803d83f220ae76e4396f4d5e7b643.jpg",
+    image: customimg4,
     review:
-      "From concept to completion, the craftsmanship was exceptional. My custom earrings are exactly what I envisioned, with quality that will last generations.",
-    customer: "Amanda Thompson",
+      "Got this customised name neck chain for my baby from Tiny Tiaraa and I’m sooo happy! 💛 It’s beautifully made, exactly how I wanted – neat, elegant, and super cute. Packaging was lovely too. Thank you for making it special! ✨",
+    customer: "Rishika Pawar",
     rating: 5,
-    piece: "Custom Diamond Earrings",
+    piece: "Custom Gold Pendant",
   },
   {
-    image: "https://i.pinimg.com/736x/97/7c/1a/977c1a787acbef011099caa9c644a2bc.jpg",
+    image: customimg5,
     review:
-      "The personalized pendant they created tells my story beautifully. The intricate details and superior craftsmanship make it a treasured family heirloom.",
-    customer: "Maria Gonzalez",
+      "Absolutely loved this customised silver name chain for my daughter Anu 💖 It’s sleek, stylish & just perfect! Great quality and the packaging was super cute too. Thank you Tiny Tiaraa for this beautiful memory! ✨🫶✨",
+    customer: "Vanshika Chopra",
     rating: 5,
-    piece: "Personalized Family Pendant",
+    piece: "Custom Silver Pendant ",
   },
 ]
+
+
 
 // Sparkle effect component that can be reused across variations
 export const SparkleEffect = () => {
@@ -334,13 +344,13 @@ const Customizationsec3 = () => {
 
                 <div className="relative">
                   <Quote className="absolute -top-4 -left-4 w-12 h-12 text-[#E8C4B8] opacity-30" />
-                  <blockquote className="text-xl md:text-2xl text-[#8A6D63] dark:text-[#F4E7E2] italic leading-relaxed pl-8">
+                  <blockquote className="text-xl md:text-xl text-[#8A6D63] dark:text-[#F4E7E2] italic leading-relaxed pl-8">
                     "{showcaseItems[currentIndex].review}"
                   </blockquote>
                 </div>
 
-                <div className="flex items-center space-x-4">
-                  <div className="w-16 h-16 rounded-full bg-[#F4E7E2] dark:bg-[#3A322E] flex items-center justify-center">
+                <div className="flex items-center justify-center sm:justify-start space-x-4">
+                  <div className="w-14 h-14 rounded-full bg-[#F4E7E2] dark:bg-[#3A322E] flex items-center justify-center">
                     <span className="text-[#C8A79B] font-bold text-lg">
                       {showcaseItems[currentIndex].customer
                         .split(" ")

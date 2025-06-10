@@ -175,7 +175,7 @@ const Homesec2 = () => {
       >
         {/* Column 1 */}
         <motion.div
-          className="relative w-full h-full xl:h-[350px] xl:w-[200px] flex flex-col justify-center p-3 rounded-lg bg-white border border-gray-100 shadow-sm"
+          className="relative w-full h-full xl:h-[400px] xl:w-[200px] flex flex-col justify-center p-3 rounded-lg bg-white border border-gray-100 shadow-sm"
           variants={slideInVariants}
         >
           {/* Optional content placeholder */}
@@ -222,7 +222,7 @@ const Homesec2 = () => {
 
         {/* Column 2 */}
        <motion.div
-      className="group relative cursor-pointer h-[300px] sm:h-[350px] w-full md:w-[250px] flex items-center justify-center rounded-lg bg-[#F4E7E2] border border-gray-100 shadow-sm overflow-hidden"
+      className="group relative cursor-pointer h-[380px] sm:h-[400px] w-full md:w-[250px] flex items-center justify-center rounded-lg bg-[#F4E7E2] border border-gray-100 shadow-sm overflow-hidden"
       variants={slideInVariants}
     >
       {/* Black Overlay */}
@@ -374,10 +374,10 @@ const Homesec2 = () => {
         </motion.div>
 
         {/* Column 4 - Matched to Column 3 */}
-        <motion.div className="h-auto sm:h-[420px]  w-full md:w-[350px] flex flex-col" variants={slideInRightVariants}>
+       <motion.div className="h-auto sm:h-[420px] w-full sm:w-[350px] md:w-[370px] lg:w-[350px] flex flex-col" variants={slideInRightVariants}>
+
           <motion.div
             className="h-auto sm:h-[490px] relative rounded-lg overflow-hidden mb-1"
-           
           >
             <Swiper
               modules={[Pagination]}

@@ -10,13 +10,15 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 const Homesec8 = () => {
   const [media, setMedia] = useState([])
   const [username, setUsername] = useState("")
+  const [reels, setReels] = useState([])
+  const [posts, setPosts] = useState([])
   const [swiper, setSwiper] = useState(null)
   const [activeIndex, setActiveIndex] = useState(0)
 
   const accessToken =
       "EAAQI3kdFLIMBO4Of7AwXgZAyKqFmcLyNpnRj0qsNcTC7v9IO0qqZCJmvF05TAB8cGgMHskNpQ2eBbzcpRAokZAzKpwHIqDo7BTXTiC1MWZBnRQzJzNeYGZBcJC0iZCZBq0xyKOUQXW95XMErrwi7fPggedaKpW8Ob8PTMRL7amoZBiMU7KDrzece" // Replace with your real token
     const pageId = "142039082320769" // Replace with your FB Page ID
-  useEffect(() => {
+    useEffect(() => {
     const fetchInstagramData = async () => {
       try {
         const pageRes = await axios.get(`https://graph.facebook.com/v22.0/${pageId}`, {
@@ -27,12 +29,8 @@ const Homesec8 = () => {
         })
 
         const igUserId = pageRes.data.instagram_business_account?.id
-        if (!igUserId) {
-          console.error("Instagram Business Account not found")
-          return
-        }
+        if (!igUserId) return console.error("Instagram Business Account not found")
 
-        // Get username
         const userRes = await axios.get(`https://graph.facebook.com/v22.0/${igUserId}`, {
           params: {
             fields: "username",
@@ -41,25 +39,47 @@ const Homesec8 = () => {
         })
         setUsername(userRes.data.username)
 
-        // Get media
-        let url = `https://graph.facebook.com/v22.0/${igUserId}/media`
+        // Fetch owned media
+        let mediaUrl = `https://graph.facebook.com/v22.0/${igUserId}/media`
         let allMedia = []
-
-        while (url) {
-          const res = await axios.get(url, {
+        while (mediaUrl) {
+          const res = await axios.get(mediaUrl, {
             params: {
               fields: "id,caption,media_type,media_url,thumbnail_url,timestamp,permalink",
               access_token: accessToken,
             },
           })
-
           allMedia = [...allMedia, ...res.data.data]
-          url = res.data.paging?.next || null
+          mediaUrl = res.data.paging?.next || null
         }
 
-        setMedia(allMedia)
+        // Fetch tagged media
+        let taggedUrl = `https://graph.facebook.com/v22.0/${igUserId}/tags`
+        let allTagged = []
+        while (taggedUrl) {
+          const res = await axios.get(taggedUrl, {
+            params: {
+              fields: "id,caption,media_type,media_url,thumbnail_url,timestamp,permalink",
+              access_token: accessToken,
+            },
+          })
+          allTagged = [...allTagged, ...res.data.data]
+          taggedUrl = res.data.paging?.next || null
+        }
+
+        // Separate Reels and Posts
+        const reelsOnly = [...allMedia, ...allTagged]
+          .filter(item => item.media_type === "VIDEO")
+          .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp))
+
+        const postsOnly = allMedia
+          .filter(item => item.media_type === "IMAGE" || item.media_type === "CAROUSEL_ALBUM")
+          .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp))
+
+        setReels(reelsOnly)
+        setPosts(postsOnly)
       } catch (err) {
-        console.error("Failed to fetch media:", err)
+        console.error("Failed to fetch Instagram data:", err)
       }
     }
 
@@ -162,8 +182,8 @@ const Homesec8 = () => {
     </motion.div>
   )
 
-  const posts = media.filter((m) => m.media_type !== "VIDEO")
-  const reels = media.filter((m) => m.media_type === "VIDEO")
+  // const posts = media.filter((m) => m.media_type !== "VIDEO")
+  // const reels = media.filter((m) => m.media_type === "VIDEO")
 
   return (
     <div className="py-12 px-4 bg-white relative overflow-hidden">

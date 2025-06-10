@@ -461,7 +461,7 @@ const PriceDisplay = ({ originalPrice, discountPrice }) => {
       
     >
       <div className="relative h-[200px] overflow-hidden cursor-pointer">
-        <DiscountBadge originalPrice={data?.originalPrice} discountPrice={data?.discountPrice} />
+        {/* <DiscountBadge originalPrice={data?.originalPrice} discountPrice={data?.discountPrice} /> */}
 
         <motion.img
             onClick={() => { navigate(`/product/${product_name}`) }}

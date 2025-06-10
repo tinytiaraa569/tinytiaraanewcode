@@ -1,6 +1,6 @@
 "use client"
 
-import { motion, useScroll } from "framer-motion"
+import { motion, useScroll, useTransform } from "framer-motion"
 import { Sparkles } from "lucide-react"
 import { useRef } from "react"
 
@@ -9,7 +9,12 @@ export default function Aboutsec3() {
 
   const { scrollYProgress } = useScroll({
     target: containerRef,
-    offset: ["start start", "end start"],
+    offset: ["start end", "end start"],
+  })
+
+  // Use transformed scroll progress for smoother effects
+  const smoothScrollProgress = useTransform(scrollYProgress, [0, 1], [0, 1], {
+    clamp: false
   })
 
   const SparkleEffect = () => {
@@ -39,6 +44,7 @@ export default function Aboutsec3() {
                 repeat: Number.POSITIVE_INFINITY,
                 repeatType: "loop",
                 delay: Math.random() * 5,
+                ease: "easeInOut"
               }}
             >
               <Sparkles className="text-amber-300 w-4 h-4" />
@@ -72,15 +78,15 @@ export default function Aboutsec3() {
               className="lg:w-1/2 order-2 lg:order-1"
               initial={{ opacity: 0, x: -50 }}
               whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.8 }}
+              viewport={{ once: true, margin: "-100px" }}
+              transition={{ duration: 0.8, ease: "easeOut" }}
             >
               <motion.h2
                 className="text-3xl md:text-4xl font-bold mb-8 text-[#B67F6D]"
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                transition={{ duration: 0.5 }}
+                transition={{ duration: 0.5, ease: "easeOut" }}
               >
                 Rashmi Jain - Founder
               </motion.h2>
@@ -90,7 +96,7 @@ export default function Aboutsec3() {
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
-                  transition={{ duration: 0.5, delay: 0.1 }}
+                  transition={{ duration: 0.5, delay: 0.1, ease: "easeOut" }}
                 >
                   As a mother, I've always cherished the pure joy and innocence that children bring into our lives. When
                   I started Tiny Tiaraa, it was with a simple yet profound vision: to create a line of jewelry that
@@ -101,7 +107,7 @@ export default function Aboutsec3() {
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
-                  transition={{ duration: 0.5, delay: 0.2 }}
+                  transition={{ duration: 0.5, delay: 0.2, ease: "easeOut" }}
                 >
                   But equally important was our commitment to ensuring the highest standards of safety and quality for
                   our little ones. I wanted to offer parents like myself a collection of exquisite jewelry that not only
@@ -112,7 +118,7 @@ export default function Aboutsec3() {
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
-                  transition={{ duration: 0.5, delay: 0.3 }}
+                  transition={{ duration: 0.5, delay: 0.3, ease: "easeOut" }}
                 >
                   We understand that children's jewelry should be more than just an accessory; it should reflect their
                   unique spirit and personality. I hope our jewelry adds a touch of sparkle to your child's journey and
@@ -123,7 +129,7 @@ export default function Aboutsec3() {
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
-                  transition={{ duration: 0.5, delay: 0.4 }}
+                  transition={{ duration: 0.5, delay: 0.4, ease: "easeOut" }}
                   className="font-medium text-[#B67F6D] italic"
                 >
                   With love and gratitude
@@ -139,8 +145,8 @@ export default function Aboutsec3() {
               }}
               initial={{ opacity: 0, scale: 0.7 }}
               whileInView={{ opacity: 1, scale: 1 }}
-              viewport={{ once: true }}
-              transition={{ duration: 1 }}
+              viewport={{ once: true, margin: "-100px" }}
+              transition={{ duration: 1, ease: "easeOut" }}
             >
               {/* Decorative elements - positioned with negative z-index to stay behind */}
               <motion.div
@@ -185,7 +191,7 @@ export default function Aboutsec3() {
               <motion.div
                 className="relative w-full h-[500px] rounded-2xl overflow-hidden bg-[#F3E6E2] z-10"
                 whileHover={{ scale: 1.02 }}
-                transition={{ duration: 0.5 }}
+                transition={{ duration: 0.5, ease: "easeOut" }}
               >
                 <img
                   src="https://admin.tinytiaraa.com/uploads/images/products/ul1cjxxwycebfjbz61np.webp"
@@ -202,7 +208,7 @@ export default function Aboutsec3() {
                   className="absolute inset-0 bg-gradient-to-t from-[#D7A295]/20 to-transparent"
                   initial={{ opacity: 0 }}
                   whileInView={{ opacity: 1 }}
-                  transition={{ duration: 1 }}
+                  transition={{ duration: 1, ease: "easeOut" }}
                 />
 
                 {/* Subtle shimmer effect across the image */}

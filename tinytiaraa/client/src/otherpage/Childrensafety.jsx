@@ -1,7 +1,12 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Helmet } from 'react-helmet-async'
 
 function Childrensafety() {
+
+   useEffect(() => {
+        window.scrollTo(0, 0);
+      }, []);
+  
   return (
     <div className='TermsConpage'>
            <Helmet>

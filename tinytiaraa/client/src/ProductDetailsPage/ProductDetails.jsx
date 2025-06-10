@@ -3247,7 +3247,7 @@ const features = [
       title: "Happiness Guaranteed",
       description: "100% satisfaction or your money back",
       details:
-        "We stand behind every piece with our unconditional happiness guarantee. If you're not completely satisfied, return it within 30 days for a full refund.",
+        "We stand behind every piece with our unconditional happiness guarantee. If you're not completely satisfied, return it within 7 days for a full refund.",
     },
     {
       icon: Award,

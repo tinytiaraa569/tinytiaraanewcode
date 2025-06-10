@@ -32,10 +32,10 @@ export default function Aboutsec4() {
               <div className="bg-[#FDF8F6] relative z-10 p-6 sm:p-10 rounded-2xl">
                 <h3 className="text-2xl font-semibold mb-6 text-[#B67F6D]">Our Vision</h3>
                 <p className="text-gray-700">
-                  Our vision at Tiny Tiaraa is to be the beacon of childhood magic, where every piece of jewelry becomes
-                  a cherished memory. We believe in nurturing a sense of wonder and individuality in children by
-                  offering jewelry that resonates with their dreams and aspirations. Our pieces are more than
-                  accessories; they're tiny companions on a child's journey of self-discovery and imagination.
+                  Our vision is to become the well recognised global brand for children's jewellery,
+                   renowned for our quality, creativity, and commitment to safety. We aim to inspire 
+                   confidence and happiness in every child who wears Tiny Tiaraa jewellery, making each 
+                   piece a cherished part of their journey.
                 </p>
               </div>
               <motion.div
@@ -61,10 +61,9 @@ export default function Aboutsec4() {
               <div className="bg-[#FDF8F6] p-6 sm:p-10 rounded-2xl relative z-10">
                 <h3 className="text-2xl font-semibold mb-6 text-[#B67F6D]">Our Story</h3>
                 <p className="text-gray-700">
-                  Tiny Tiaraa is a jewelry brand that believes in the power of the five elements of nature to bring joy
-                  and wonder to children. Our jewelry is handcrafted with love and care using only the finest materials,
-                  and it is inspired by the natural world. We believe that every child deserves to feel special, and our
-                  jewelry is designed to help them do just that.
+                  At Tiny Tiaraa, our mission is to provide children with exquisite, safe, and age-appropriate jewellery
+                   that adds joy to their special moments. We strive to create lasting memories through our beautifully
+                    crafted pieces, ensuring each design reflects the innocence and charm of childhood.
                 </p>
               </div>
               <motion.div

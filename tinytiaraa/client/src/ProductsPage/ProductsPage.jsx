@@ -3338,6 +3338,13 @@ function ProductsPage() {
                 src={newtest2 || "/placeholder.svg"}
                 className="w-full h-full object-center sm:object-center"
               />
+              <img
+                loading="eager"
+                src={`${newtest2}`}
+                
+                className="absolute top-0 left-0 w-full h-full object-cover object-center"
+              />
+
               <div className="absolute inset-0 bg-black/30 dark:bg-black/50" />
             </motion.div>
 

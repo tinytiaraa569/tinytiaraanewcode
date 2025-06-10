@@ -3,8 +3,13 @@ import { motion } from "framer-motion"
 import { UserPlus, Link, Share2, Gift, ArrowRight, Play, CheckCircle } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
+import { useNavigate } from "react-router-dom"
+import { useSelector } from "react-redux"
+import referralvideo from './referralvideo.mp4'
 
 const HomeReferral = () => {
+   const { isAuthenticated } = useSelector((state) => state.user);
+  const navigate = useNavigate()
   const steps = [
     {
       id: 1,
@@ -154,7 +159,7 @@ const HomeReferral = () => {
           >
             <div className="relative">
               <div className="aspect-video h-auto sm:h-64 md:h-80 lg:h-96 bg-gradient-to-br from-[#E8D5CE] to-[#D4C1B8] rounded-xl md:rounded-2xl shadow-xl relative overflow-hidden">
-                <div className="absolute inset-0 flex items-center justify-center">
+                {/* <div className="absolute inset-0 flex items-center justify-center">
                   <motion.button
                     whileHover={{ scale: 1.1 }}
                     whileTap={{ scale: 0.9 }}
@@ -162,12 +167,13 @@ const HomeReferral = () => {
                   >
                     <Play className="w-6 h-6 md:w-8 md:h-8 text-[#8B7355] ml-1" />
                   </motion.button>
-                </div>
+                </div> */}
+                    <video src={referralvideo} autoPlay muted controls loop className="w-full h-full object-cover rounded-xl md:rounded-2xl"></video>
 
                 {/* Video overlay info */}
-                <div className="absolute top-3 left-3 md:top-4 md:left-4 bg-white/20 backdrop-blur-sm rounded-lg px-2 py-1 md:px-3 md:py-2">
+                {/* <div className="absolute top-3 left-3 md:top-4 md:left-4 bg-white/20 backdrop-blur-sm rounded-lg px-2 py-1 md:px-3 md:py-2">
                   <span className="text-white text-xs md:text-sm font-medium">2:30 Demo</span>
-                </div>
+                </div> */}
 
                 {/* Floating elements */}
                 <motion.div
@@ -206,7 +212,12 @@ const HomeReferral = () => {
           className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-12 md:mb-16"
         >
           {steps.map((step, index) => (
-            <motion.div key={step.id} variants={itemVariants}>
+            <motion.div key={step.id} variants={itemVariants}
+             onClick={() =>
+                    isAuthenticated
+                      ? navigate("/referrals")
+                      : navigate("/sign-up")
+                  }>
               <Card className="cursor-pointer relative h-full bg-white/90 backdrop-blur-sm border-0 shadow-lg hover:shadow-xl transition-all duration-300 group overflow-hidden">
                 <CardContent className="p-4 sm:p-6 md:p-8 text-center relative z-10">
                   <motion.div
@@ -266,6 +277,7 @@ const HomeReferral = () => {
             <Button
               size="lg"
               className="bg-gradient-to-r from-[#D8B4A0] to-[#D7A295] hover:opacity-90 text-white px-8 py-5 sm:px-12 sm:py-6 text-lg sm:text-xl rounded-lg sm:rounded-full shadow-lg hover:shadow-xl transition-all duration-300"
+               onClick={()=>{navigate("/sign-up")}}
             >
               Join Us Today
               <ArrowRight className="ml-2 w-4 h-4 sm:w-5 sm:h-5" />

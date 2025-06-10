@@ -235,6 +235,8 @@ function Footer() {
                 { title: "Privacy Policy", href: "/privacy-policy" },
                 { title: "Exchange Policy", href: "/exchange-policy" },
                 { title: "Return Policy", href: "/return-policy" },
+                { title: "FAQ's", href: "/faqs" },
+
                 { title: "Blogs", href: "/blogs" },
               ].map((item, index) => (
                 <motion.li key={index} className="overflow-hidden">
